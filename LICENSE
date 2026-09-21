@@ -1,33 +1,11 @@
-<!--
-KP_CODE LICENSE TEMPLATE
-
-Before using this template in a project:
-
-1. Replace all fields written in square brackets.
-2. Verify the project name, repository address, year, and copyright owner.
-3. Remove this comment before publishing the final LICENSE.md file.
-4. Verify all third-party licenses used by the project.
-5. For commercial distribution or software sales, consider obtaining an
-   individual legal review of this license.
-
-Przed użyciem szablonu w projekcie:
-
-1. Zastąp wszystkie pola zapisane w nawiasach kwadratowych.
-2. Sprawdź nazwę projektu, adres repozytorium, rok i właściciela praw.
-3. Usuń ten komentarz przed opublikowaniem finalnego pliku LICENSE.md.
-4. Sprawdź licencje wszystkich materiałów zewnętrznych użytych w projekcie.
-5. Przed rozpoczęciem komercyjnej dystrybucji lub sprzedaży oprogramowania
-   rozważ indywidualną weryfikację licencji przez prawnika.
--->
-
 # Własnościowa Licencja Projektu KP_CODE
 
 **Wersja 1.0**
 
-**Projekt:** [NAZWA PROJEKTU]
-**Repozytorium:** [ADRES REPOZYTORIUM]
+**Projekt:** Aurora Travel
+**Repozytorium:** https://github.com/KPKrol85/DS-hospitality-pr02-Aurora
 
-Copyright © [ROK] Kamil Król — KP_Code.
+Copyright © 2026 Kamil Król — KP_Code.
 Wszelkie prawa zastrzeżone.
 
 ---
@@ -51,8 +29,8 @@ pozostają zastrzeżone przez Właściciela praw.
 
 Na potrzeby niniejszej Licencji:
 
-- **Projekt** oznacza projekt o nazwie **[NAZWA PROJEKTU]**, udostępniony
-  w repozytorium **[ADRES REPOZYTORIUM]**, wraz z jego oryginalnym kodem
+- **Projekt** oznacza projekt o nazwie **Aurora Travel**, udostępniony
+  w repozytorium **https://github.com/KPKrol85/DS-hospitality-pr02-Aurora**, wraz z jego oryginalnym kodem
   źródłowym, dokumentacją, strukturą, konfiguracją, interfejsem, układem
   wizualnym, tekstami, grafikami oraz innymi materiałami należącymi do
   Właściciela praw;
@@ -344,10 +322,10 @@ można kierować na adres:
 
 **Version 1.0**
 
-**Project:** [PROJECT NAME]
-**Repository:** [REPOSITORY URL]
+**Project:** Aurora Travel
+**Repository:** https://github.com/KPKrol85/DS-hospitality-pr02-Aurora
 
-Copyright © [YEAR] Kamil Król — KP_Code.
+Copyright © 2026 Kamil Król — KP_Code.
 All rights reserved.
 
 ---
@@ -370,8 +348,8 @@ Copyright Owner.
 
 For the purposes of this License:
 
-- **Project** means the project named **[PROJECT NAME]**, made available
-  through **[REPOSITORY URL]**, together with its original source code,
+- **Project** means the project named **Aurora Travel**, made available
+  through **https://github.com/KPKrol85/DS-hospitality-pr02-Aurora**, together with its original source code,
   documentation, structure, configuration, interface, visual design, text,
   graphics, and other materials owned by the Copyright Owner;
 - **Copyright Owner** means Kamil Król, operating under the KP_Code brand,

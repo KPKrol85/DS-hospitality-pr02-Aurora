@@ -21,7 +21,7 @@
   },
   "keywords": [],
   "author": "Kamil Król | KP_Code Digital Studio",
-  "license": "MIT",
+  "license": "UNLICENSED",
   "description": "Aurora travel website project with custom CSS and JS build pipeline",
   "devDependencies": {
     "autoprefixer": "^10.4.22",

@@ -120,7 +120,7 @@ Wdrożone techniki:
 - Rozszerzenie walidacji integralności assetów o kontrole metadanych SEO i manifestu.
 
 ### Licencja
-Projekt jest udostępniony na licencji MIT (`LICENSE`).
+Projekt jest udostępniony na Własnościowej Licencji Projektu KP_CODE w wersji 1.0. Pełne i wiążące warunki licencyjne określa plik `LICENSE`.
 
 ## EN
 
@@ -242,4 +242,4 @@ Implemented performance-oriented patterns:
 - Extend asset integrity checks with SEO/manifest metadata validation.
 
 ### License
-This project is released under the MIT License (`LICENSE`).
+This project is released under the KP_CODE Proprietary Project License, version 1.0. The full and binding licensing terms are defined in the `LICENSE` file.
