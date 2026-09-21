@@ -1,0 +1,119 @@
+# ─────────────────────────────────────────────
+# Aurora Travel — KP_Code Digital Studio
+# ─────────────────────────────────────────────
+
+
+# Dependencies
+
+node_modules/
+
+
+# Generated production output
+
+/dist/
+
+
+# Test, coverage and report output
+
+/reports/
+/test-results/
+/playwright-report/
+/.lighthouse-reports/
+/.lighthouseci/
+/coverage/
+/.nyc_output/
+
+
+# Tool caches and temporary build data
+
+/.cache/
+/.vite/
+/.parcel-cache/
+/.turbo/
+
+.eslintcache
+.stylelintcache
+*.tsbuildinfo
+
+/tmp/
+/.temp/
+/.tmp/
+
+
+# Local agent and worktree files
+
+.claude/
+.codex/
+.worktrees/
+worktrees/
+
+
+# Netlify local files
+
+.netlify/
+
+
+# Environment files
+
+.env
+.env.*
+!.env.example
+!.env.sample
+
+
+# Logs
+
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+
+# Editor and IDE files
+
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+
+.history/
+
+.idea/
+
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+
+# Operating system files
+
+.DS_Store
+Thumbs.db
+Desktop.ini
+*:Zone.Identifier
+
+
+# ─────────────────────────────────────────────
+# Intentionally tracked — do not ignore:
+#
+# assets/
+# assets/img-src/
+# assets/img/
+# css/
+# css/style.min.css
+# js/
+# js/script.min.js
+# scripts/
+# docs/
+# package.json
+# package-lock.json
+# LICENSE
+# site.webmanifest
+# service-worker.js
+# _headers
+# _redirects
+# ─────────────────────────────────────────────
