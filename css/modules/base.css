@@ -1,0 +1,82 @@
+/* Base */
+
+[hidden] {
+  display: none !important;
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-base);
+  font-size: var(--fs-3);
+  line-height: var(--lh-normal);
+  color: var(--text);
+  background-color: var(--bg);
+  min-height: 100vh;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+  border-radius: var(--radius-lg);
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+a:hover,
+a:focus-visible {
+  text-decoration: none;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-heading);
+  line-height: var(--lh-snug);
+}
+h1 {
+  font-size: var(--fs-8);
+}
+h2 {
+  font-size: var(--fs-7);
+}
+h3 {
+  font-size: var(--fs-6);
+}
+
+p {
+  margin: 0;
+  font-size: var(--fs-3);
+  line-height: var(--lh-normal);
+}
+p + p {
+  margin-top: var(--space-3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .reveal,
+  .gallery-grid figure.reveal {
+    opacity: 1;
+    transform: none;
+  }
+}

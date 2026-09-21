@@ -1,0 +1,89 @@
+{
+  "name": "Aurora Travel",
+  "short_name": "Aurora",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f8f7f2",
+  "theme_color": "#0c2d48",
+
+  "icons": [
+    {
+      "src": "/assets/img/icons/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/img/icons/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/img/icons/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/assets/img/icons/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+
+  "screenshots": [
+    {
+      "src": "/assets/img/screenshots/desktop.jpg",
+      "sizes": "1280x720",
+      "type": "image/jpg",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/assets/img/screenshots/mobile.jpg",
+      "sizes": "720x1280",
+      "type": "image/jpg",
+      "form_factor": "narrow"
+    }
+  ],
+
+  "shortcuts": [
+    {
+      "name": "Wycieczki & Kierunki",
+      "short_name": "Wycieczki",
+      "url": "tours.html",
+      "icons": [
+        {
+          "src": "assets/img/shortcuts/wycieczki.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Kontakt & Concierge",
+      "short_name": "Kontakt",
+      "url": "contact.html",
+      "icons": [
+        {
+          "src": "assets/img/shortcuts/kontakt.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Dlaczego my?",
+      "short_name": "Dlaczego",
+      "url": "about.html",
+      "icons": [
+        {
+          "src": "assets/img/shortcuts/dlaczego-my.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "name": "aurora-travel",
+  "version": "1.0.0",
+  "private": true,
+  "main": "service-worker.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "node scripts/clean-dist.js",
+    "images:bootstrap": "node scripts/images-bootstrap.js",
+    "build:images": "node scripts/build-images.js",
+    "build:css": "postcss css/style.css -o css/style.min.css && npm run verify:css",
+    "verify:css": "node scripts/verify-built-css.js",
+    "build:js": "esbuild js/script.js --bundle --minify --target=es2018 --outfile=js/script.min.js && npm run verify:js",
+    "verify:js": "node scripts/verify-built-js.js",
+    "watch:css": "postcss css/style.css -o css/style.min.css --watch",
+    "watch:js": "esbuild js/script.js --bundle --minify --target=es2018 --outfile=js/script.min.js --watch",
+    "check:css-assets": "node scripts/check-css-assets.js",
+    "build": "npm run build:css && npm run build:js && npm run check:css-assets && npm run check:assets",
+    "check:assets": "node scripts/check-asset-integrity.js",
+    "dist": "npm run clean && npm run build && node scripts/build-dist.js"
+  },
+  "keywords": [],
+  "author": "Kamil Król | KP_Code Digital Studio",
+  "license": "MIT",
+  "description": "Aurora travel website project with custom CSS and JS build pipeline",
+  "devDependencies": {
+    "autoprefixer": "^10.4.22",
+    "baseline-browser-mapping": "^2.10.8",
+    "cssnano": "^7.1.2",
+    "esbuild": "^0.27.4",
+    "postcss": "^8.5.6",
+    "postcss-cli": "^11.0.1",
+    "postcss-import": "^16.1.1",
+    "sharp": "^0.34.5"
+  }
+}

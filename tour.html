@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <!-- Document meta -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Aurora Travel – Szczegóły wycieczki</title>
+    <!-- SEO -->
+    <meta name="description" content="Zobacz szczegóły wybranej wycieczki Aurora Travel po załadowaniu konkretnej oferty." />
+    <!-- Indexing / canonical -->
+    <meta name="robots" content="noindex,follow" />
+    <!-- PWA / UI -->
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8f7f2" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#05060a" />
+    <!-- Favicons + manifest -->
+    <link rel="manifest" href="site.webmanifest" />
+    <link rel="icon" type="image/svg+xml" href="assets/img/icons/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/img/icons/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/img/icons/favicon-16x16.png" />
+    <link rel="apple-touch-icon" href="assets/img/icons/apple-touch-icon.png" />
+    <link rel="mask-icon" href="assets/img/icons/safari-pinned-tab.svg" color="#0c2d48" />
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Aurora Travel" />
+    <meta property="og:title" content="Szczegóły wycieczki – Aurora Travel" />
+    <meta property="og:description" content="Strona szczegółów wycieczki Aurora Travel ładowanej dynamicznie po wyborze oferty." />
+    <meta property="og:url" content="https://hospitality-pr02-aurora.netlify.app/tour.html" />
+    <meta property="og:image" content="https://hospitality-pr02-aurora.netlify.app/assets/img/og-img/og-img.png" />
+    <meta property="og:locale" content="pl_PL" />
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Szczegóły wycieczki – Aurora Travel" />
+    <meta name="twitter:description" content="Strona szczegółów wycieczki Aurora Travel ładowanej dynamicznie po wyborze oferty." />
+    <meta name="twitter:image" content="https://hospitality-pr02-aurora.netlify.app/assets/img/og-img/og-img.png" />
+    <!-- Theme preload -->
+    <script>
+      (function () {
+        document.documentElement.classList.add("js");
+        var key = "kp-travel-theme";
+        var stored = null;
+        try {
+          stored = localStorage.getItem(key);
+        } catch (e) {
+          stored = null;
+        }
+        var theme;
+        if (stored === "light" || stored === "dark") {
+          theme = stored;
+        } else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+          theme = "dark";
+        } else {
+          theme = "light";
+        }
+        var background = theme === "dark" ? "#05060a" : "#f8f7f2";
+        document.documentElement.setAttribute("data-theme", theme);
+        document.documentElement.style.backgroundColor = background;
+        document.documentElement.style.colorScheme = theme;
+      })();
+    </script>
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.min.css" />
+    <!-- JSON-LD -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "@id": "https://hospitality-pr02-aurora.netlify.app/tour.html",
+        "url": "https://hospitality-pr02-aurora.netlify.app/tour.html",
+        "name": "Szczegóły wycieczki – Aurora Travel",
+        "description": "Strona szczegółów wycieczki Aurora Travel ładowanej dynamicznie po wyborze oferty.",
+        "inLanguage": "pl-PL",
+        "isPartOf": {
+          "@id": "https://hospitality-pr02-aurora.netlify.app/#website"
+        },
+        "about": {
+          "@id": "https://hospitality-pr02-aurora.netlify.app/#travel-agency"
+        }
+      }
+    </script>
+  </head>
+
+  <!-- Body -->
+  <body data-page="tour-detail">
+    <a class="skip-link" href="#main-content">Przejdź do treści</a>
+
+    <!-- Header -->
+    <header class="site-header" data-header>
+      <div class="container site-header__inner">
+        <a class="logo" href="index.html" aria-label="Aurora Travel">
+          <img src="assets/img/logo/logo.svg" alt="" class="logo__icon" />
+          <span class="logo__text">Aurora Travel</span>
+        </a>
+        <!-- nav toggle -->
+        <button class="nav__toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="primary-navigation">
+          <svg
+            class="nav__toggle-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true">
+            <path class="line line--top" d="M3.75 6.75h16.5" />
+            <path class="line line--middle" d="M3.75 12h16.5" />
+            <path class="line line--bottom" d="M3.75 17.25h16.5" />
+          </svg>
+          <span class="visually-hidden">Otwórz menu</span>
+        </button>
+        <!-- navigation -->
+        <nav class="nav" id="primary-navigation" aria-label="Główne menu" data-nav>
+          <ul>
+            <li><a href="index.html">Strona główna</a></li>
+            <li><a href="tours.html">Wycieczki</a></li>
+            <li><a href="about.html">O nas</a></li>
+            <li><a href="gallery.html">Galeria</a></li>
+            <li><a href="contact.html">Kontakt</a></li>
+          </ul>
+        </nav>
+        <!-- theme toggle -->
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Przełącz motyw" title="Toggle theme">
+          <svg class="theme-toggle__icon theme-toggle__icon--sun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+          </svg>
+          <svg class="theme-toggle__icon theme-toggle__icon--moon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main -->
+    <main id="main-content" class="page-tour-detail">
+      <div class="page-hero reveal is-visible">
+        <div class="container">
+          <nav class="breadcrumb" aria-label="Ścieżka nawigacyjna">
+            <ol>
+              <li><a href="index.html">Strona główna</a></li>
+              <li><a href="tours.html">Oferty</a></li>
+              <li><span data-tour-breadcrumb-current>Brak wybranej oferty</span></li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+
+      <!-- Tour detail -->
+      <section class="section reveal">
+        <div class="container">
+          <article class="tour-detail" data-tour-container>
+            <!-- tour header -->
+            <header class="tour-detail__header">
+              <p class="tour-detail__label" data-tour-region>Oferta Aurora Travel</p>
+              <h1 class="tour-detail__title" data-tour-title>Nie znaleziono lub nie wybrano oferty</h1>
+              <p class="tour-detail__meta">
+                <span data-tour-days>Wybierz wycieczkę z listy ofert</span>
+                •
+                <span data-tour-price><a href="tours.html">Powrót do strony wycieczek</a></span>
+              </p>
+            </header>
+            <!-- tour hero -->
+            <section class="tour-detail__hero">
+              <picture class="tour-detail__image" data-tour-main-image></picture>
+              <div class="tour-detail__summary" data-tour-summary>
+                <p>Nie udało się wyświetlić szczegółów oferty. Mogła nie zostać wybrana lub już nie istnieje.</p>
+                <p><a href="tours.html">Przejdź do listy dostępnych wycieczek</a></p>
+              </div>
+            </section>
+            <!-- tour content -->
+            <section class="tour-detail__content" data-tour-content>
+              <p>Sprawdź aktualne propozycje na stronie z ofertami i wybierz wycieczkę, aby zobaczyć pełny opis.</p>
+            </section>
+            <!-- tour gallery -->
+            <section class="tour-detail__gallery">
+              <h2>Galeria z wyjazdu</h2>
+              <div class="tour-gallery" data-tour-gallery data-gallery></div>
+            </section>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <!-- Project Notice -->
+    <section class="project-notice" aria-labelledby="project-notice-title" data-project-notice>
+      <div class="project-notice__inner">
+        <h2 class="project-notice__title" id="project-notice-title">Informacja o projekcie</h2>
+        <p class="project-notice__text">
+          Serwis "Aurora Travel" ma charakter demonstracyjny i został przygotowany przez
+          <strong>KP_Code Digital Studio</strong>
+          jako przykładowa strona internetowa dla branży hotelarskiej i turystycznej. Korzystając z serwisu akceptujesz
+          <a class="project-notice__link" href="regulamin.html">Regulamin</a>
+          .
+        </p>
+        <div class="project-notice__links" aria-label="Dokumenty prawne">
+          <a class="project-notice__link" href="polityka-prywatnosci.html">Polityka prywatności</a>
+          <a class="project-notice__link" href="cookies.html">Polityka cookies</a>
+        </div>
+        <div class="project-notice__actions">
+          <button class="btn" type="button" data-project-notice-accept hidden>Rozumiem i zamykam</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="container site-footer__grid">
+        <!-- footer columns -->
+        <div class="site-footer__row site-footer__row--cols">
+          <!-- footer brand -->
+          <div class="site-footer__col site-footer__col--brand">
+            <img src="assets/img/logo/logo.svg" alt="Logo Aurora Travel" class="site-footer__logo" width="52" height="52" />
+            <h2 class="site-footer__brand">
+              <a class="site-footer__brand-link" href="index.html">Aurora Travel</a>
+            </h2>
+            <p class="site-footer__description">Ekskluzywne biuro podróży tworzące spersonalizowane doświadczenia dla wymagających globtroterów.</p>
+          </div>
+          <!-- footer nav -->
+          <div class="site-footer__col site-footer__col--nav">
+            <h3>Nawigacja</h3>
+            <ul>
+              <li><a href="index.html">Strona główna</a></li>
+              <li><a href="tours.html">Wycieczki</a></li>
+              <li><a href="about.html">O nas</a></li>
+              <li><a href="gallery.html">Galeria</a></li>
+              <li><a href="contact.html">Kontakt</a></li>
+            </ul>
+          </div>
+          <!-- footer legal -->
+          <div class="site-footer__col site-footer__col--legal">
+            <h3>Regulaminy</h3>
+            <ul>
+              <li><a href="polityka-prywatnosci.html">Polityka prywatności</a></li>
+              <li><a href="regulamin.html">Regulamin</a></li>
+              <li><a href="cookies.html">Cookies</a></li>
+            </ul>
+          </div>
+          <!-- footer contact -->
+          <div class="site-footer__col site-footer__col--contact">
+            <h3>Kontakt</h3>
+            <address class="site-footer__address">
+              <p class="site-footer__address-text">
+                ul. Marynarki Wojennej 12
+                <br />
+                33-100 Tarnów
+                <br />
+                Polska
+              </p>
+            </address>
+            <p class="site-footer__contact-item">
+              <svg class="site-footer__contact-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path
+                  d="M9 3a1 1 0 0 1 .877 .519l.051 .11l2 5a1 1 0 0 1 -.313 1.16l-.1 .068l-1.674 1.004l.063 .103a10 10 0 0 0 3.132 3.132l.102 .062l1.005 -1.672a1 1 0 0 1 1.113 -.453l.115 .039l5 2a1 1 0 0 1 .622 .807l.007 .121v4c0 1.657 -1.343 3 -3.06 2.998c-8.579 -.521 -15.418 -7.36 -15.94 -15.998a3 3 0 0 1 2.824 -2.995l.176 -.005h4z" />
+              </svg>
+              <a class="site-footer__contact-link" href="tel:+48533537091">+48 533 537 091</a>
+            </p>
+            <p class="site-footer__contact-item">
+              <svg class="site-footer__contact-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M22 7.535v9.465a3 3 0 0 1 -2.824 2.995l-.176 .005h-14a3 3 0 0 1 -2.995 -2.824l-.005 -.176v-9.465l9.445 6.297l.116 .066a1 1 0 0 0 .878 0l.116 -.066l9.445 -6.297z" />
+                <path d="M19 4c1.08 0 2.027 .57 2.555 1.427l-9.555 6.37l-9.555 -6.37a2.999 2.999 0 0 1 2.354 -1.42l.201 -.007h14z" />
+              </svg>
+              <a class="site-footer__contact-link" href="mailto:kontakt@kp-code.pl">kontakt@kp-code.pl</a>
+            </p>
+          </div>
+        </div>
+        <!-- social links -->
+        <div class="site-footer__row site-footer__row--social">
+          <div class="socials">
+            <!-- linkedin -->
+            <a href="https://www.linkedin.com/in/kp-code/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path
+                  d="M17 2a5 5 0 0 1 5 5v10a5 5 0 0 1 -5 5h-10a5 5 0 0 1 -5 -5v-10a5 5 0 0 1 5 -5zm-9 8a1 1 0 0 0 -1 1v5a1 1 0 0 0 2 0v-5a1 1 0 0 0 -1 -1m6 0a3 3 0 0 0 -1.168 .236l-.125 .057a1 1 0 0 0 -1.707 .707v5a1 1 0 0 0 2 0v-3a1 1 0 0 1 2 0v3a1 1 0 0 0 2 0v-3a3 3 0 0 0 -3 -3m-6 -3a1 1 0 0 0 -.993 .883l-.007 .127a1 1 0 0 0 1.993 .117l.007 -.127a1 1 0 0 0 -1 -1" />
+              </svg>
+            </a>
+            <!-- facebook -->
+            <a href="https://www.facebook.com/kpkrol85" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path
+                  d="M18 2a1 1 0 0 1 .993 .883l.007 .117v4a1 1 0 0 1 -.883 .993l-.117 .007h-3v1h3a1 1 0 0 1 .991 1.131l-.02 .112l-1 4a1 1 0 0 1 -.858 .75l-.113 .007h-2v6a1 1 0 0 1 -.883 .993l-.117 .007h-4a1 1 0 0 1 -.993 -.883l-.007 -.117v-6h-2a1 1 0 0 1 -.993 -.883l-.007 -.117v-4a1 1 0 0 1 .883 -.993l.117 -.007h2v-1a6 6 0 0 1 5.775 -5.996l.225 -.004h3z" />
+              </svg>
+            </a>
+            <!-- github -->
+            <a href="https://github.com/KPKrol85" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path
+                  d="M5.315 2.1c.791 -.113 1.9 .145 3.333 .966l.272 .161l.16 .1l.397 -.083a13.3 13.3 0 0 1 4.59 -.08l.456 .08l.396 .083l.161 -.1c1.385 -.84 2.487 -1.17 3.322 -1.148l.164 .008l.147 .017l.076 .014l.05 .011l.144 .047a1 1 0 0 1 .53 .514a5.2 5.2 0 0 1 .397 2.91l-.047 .267l-.046 .196l.123 .163c.574 .795 .93 1.728 1.03 2.707l.023 .295l.007 .272c0 3.855 -1.659 5.883 -4.644 6.68l-.245 .061l-.132 .029l.014 .161l.008 .157l.004 .365l-.002 .213l-.003 3.834a1 1 0 0 1 -.883 .993l-.117 .007h-6a1 1 0 0 1 -.993 -.883l-.007 -.117v-.734c-1.818 .26 -3.03 -.424 -4.11 -1.878l-.535 -.766c-.28 -.396 -.455 -.579 -.589 -.644l-.048 -.019a1 1 0 0 1 .564 -1.918c.642 .188 1.074 .568 1.57 1.239l.538 .769c.76 1.079 1.36 1.459 2.609 1.191l.001 -.678l-.018 -.168a5.03 5.03 0 0 1 -.021 -.824l.017 -.185l.019 -.12l-.108 -.024c-2.976 -.71 -4.703 -2.573 -4.875 -6.139l-.01 -.31l-.004 -.292a5.6 5.6 0 0 1 .908 -3.051l.152 -.222l.122 -.163l-.045 -.196a5.2 5.2 0 0 1 .145 -2.642l.1 -.282l.106 -.253a1 1 0 0 1 .529 -.514l.144 -.047l.154 -.03z" />
+              </svg>
+            </a>
+            <!-- X -->
+            <a href="https://x.com/KP_Code_85" target="_blank" rel="noopener noreferrer" aria-label="X">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M4 4l11.733 16h4.267l-11.733 -16l-4.267 0" />
+                <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+      <!-- copyright -->
+      <p class="site-footer__copy">
+        &copy;
+        <span id="current-year">2026</span>
+        KP_Code Digital Studio | Wszelkie prawa zastrzeżone.
+      </p>
+    </footer>
+
+    <!-- Script -->
+    <script src="js/script.min.js"></script>
+
+    <!-- Lightbox -->
+    <div class="lightbox" data-lightbox hidden>
+      <!-- close -->
+      <button class="lightbox__close" data-lightbox-close aria-label="Zamknij">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <path d="M18 6l-12 12" />
+          <path d="M6 6l12 12" />
+        </svg>
+      </button>
+      <!-- prev -->
+      <button class="lightbox__nav lightbox__prev" data-lightbox-prev aria-label="Poprzednie zdjęcie">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <path
+            d="M12 2l.324 .001l.318 .004l.616 .017l.299 .013l.579 .034l.553 .046c4.785 .464 6.732 2.411 7.196 7.196l.046 .553l.034 .579c.005 .098 .01 .198 .013 .299l.017 .616l.005 .642l-.005 .642l-.017 .616l-.013 .299l-.034 .579l-.046 .553c-.464 4.785 -2.411 6.732 -7.196 7.196l-.553 .046l-.579 .034c-.098 .005 -.198 .01 -.299 .013l-.616 .017l-.642 .005l-.642 -.005l-.616 -.017l-.299 -.013l-.579 -.034l-.553 -.046c-4.785 -.464 -6.732 -2.411 -7.196 -7.196l-.046 -.553l-.034 -.579a28.058 28.058 0 0 1 -.013 -.299l-.017 -.616c-.003 -.21 -.005 -.424 -.005 -.642l.001 -.324l.004 -.318l.017 -.616l.013 -.299l.034 -.579l.046 -.553c.464 -4.785 2.411 -6.732 7.196 -7.196l.553 -.046l.579 -.034c.098 -.005 .198 -.01 .299 -.013l.616 -.017c.21 -.003 .424 -.005 .642 -.005zm.707 5.293a1 1 0 0 0 -1.414 0l-4 4a1.037 1.037 0 0 0 -.2 .284l-.022 .052a.95 .95 0 0 0 -.06 .222l-.008 .067l-.002 .063v-.035v.073a1.034 1.034 0 0 0 .07 .352l.023 .052l.03 .061l.022 .037a1.2 1.2 0 0 0 .05 .074l.024 .03l.073 .082l4 4l.094 .083a1 1 0 0 0 1.32 -.083l.083 -.094a1 1 0 0 0 -.083 -1.32l-2.292 -2.293h5.585l.117 -.007a1 1 0 0 0 -.117 -1.993h-5.585l2.292 -2.293l.083 -.094a1 1 0 0 0 -.083 -1.32z"
+            fill="currentColor"
+            stroke-width="0" />
+        </svg>
+      </button>
+      <!-- figure -->
+      <figure class="lightbox__figure">
+        <img data-lightbox-image alt="" />
+        <figcaption data-lightbox-caption></figcaption>
+      </figure>
+      <!-- next -->
+      <button class="lightbox__nav lightbox__next" data-lightbox-next aria-label="Następne zdjęcie">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <path
+            d="M12 2c-.218 0 -.432 .002 -.642 .005l-.616 .017l-.299 .013l-.579 .034l-.553 .046c-4.785 .464 -6.732 2.411 -7.196 7.196l-.046 .553l-.034 .579c-.005 .098 -.01 .198 -.013 .299l-.017 .616l-.004 .318l-.001 .324c0 .218 .002 .432 .005 .642l.017 .616l.013 .299l.034 .579l.046 .553c.464 4.785 2.411 6.732 7.196 7.196l.553 .046l.579 .034c.098 .005 .198 .01 .299 .013l.616 .017l.642 .005l.642 -.005l.616 -.017l.299 -.013l.579 -.034l.553 -.046c4.785 -.464 6.732 -2.411 7.196 -7.196l.046 -.553l.034 -.579c.005 -.098 .01 -.198 .013 -.299l.017 -.616l.005 -.642l-.005 -.642l-.017 -.616l-.013 -.299l-.034 -.579l-.046 -.553c-.464 -4.785 -2.411 -6.732 -7.196 -7.196l-.553 -.046l-.579 -.034a28.058 28.058 0 0 0 -.299 -.013l-.616 -.017l-.318 -.004l-.324 -.001zm.613 5.21l.094 .083l4 4a.927 .927 0 0 1 .097 .112l.071 .11l.054 .114l.035 .105l.03 .148l.006 .118l-.003 .075l-.017 .126l-.03 .111l-.044 .111l-.052 .098l-.074 .104l-.073 .082l-4 4a1 1 0 0 1 -1.497 -1.32l.083 -.094l2.292 -2.293h-5.585a1 1 0 0 1 -.117 -1.993l.117 -.007h5.585l-2.292 -2.293a1 1 0 0 1 -.083 -1.32l.083 -.094a1 1 0 0 1 1.32 -.083z"
+            fill="currentColor"
+            stroke-width="0" />
+        </svg>
+      </button>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://hospitality-pr02-aurora.netlify.app/sitemap.xml

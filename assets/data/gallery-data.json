@@ -1,0 +1,254 @@
+[
+  {
+    "country": "islandia",
+    "base": "islandia/islandia-01",
+    "alt": "Zorza polarna nad islandzkim wybrzeżem",
+    "caption": "Islandia Aurora Coast",
+    "lightbox": "assets/img/tours/islandia/islandia-01-1600x1040.jpg"
+  },
+  {
+    "country": "islandia",
+    "base": "islandia/islandia-02",
+    "alt": "Górzysty krajobraz Islandii zimą",
+    "caption": "Winter Highlands of Iceland",
+    "lightbox": "assets/img/tours/islandia/islandia-02-1600x1040.jpg"
+  },
+  {
+    "country": "islandia",
+    "base": "islandia/islandia-03",
+    "alt": "Islandzki wodospad o świcie",
+    "caption": "Icelandic Sunrise Falls",
+    "lightbox": "assets/img/tours/islandia/islandia-03-1600x1040.jpg"
+  },
+  {
+    "country": "islandia",
+    "base": "islandia/islandia-04",
+    "alt": "Czarne plaże i ocean w Islandii",
+    "caption": "Black Sand Beaches",
+    "lightbox": "assets/img/tours/islandia/islandia-04-1600x1040.jpg"
+  },
+  {
+    "country": "islandia",
+    "base": "islandia/islandia-05",
+    "alt": "Panorama islandzkich fiordów",
+    "caption": "Icelandic Fjord Panorama",
+    "lightbox": "assets/img/tours/islandia/islandia-05-1600x1040.jpg"
+  },
+  {
+    "country": "islandia",
+    "base": "islandia/islandia-06",
+    "alt": "Islandzki krajobraz z drogą pośród gór",
+    "caption": "Road Through Iceland",
+    "lightbox": "assets/img/tours/islandia/islandia-06-1600x1040.jpg"
+  },
+  {
+    "country": "maledivy",
+    "base": "malediwy/malediwy-01",
+    "alt": "Wille na wodzie na Malediwach",
+    "caption": "Maldives Overwater Villas",
+    "lightbox": "assets/img/tours/malediwy/malediwy-01-1600x1040.jpg"
+  },
+  {
+    "country": "maledivy",
+    "base": "malediwy/malediwy-02",
+    "alt": "Plaża z turkusową laguną",
+    "caption": "Turquoise Lagoon Beach",
+    "lightbox": "assets/img/tours/malediwy/malediwy-02-1600x1040.jpg"
+  },
+  {
+    "country": "maledivy",
+    "base": "malediwy/malediwy-03",
+    "alt": "Zachód słońca nad oceanem na Malediwach",
+    "caption": "Maldives Sunset View",
+    "lightbox": "assets/img/tours/malediwy/malediwy-03-1600x1040.jpg"
+  },
+  {
+    "country": "maledivy",
+    "base": "malediwy/malediwy-04",
+    "alt": "Pomost prowadzący do willi na wodzie",
+    "caption": "Overwater Walkway",
+    "lightbox": "assets/img/tours/malediwy/malediwy-04-1600x1040.jpg"
+  },
+  {
+    "country": "maledivy",
+    "base": "malediwy/malediwy-05",
+    "alt": "Leżaki na prywatnej plaży",
+    "caption": "Private Beach Retreat",
+    "lightbox": "assets/img/tours/malediwy/malediwy-05-1600x1040.jpg"
+  },
+  {
+    "country": "maledivy",
+    "base": "malediwy/malediwy-06",
+    "alt": "Widok z willi na lagunę",
+    "caption": "Lagoon View Suite",
+    "lightbox": "assets/img/tours/malediwy/malediwy-06-1600x1040.jpg"
+  },
+  {
+    "country": "maroko",
+    "base": "maroko/maroko-01",
+    "alt": "Kolorowe uliczki Marrakeszu",
+    "caption": "Marrakesh Colorful Streets",
+    "lightbox": "assets/img/tours/maroko/maroko-01-1600x1040.jpg"
+  },
+  {
+    "country": "maroko",
+    "base": "maroko/maroko-02",
+    "alt": "Tradycyjny rynek w Maroku",
+    "caption": "Moroccan Souk Experience",
+    "lightbox": "assets/img/tours/maroko/maroko-02-1600x1040.jpg"
+  },
+  {
+    "country": "maroko",
+    "base": "maroko/maroko-03",
+    "alt": "Złote wydmy pustyni w Maroku",
+    "caption": "Desert Dunes Adventure",
+    "lightbox": "assets/img/tours/maroko/maroko-03-1600x1040.jpg"
+  },
+  {
+    "country": "maroko",
+    "base": "maroko/maroko-04",
+    "alt": "Riad z basenem w Maroku",
+    "caption": "Luxury Riad Retreat",
+    "lightbox": "assets/img/tours/maroko/maroko-04-1600x1040.jpg"
+  },
+  {
+    "country": "maroko",
+    "base": "maroko/maroko-05",
+    "alt": "Widok na starą zabudowę w Maroku",
+    "caption": "Old Town Panorama",
+    "lightbox": "assets/img/tours/maroko/maroko-05-1600x1040.jpg"
+  },
+  {
+    "country": "maroko",
+    "base": "maroko/maroko-06",
+    "alt": "Marokańskie góry o zachodzie słońca",
+    "caption": "Atlas Mountains Sunset",
+    "lightbox": "assets/img/tours/maroko/maroko-06-1600x1040.jpg"
+  },
+  {
+    "country": "new-york",
+    "base": "new-york/new-york-01",
+    "alt": "Panorama Manhattanu o zachodzie słońca",
+    "caption": "Manhattan Sunset Skyline",
+    "lightbox": "assets/img/tours/new-york/new-york-01-1600x1040.jpg"
+  },
+  {
+    "country": "new-york",
+    "base": "new-york/new-york-02",
+    "alt": "Most Brookliński nocą z oświetloną panoramą miasta",
+    "caption": "Brooklyn Bridge by Night",
+    "lightbox": "assets/img/tours/new-york/new-york-02-1600x1040.jpg"
+  },
+  {
+    "country": "new-york",
+    "base": "new-york/new-york-03",
+    "alt": "Times Square pełen świateł i reklam",
+    "caption": "Times Square Lights",
+    "lightbox": "assets/img/tours/new-york/new-york-03-1600x1040.jpg"
+  },
+  {
+    "country": "new-york",
+    "base": "new-york/new-york-04",
+    "alt": "Central Park otoczony wieżowcami Nowego Jorku",
+    "caption": "Central Park from Above",
+    "lightbox": "assets/img/tours/new-york/new-york-04-1600x1040.jpg"
+  },
+  {
+    "country": "new-york",
+    "base": "new-york/new-york-05",
+    "alt": "Statua Wolności z widokiem na Manhattan",
+    "caption": "Liberty & Manhattan View",
+    "lightbox": "assets/img/tours/new-york/new-york-05-1600x1040.jpg"
+  },
+  {
+    "country": "new-york",
+    "base": "new-york/new-york-06",
+    "alt": "Ulica Nowego Jorku z żółtymi taksówkami",
+    "caption": "Yellow Cabs on 5th Avenue",
+    "lightbox": "assets/img/tours/new-york/new-york-06-1600x1040.jpg"
+  },
+  {
+    "country": "patagonia",
+    "base": "patagonia/patagonia-01",
+    "alt": "Panorama gór w Patagonii o złotej godzinie",
+    "caption": "Patagonia Golden Peaks",
+    "lightbox": "assets/img/tours/patagonia/patagonia-01-1600x1040.jpg"
+  },
+  {
+    "country": "patagonia",
+    "base": "patagonia/patagonia-02",
+    "alt": "Lazurowe jezioro u podnóża ośnieżonych gór Patagonii",
+    "caption": "Patagonian Glacial Lake",
+    "lightbox": "assets/img/tours/patagonia/patagonia-02-1600x1040.jpg"
+  },
+  {
+    "country": "patagonia",
+    "base": "patagonia/patagonia-03",
+    "alt": "Ikoniczne szczyty Fitz Roy w Patagonii",
+    "caption": "Fitz Roy Sunrise",
+    "lightbox": "assets/img/tours/patagonia/patagonia-03-1600x1040.jpg"
+  },
+  {
+    "country": "patagonia",
+    "base": "patagonia/patagonia-04",
+    "alt": "Turkusowa laguna pośród gór Patagonii",
+    "caption": "Laguna de los Tres",
+    "lightbox": "assets/img/tours/patagonia/patagonia-04-1600x1040.jpg"
+  },
+  {
+    "country": "patagonia",
+    "base": "patagonia/patagonia-05",
+    "alt": "Potężny lodowiec w Patagonii",
+    "caption": "Patagonian Glacier Wall",
+    "lightbox": "assets/img/tours/patagonia/patagonia-05-1600x1040.jpg"
+  },
+  {
+    "country": "patagonia",
+    "base": "patagonia/patagonia-06",
+    "alt": "Patagońskie klify nad oceanem",
+    "caption": "Cliffs of Patagonia",
+    "lightbox": "assets/img/tours/patagonia/patagonia-06-1600x1040.jpg"
+  },
+  {
+    "country": "tokio",
+    "base": "tokio/tokio-01",
+    "alt": "Nocna panorama Tokio z iluminacją miasta",
+    "caption": "Tokyo Night Skyline",
+    "lightbox": "assets/img/tours/tokio/tokio-01-1600x1040.jpg"
+  },
+  {
+    "country": "tokio",
+    "base": "tokio/tokio-02",
+    "alt": "Ulica Shibuya Crossing pełna ludzi",
+    "caption": "Shibuya Crossing",
+    "lightbox": "assets/img/tours/tokio/tokio-02-1600x1040.jpg"
+  },
+  {
+    "country": "tokio",
+    "base": "tokio/tokio-03",
+    "alt": "Świątynia Senso-ji z czerwonym lampionem",
+    "caption": "Senso-ji Temple",
+    "lightbox": "assets/img/tours/tokio/tokio-03-1600x1040.jpg"
+  },
+  {
+    "country": "tokio",
+    "base": "tokio/tokio-04",
+    "alt": "Tokyo Tower oświetlona nocą",
+    "caption": "Tokyo Tower at Night",
+    "lightbox": "assets/img/tours/tokio/tokio-04-1600x1040.jpg"
+  },
+  {
+    "country": "tokio",
+    "base": "tokio/tokio-05",
+    "alt": "Tradycyjna japońska herbaciarnia w ogrodzie",
+    "caption": "Japanese Tea House",
+    "lightbox": "assets/img/tours/tokio/tokio-05-1600x1040.jpg"
+  },
+  {
+    "country": "tokio",
+    "base": "tokio/tokio-06",
+    "alt": "Kwitnące wiśnie sakura z widokiem na Tokio",
+    "caption": "Sakura Blossoms in Tokyo",
+    "lightbox": "assets/img/tours/tokio/tokio-06-1600x1040.jpg"
+  }
+]
