@@ -44,6 +44,27 @@
   .legal p {
     page-break-inside: avoid;
   }
+  .legal__table-wrap {
+    overflow-x: visible !important;
+    border: none !important;
+  }
+  .legal__table {
+    min-width: 0 !important;
+    page-break-inside: avoid;
+  }
+  .legal__table th,
+  .legal__table td {
+    border-bottom: 1px solid #999 !important;
+    color: #000 !important;
+  }
+  .legal__table thead th {
+    background: transparent !important;
+  }
+  .legal__note {
+    background: transparent !important;
+    border-left: 2px solid #999 !important;
+    page-break-inside: avoid;
+  }
 }
 
 /* State */
