@@ -24,6 +24,9 @@ All significant changes to this project are documented in this file.
 ### Changed
 
 - **Breaking:** Replaced the initial MIT license with the bilingual KP_CODE Proprietary Project License 1.0, and synchronized the README license sections and package metadata to `UNLICENSED`. Reuse of the repository is no longer covered by MIT terms and requires the rights stated in `LICENSE`.
+- Updated the cookies policy using the KP_Code template, aligned with Aurora Travel's verified storage technologies and third-party integrations.
+- Updated the privacy policy using the KP_Code template, aligned with actual form processing, data recipients, and browser storage.
+- Consolidated shared legal-page styling into `css/modules/legal.css`, including responsive and accessible table presentation.
 
 ### Security
 
