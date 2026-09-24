@@ -29,11 +29,11 @@
 
 **Goal:** Make the contact form accept the input it demonstrates, and make every offer surface state the same catalogue facts.
 
-- [ ] **PH1-01 — Correct phone field validation escaping** — **Priority:** High
-  - [ ] fix the `pattern` attribute in `contact.html:278`, where `^[0-9+\\-\\s]{7,}$` resolves to a class of digits, `+`, a literal backslash and the letter `s`, so that it matches the documented rule (digits, `+`, spaces, hyphens)
-  - [ ] fix the strip expression `/[\\s-]/g` in `js/features/form.js:100` so the minimum-length check ignores spaces and hyphens instead of backslashes and the letter `s`
-  - [ ] keep the `pattern`, the `title` attribute and the JS error message describing one identical rule
-  - [ ] rebuild the production bundle with `npm run build:js`
+- [x] **PH1-01 — Correct phone field validation escaping** — **Priority:** High
+  - [x] fix the `pattern` attribute in `contact.html:278`, where `^[0-9+\\-\\s]{7,}$` resolves to a class of digits, `+`, a literal backslash and the letter `s`, so that it matches the documented rule (digits, `+`, spaces, hyphens)
+  - [x] fix the strip expression `/[\\s-]/g` in `js/features/form.js:100` so the minimum-length check ignores spaces and hyphens instead of backslashes and the letter `s`
+  - [x] keep the `pattern`, the `title` attribute and the JS error message describing one identical rule
+  - [x] rebuild the production bundle with `npm run build:js`
   - **Completion condition:** the field's own placeholder `+48 600 900 700` and the form `600-900-700` both submit, a six-character value is still rejected, and the behaviour is the same with and without JavaScript
   - **Source:** `daily-AUDIT.md` — P1-01
 

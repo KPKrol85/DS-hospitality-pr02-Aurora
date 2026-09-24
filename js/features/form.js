@@ -97,8 +97,8 @@ function validateField(field, form, today) {
   }
 
   if (!message && field.id === 'phone' && field.value) {
-    if (field.validity.patternMismatch || field.value.replace(/[\\s-]/g, '').length < 7) {
-      message = 'Podaj numer telefonu (min. 7 znaków, mogą być spacje i myślniki).';
+    if (field.validity.patternMismatch || field.value.replace(/[\s-]/g, '').length < 7) {
+      message = 'Podaj numer telefonu: cyfry, opcjonalnie znak + na początku, spacje i myślniki (min. 7 znaków, nie licząc spacji i myślników).';
     }
   }
 

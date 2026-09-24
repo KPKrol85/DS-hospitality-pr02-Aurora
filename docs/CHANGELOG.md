@@ -29,6 +29,11 @@ All significant changes to this project are documented in this file.
 - Consolidated shared legal-page styling into `css/modules/legal.css`, including responsive and accessible table presentation.
 - Updated the terms of use using the KP_Code template, aligned with Aurora Travel's demonstrational scope, active contact form, and proprietary licensing.
 
+### Fixed
+
+- Fixed contact form phone validation rejecting the field's own `+48 600 900 700` placeholder format: corrected the double-escaped `pattern` in `contact.html` and the space/hyphen strip expression in `js/features/form.js`, so digits, an optional leading `+`, spaces, and hyphens are accepted with at least seven characters excluding spaces and hyphens, identically with and without JavaScript. Aligned the field `title` and error message with this rule, rebuilt `js/script.min.js`, and raised the service worker `VERSION` to `aurora-1.4` so returning visitors receive the updated bundle.
+- Fixed contact form phone validation to consistently accept numbers containing digits, an optional leading `+`, spaces, and hyphens, with a minimum of seven significant characters.
+
 ### Security
 
 - Added static-hosting security response headers in `_headers`, covering Content-Security-Policy, Strict-Transport-Security, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`, and `Cross-Origin-Opener-Policy`.

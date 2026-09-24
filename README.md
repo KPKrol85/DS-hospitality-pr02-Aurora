@@ -213,7 +213,7 @@ Nie przeprowadzono formalnego audytu zgodności, dlatego dokumentacja nie deklar
 ### PWA i obsługa offline
 
 - `site.webmanifest` deklaruje nazwę, `start_url`, `scope`, tryb `standalone`, kolory, ikony 192 i 512 px (w tym warianty `maskable`), trzy skróty aplikacji i dwa zrzuty ekranu. Manifest jest podpięty we wszystkich 12 stronach.
-- `service-worker.js` używa stałej `VERSION` (obecnie `aurora-1.3`) do nazwania dwóch cache'ów: statycznego i HTML. Podczas instalacji precache obejmuje `/`, `/index.html`, `/css/style.min.css`, `/js/script.min.js`, `/site.webmanifest` i `/offline.html`.
+- `service-worker.js` używa stałej `VERSION` (obecnie `aurora-1.4`) do nazwania dwóch cache'ów: statycznego i HTML. Podczas instalacji precache obejmuje `/`, `/index.html`, `/css/style.min.css`, `/js/script.min.js`, `/site.webmanifest` i `/offline.html`.
 - Żądania HTML są obsługiwane strategią network-first z zapisem odpowiedzi w cache'u HTML i zwrotem `offline.html`, gdy sieć jest niedostępna. Zasoby o typie `style`, `script`, `image` i `font` są obsługiwane strategią cache-first.
 - Podczas aktywacji usuwane są cache'e spoza bieżącej wersji.
 - Nowa wersja Service Workera wyzwala w aplikacji baner z akcją odświeżenia; baner wysyła komunikat `SKIP_WAITING`, a zmiana kontrolera powoduje przeładowanie strony.
@@ -471,7 +471,7 @@ No formal conformance audit was carried out, so this documentation makes no WCAG
 ### PWA and Offline Support
 
 - `site.webmanifest` declares the name, `start_url`, `scope`, `standalone` display mode, colors, 192 and 512 px icons (including `maskable` variants), three application shortcuts, and two screenshots. The manifest is linked from all 12 pages.
-- `service-worker.js` uses a `VERSION` constant (currently `aurora-1.3`) to name two caches, one for static assets and one for HTML. On install, the precache covers `/`, `/index.html`, `/css/style.min.css`, `/js/script.min.js`, `/site.webmanifest`, and `/offline.html`.
+- `service-worker.js` uses a `VERSION` constant (currently `aurora-1.4`) to name two caches, one for static assets and one for HTML. On install, the precache covers `/`, `/index.html`, `/css/style.min.css`, `/js/script.min.js`, `/site.webmanifest`, and `/offline.html`.
 - HTML requests are served network-first, storing responses in the HTML cache and returning `offline.html` when the network is unavailable. Requests whose destination is `style`, `script`, `image`, or `font` are served cache-first.
 - On activation, caches outside the current version are deleted.
 - A new Service Worker version triggers an in-page banner with a refresh action; the banner posts a `SKIP_WAITING` message, and the controller change reloads the page.
