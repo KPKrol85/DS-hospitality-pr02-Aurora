@@ -15,8 +15,9 @@
     "watch:css": "postcss css/style.css -o css/style.min.css --watch",
     "watch:js": "esbuild js/script.js --bundle --minify --target=es2018 --outfile=js/script.min.js --watch",
     "check:css-assets": "node scripts/check-css-assets.js",
-    "build": "npm run build:css && npm run build:js && npm run check:css-assets && npm run check:assets",
+    "build": "npm run build:css && npm run build:js && npm run check:css-assets && npm run check:assets && npm run check:tour-catalogue",
     "check:assets": "node scripts/check-asset-integrity.js",
+    "check:tour-catalogue": "node scripts/check-tour-catalogue.js",
     "dist": "npm run clean && npm run build && node scripts/build-dist.js"
   },
   "keywords": [],

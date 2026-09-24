@@ -17,8 +17,9 @@
 | `watch:css` | `postcss css/style.css -o css/style.min.css --watch` | Watches the source CSS entry and rebuilds `css/style.min.css` on change. | Use during CSS-focused development when you want automatic rebuilds. |
 | `watch:js` | `esbuild js/script.js --bundle --minify --target=es2018 --outfile=js/script.min.js --watch` | Watches JS source files and rebuilds the production bundle on change. | Use during JS-focused development when you want automatic bundle updates. |
 | `check:css-assets` | `node scripts/check-css-assets.js` | Validates CSS/JS asset expectations in the repo, including service worker references and production asset usage. | Run before deployment or after changing build output naming and asset references. |
-| `build` | `npm run build:css && npm run build:js && npm run check:css-assets && npm run check:assets` | Standard application build for CSS and JS plus repository-level asset verification. It does not regenerate raster images. | Use as the normal local build and pre-deploy verification command. |
+| `build` | `npm run build:css && npm run build:js && npm run check:css-assets && npm run check:assets && npm run check:tour-catalogue` | Standard application build for CSS and JS plus repository-level asset and tour catalogue verification. It does not regenerate raster images. | Use as the normal local build and pre-deploy verification command. |
 | `check:assets` | `node scripts/check-asset-integrity.js` | Scans source HTML files for broken asset references and reports integrity issues. | Run after editing HTML, changing asset names, or before shipping. |
+| `check:tour-catalogue` | `node scripts/check-tour-catalogue.js` | Compares the tour listing cards in `tours.html` (name, duration, price, `data-days`, `data-price`, tour detail link) and the contact form tour select in `contact.html` (option values and labels) against the canonical catalogue `assets/data/tours.json`, and fails on any missing, duplicate, unknown, or mismatched offer. | Run after editing `assets/data/tours.json`, the tour listing cards, or the contact form tour select. |
 | `dist` | `npm run clean && npm run build && node scripts/build-dist.js` | Cleans old output, runs the standard application build, and prepares the final `dist/` folder without regenerating raster images. | Use when preparing the project for deployment or final handoff, assuming `assets/img/` already contains current production-ready images. |
 
 ## Recommended workflow
@@ -37,6 +38,7 @@
    - `verify:js`
    - `check:css-assets`
    - `check:assets`
+   - `check:tour-catalogue`
 3. If you changed raster image sources, run `npm run build:images` separately before packaging or deployment.
 
 ### Distribution build

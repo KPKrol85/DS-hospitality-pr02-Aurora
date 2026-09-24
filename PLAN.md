@@ -37,13 +37,13 @@
   - **Completion condition:** the field's own placeholder `+48 600 900 700` and the form `600-900-700` both submit, a six-character value is still rejected, and the behaviour is the same with and without JavaScript
   - **Source:** `daily-AUDIT.md` — P1-01
 
-- [ ] **PH1-02 — Establish one canonical tour catalogue source** — **Priority:** High
-  - [ ] confirm `assets/data/tours.json` as the canonical catalogue; it is the only machine-readable definition and already drives `tour.html` through `js/features/tour-detail.js`
-  - [ ] resolve the current contradictions before fixing the source: `islandia` (`Islandia Fjord Moments` 9 dni / 19 000 on the listing versus `Islandia Arctic Wonders` 7 dni / 13 000 in the data), `malediwy` (32 000 versus 18 000), `patagonia` (14 dni / 28 000 versus 10 dni / 19 500), `tokio-kyoto` (12 dni versus 9 dni)
-  - [ ] derive the `tours.html` listing cards — `data-days`, `data-price`, title, duration and price text — from the canonical source, or keep them hand-written and add a repository check that fails on drift
-  - [ ] extend the required "Wybrana wycieczka" select in `contact.html:286` to all six offers and align its option values with the catalogue ids (`maroko`, `nowy-jork`, `islandia`, `patagonia`, `tokio-kyoto`, `malediwy`)
-  - [ ] correct the duration claim in the Tokio card copy in `index.html:317` ("Dwutygodniowy program")
-  - [ ] add one check that fails when offer name, duration, price or the offer set differ between `assets/data/tours.json`, the listing cards and the contact select, and run it from `npm run build`
+- [x] **PH1-02 — Establish one canonical tour catalogue source** — **Priority:** High
+  - [x] confirm `assets/data/tours.json` as the canonical catalogue; it is the only machine-readable definition and already drives `tour.html` through `js/features/tour-detail.js`
+  - [x] resolve the current contradictions before fixing the source: `islandia` (`Islandia Fjord Moments` 9 dni / 19 000 on the listing versus `Islandia Arctic Wonders` 7 dni / 13 000 in the data), `malediwy` (32 000 versus 18 000), `patagonia` (14 dni / 28 000 versus 10 dni / 19 500), `tokio-kyoto` (12 dni versus 9 dni)
+  - [x] derive the `tours.html` listing cards — `data-days`, `data-price`, title, duration and price text — from the canonical source, or keep them hand-written and add a repository check that fails on drift
+  - [x] extend the required "Wybrana wycieczka" select in `contact.html:286` to all six offers and align its option values with the catalogue ids (`maroko`, `nowy-jork`, `islandia`, `patagonia`, `tokio-kyoto`, `malediwy`)
+  - [x] correct the duration claim in the Tokio card copy in `index.html:317` ("Dwutygodniowy program")
+  - [x] add one check that fails when offer name, duration, price or the offer set differ between `assets/data/tours.json`, the listing cards and the contact select, and run it from `npm run build`
   - **Completion condition:** every surface states the same name, duration and price per offer, all six offers are selectable in the contact form, and the drift check runs in the build
   - **Source:** `daily-AUDIT.md` — P1-02
 
