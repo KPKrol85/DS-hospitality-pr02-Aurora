@@ -16,10 +16,12 @@
     "watch:css": "postcss css/style.css -o dist/css/style.min.css --watch",
     "watch:js": "esbuild js/script.js --bundle --minify --target=es2018 --define:__AURORA_PRODUCTION__=true --outfile=dist/js/script.min.js --watch",
     "check:css-assets": "node scripts/check-css-assets.js",
-    "build": "npm run clean && npm run build:stage && npm run build:css && npm run build:js && npm run check:css-assets && npm run check:assets && npm run check:assets:dist && npm run check:tour-catalogue",
+    "build": "npm run clean && npm run build:stage && npm run build:css && npm run build:js && npm run check:css-assets && npm run check:assets && npm run check:assets:dist && npm run check:tour-catalogue && npm run check:sw-bundles",
     "check:assets": "node scripts/check-asset-integrity.js",
     "check:assets:dist": "node scripts/check-asset-integrity.js --dist",
     "check:tour-catalogue": "node scripts/check-tour-catalogue.js",
+    "check:sw-bundles": "node scripts/check-sw-bundles.js",
+    "record:sw-bundles": "node scripts/check-sw-bundles.js --record",
     "dist": "npm run build"
   },
   "keywords": [],

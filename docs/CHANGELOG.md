@@ -52,6 +52,7 @@ All significant changes to this project are documented in this file.
 - Added a `_redirects` rule that serves `/index.html` with status 200 for unmatched paths on static hosting.
 - Refactored the build pipeline to separate development sources from production output: updated all 12 HTML pages to load canonical CSS and JavaScript, moved PostCSS and esbuild minification exclusively to `dist/css/` and `dist/js/`, and removed the tracked source-tree `.min` files. Updated `npm run build` to produce a complete deployable `dist/`, aligned the asset verification scripts with both development and production paths, and preserved `npm run dist` as an alias. Separated development and production Service Worker handling, raised the cache version to `aurora-1.5`, and synchronized the build documentation.
 - Excluded `assets/img-src/` from the production `dist/` package while preserving all runtime assets and development image sources, reducing the package size from approximately 174 MB to 75 MB.
+- Added SHA-256 validation for production CSS and JavaScript bundles against a tracked Service Worker cache reference, preventing builds with changed bundles and an unchanged cache version. Added an explicit reference-update command and raised the Service Worker version to `aurora-1.6`.
 
 ### Testing
 

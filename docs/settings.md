@@ -18,10 +18,12 @@
 | `watch:css` | `postcss css/style.css -o dist/css/style.min.css --watch` | Watches the source CSS entry and rebuilds `dist/css/style.min.css` on change. | Use only while previewing an existing `dist/`; source development needs no rebuilds. |
 | `watch:js` | `esbuild js/script.js --bundle --minify --target=es2018 --define:__AURORA_PRODUCTION__=true --outfile=dist/js/script.min.js --watch` | Watches JS source files and rebuilds `dist/js/script.min.js` on change. | Use only while previewing an existing `dist/`; source development needs no rebuilds. |
 | `check:css-assets` | `node scripts/check-css-assets.js` | Checks that the 12 maintained pages load `css/style.css` and `js/script.js` (ES module) and none of the minified files; that `css/style.min.css` and `js/script.min.js` do not exist in the source tree; that the 12 pages in `dist/` load `css/style.min.css` and `js/script.min.js` and none of the source entry points; that `dist/css/` and `dist/js/` contain only the generated bundles; and that `dist/service-worker.js` precaches `/css/style.min.css` and `/js/script.min.js`, contains no legacy source paths, precaches only files present in `dist/`, and is the worker the bundle registers. | Runs in `build`; run it after changing asset references, page tags, or the service worker. |
-| `build` | `npm run clean && npm run build:stage && npm run build:css && npm run build:js && npm run check:css-assets && npm run check:assets && npm run check:assets:dist && npm run check:tour-catalogue` | Primary build: cleans `dist/`, stages the production files, generates the production CSS and JS, and verifies the sources and the finished package. It modifies no source files and does not regenerate raster images. | Use as the normal build, pre-deploy verification, and deployment packaging command. |
+| `build` | `npm run clean && npm run build:stage && npm run build:css && npm run build:js && npm run check:css-assets && npm run check:assets && npm run check:assets:dist && npm run check:tour-catalogue && npm run check:sw-bundles` | Primary build: cleans `dist/`, stages the production files, generates the production CSS and JS, verifies the sources and the finished package, and finally checks that the generated bundles are the ones recorded for the Service Worker `VERSION`. It modifies no source files, never writes `service-worker-bundles.json`, and does not regenerate raster images. | Use as the normal build, pre-deploy verification, and deployment packaging command. |
 | `check:assets` | `node scripts/check-asset-integrity.js` | Scans the root HTML pages for broken `href`, `src`, and `srcset` references, `og:image`, `twitter:image`, and JSON-LD URLs on the production domain, and `site.webmanifest` entries. | Run after editing HTML, changing asset names, or before shipping. |
 | `check:assets:dist` | `node scripts/check-asset-integrity.js --dist` | Runs the same scan against the pages and files in `dist/`; a reference only counts when its file exists inside `dist/`. | Runs in `build`; run it on its own to re-check an existing `dist/`. |
 | `check:tour-catalogue` | `node scripts/check-tour-catalogue.js` | Compares the tour listing cards in `tours.html` (name, duration, price, `data-days`, `data-price`, tour detail link) and the contact form tour select in `contact.html` (option values and labels) against the canonical catalogue `assets/data/tours.json`, and fails on any missing, duplicate, unknown, or mismatched offer. | Run after editing `assets/data/tours.json`, the tour listing cards, or the contact form tour select. |
+| `check:sw-bundles` | `node scripts/check-sw-bundles.js` | Reads the tracked approval record `service-worker-bundles.json` and fails when it is missing or malformed, when `dist/service-worker.js` or either bundle is missing, when `VERSION` in `dist/service-worker.js` differs from the recorded version, or when the SHA-256 of `dist/css/style.min.css` or `dist/js/script.min.js` differs from the recorded hash. It never writes the record. | Runs as the last step of `build`; run it on its own to re-check an existing `dist/`. |
+| `record:sw-bundles` | `node scripts/check-sw-bundles.js --record` | Writes `VERSION` from `service-worker.js` and the SHA-256 of the two bundles in `dist/` to `service-worker-bundles.json`. Refuses when `VERSION` does not advance the recorded version of the same name, when the existing record is missing or malformed, or when either bundle is missing, so it cannot replace the hashes of a recorded version. `npm run record:sw-bundles -- --init` creates the first record and refuses when one exists. | Only in an intentional cache version update, after raising `VERSION`; follow it with `npm run build`. |
 | `dist` | `npm run build` | Backward-compatible alias of `build`; it runs the same pipeline once. | Use where older instructions call for `npm run dist`. |
 
 ## Recommended workflow
@@ -49,7 +51,13 @@
    - `check:assets`
    - `check:assets:dist`
    - `check:tour-catalogue`
-4. If `dist/css/style.min.css` or `dist/js/script.min.js` differs from the deployed version, raise `VERSION` in `service-worker.js` and rebuild; the build does not revise it automatically.
+   - `check:sw-bundles`
+4. When `check:sw-bundles` reports a changed bundle hash and the change is intended, complete the cache version update:
+   1. raise `VERSION` in `service-worker.js` above the version recorded in `service-worker-bundles.json`, for example from `aurora-1.6` to `aurora-1.7`;
+   2. `npm run record:sw-bundles` to record the new version with the hashes of the bundles now in `dist/`;
+   3. `npm run build`, which must pass;
+   4. commit `service-worker-bundles.json` together with `service-worker.js` and the source change.
+5. `check:sw-bundles` covers only the two bundles. When another cache-first file changes (`site.webmanifest`, images, fonts), raise `VERSION` and run `npm run record:sw-bundles` and `npm run build` the same way.
 
 ### Deployment
 1. Deploy `dist/` manually to Netlify as the publish directory. It is the complete site root, including `404.html`, `offline.html`, `service-worker.js`, and `_headers`.
@@ -63,6 +71,7 @@
 - The maintained pages reference the sources; only their copies in `dist/` reference the minified files. `scripts/build-dist.js` rewrites the two references in the copies and never writes to the root pages.
 - `dist/` is rebuilt from scratch by every `build`, and nothing in the build reads from `dist/`.
 - Only the production bundle registers `service-worker.js`, because esbuild replaces `__AURORA_PRODUCTION__` with `true` and removes the development branch.
+- `service-worker-bundles.json` is a tracked approval record, not build output: it pairs the Service Worker `VERSION` with the SHA-256 of `dist/css/style.min.css` and `dist/js/script.min.js`. Only `record:sw-bundles` writes it, and only under a new `VERSION`; `docs/pipeline-notes.md` describes the format and the update workflow.
 - `assets/img-src/` is the source-of-truth directory for raster image inputs.
 - `assets/img/` remains the production image directory consumed by HTML, CSS, JS, manifest files, and JSON data.
 - Standard `build` and `dist` commands assume `assets/img/` is already up to date.

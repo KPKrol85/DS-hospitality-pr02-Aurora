@@ -8,7 +8,7 @@
 
 - The plan reflects the repository state verified on 2026-09-22. Every open item is traceable to current source evidence or to a finding in `daily-AUDIT.md` that was re-verified against the implementation.
 - Canonical source ownership is `css/style.css` → `dist/css/style.min.css`, `js/script.js` → `dist/js/script.min.js`, `assets/img-src/` → `assets/img/`. Plan and implement against the canonical source; the maintained pages load `css/style.css` and `js/script.js` directly, and the minified bundles are untracked output generated only in `dist/`.
-- Any change under `css/` or `js/` reaches production through `npm run build`, which regenerates `dist/`, and — until `PH2-03` lands — a manual `VERSION` bump in `service-worker.js` for that change to reach returning visitors.
+- Any change under `css/` or `js/` reaches production through `npm run build`, which regenerates `dist/`, and a raised `VERSION` in `service-worker.js` recorded with `npm run record:sw-bundles` for that change to reach returning visitors; since `PH2-03`, the build fails while a changed bundle is not recorded under a new `VERSION`.
 - A main item is checked only when every required subtask is complete and its completion condition holds.
 - Completed significant changes are recorded in `docs/CHANGELOG.md`. Pending work stays in this file only.
 
@@ -68,11 +68,12 @@
   - **Verification:** `npm run dist` passed with `check:assets` and `check:assets:dist`; `dist/assets/` matches `assets/` without `img-src/` file for file, and `dist/` is 75 MB instead of about 174 MB
   - **Source:** `daily-AUDIT.md` — P1-04
 
-- [ ] **PH2-03 — Tie service worker cache invalidation to the built bundles** — **Priority:** Medium
-  - [ ] make a bundle change detectable: fail the build when `dist/css/style.min.css` or `dist/js/script.min.js` changed and `VERSION` in `service-worker.js:1` did not — both bundles are untracked build output, so a change must be detected against a recorded reference rather than Git history — or revalidate the two precached bundles at runtime instead of serving them cache-first under fixed filenames
-  - [ ] implement the rule in `scripts/check-css-assets.js` or a dedicated script, and run it from `npm run build`
+- [x] **PH2-03 — Tie service worker cache invalidation to the built bundles** — **Priority:** Medium
+  - [x] make a bundle change detectable: fail the build when `dist/css/style.min.css` or `dist/js/script.min.js` changed and `VERSION` in `service-worker.js:1` did not — both bundles are untracked build output, so a change must be detected against a recorded reference rather than Git history — or revalidate the two precached bundles at runtime instead of serving them cache-first under fixed filenames — **decided:** build-time detection; the tracked record `service-worker-bundles.json` pairs `VERSION` with the SHA-256 of both generated bundles, and the caching strategies are unchanged
+  - [x] implement the rule in `scripts/check-css-assets.js` or a dedicated script, and run it from `npm run build` — dedicated `scripts/check-sw-bundles.js`, run as `check:sw-bundles` at the end of `npm run build`; `npm run record:sw-bundles` writes the record only under a `VERSION` that advances the recorded one
+  - [x] establish the approved baseline: `VERSION` raised from `aurora-1.5` to `aurora-1.6` and both bundle hashes recorded for it
   - **Completion condition:** a CSS or JS rebuild cannot ship without invalidating the cached bundle for returning visitors
-  - **Verification:** the check fails on a rebuilt bundle with an unchanged `VERSION` and passes once the version advances
+  - **Verification:** the check fails on a rebuilt bundle with an unchanged `VERSION` and passes once the version advances — an unchanged rebuild passed; a changed CSS bundle and a changed JS bundle under `aurora-1.6` failed, and `record:sw-bundles` refused to record them under the same version; a raised `VERSION` without a new record failed; `aurora-1.7` recorded through `record:sw-bundles` passed; the temporary changes were reverted and the final `npm run build` passed under `aurora-1.6`
   - **Source:** `daily-AUDIT.md` — P2-05
 
 ## Phase 3 — Interaction quality and no-JavaScript resilience

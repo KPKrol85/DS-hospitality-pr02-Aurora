@@ -99,6 +99,7 @@ Projekt nie posiada zależności runtime; wszystkie pakiety są zadeklarowane ja
 ├─ regulamin.html
 ├─ polityka-prywatnosci.html
 ├─ service-worker.js
+├─ service-worker-bundles.json
 ├─ site.webmanifest
 ├─ robots.txt
 ├─ sitemap.xml
@@ -131,7 +132,7 @@ Podgląd wersji produkcyjnej wymaga uruchomienia `npm run build` i serwera HTTP 
 
 ### Dostępne skrypty
 
-- `npm run build` — główna komenda budowania: `clean`, `build:stage`, `build:css`, `build:js`, a następnie `check:css-assets`, `check:assets`, `check:assets:dist` i `check:tour-catalogue`. Tworzy kompletną paczkę wdrożeniową w `dist/` i nie modyfikuje plików źródłowych.
+- `npm run build` — główna komenda budowania: `clean`, `build:stage`, `build:css`, `build:js`, a następnie `check:css-assets`, `check:assets`, `check:assets:dist`, `check:tour-catalogue` i `check:sw-bundles`. Tworzy kompletną paczkę wdrożeniową w `dist/` i nie modyfikuje plików źródłowych.
 - `npm run dist` — alias zgodności wstecznej, który uruchamia `npm run build`.
 - `npm run clean` — usuwa katalog `dist/`.
 - `npm run build:stage` — uruchamia `scripts/build-dist.js`, który w pustym katalogu `dist/` umieszcza kopie stron HTML z odwołaniami przepisanymi na `css/style.min.css` i `js/script.min.js`, katalog `assets/`, `service-worker.js`, `site.webmanifest`, `robots.txt`, `sitemap.xml` i `_headers`.
@@ -144,6 +145,8 @@ Podgląd wersji produkcyjnej wymaga uruchomienia `npm run build` i serwera HTTP 
 - `npm run check:assets` — skanuje strony HTML w katalogu głównym w poszukiwaniu brakujących plików w atrybutach `href`, `src` i `srcset`, w adresach `og:image` i `twitter:image`, w danych JSON-LD oraz w `site.webmanifest`.
 - `npm run check:assets:dist` — ta sama kontrola dla stron i plików paczki `dist/`.
 - `npm run check:tour-catalogue` — porównuje karty ofert w `tours.html` i listę wycieczek formularza w `contact.html` z katalogiem `assets/data/tours.json`.
+- `npm run check:sw-bundles` — porównuje `VERSION` w `dist/service-worker.js` oraz skróty SHA-256 plików `dist/css/style.min.css` i `dist/js/script.min.js` z wersjonowanym w Git rejestrem `service-worker-bundles.json`; nigdy go nie zapisuje.
+- `npm run record:sw-bundles` — zapisuje w `service-worker-bundles.json` nową wartość `VERSION` z `service-worker.js` i skróty SHA-256 obu bundli z `dist/`. Odmawia zapisu, jeżeli `VERSION` nie jest wyższa od zapisanej wersji, więc nie zatwierdzi zmienionych bundli pod dotychczasową wersją.
 - `npm run images:bootstrap` — jednorazowo kopiuje istniejące pliki rastrowe z `assets/img/` do `assets/img-src/`.
 - `npm run build:images` — generuje `assets/img/` z `assets/img-src/`; celowo pozostaje poza domyślnym łańcuchem `build`.
 - `npm test` — skrypt zastępczy kończący się błędem; w projekcie nie skonfigurowano żadnego runnera testów.
@@ -162,6 +165,7 @@ npm run build
 2. `build:stage` — umieszcza w `dist/` pliki produkcyjne: kopie stron HTML z przepisanymi odwołaniami, katalog `assets/`, `service-worker.js`, `site.webmanifest`, `robots.txt`, `sitemap.xml` i `_headers`. Brak któregokolwiek z tych plików albo strona, która nie zawiera dokładnie jednego `<link rel="stylesheet" href="css/style.css" />` i jednego `<script type="module" src="js/script.js"></script>`, przerywa build.
 3. `build:css` i `build:js` — generują zminifikowane pliki w `dist/css/` i `dist/js/` i weryfikują je.
 4. `check:css-assets`, `check:assets`, `check:assets:dist` i `check:tour-catalogue` — weryfikują źródła i gotową paczkę.
+5. `check:sw-bundles` — przerywa build, jeżeli wygenerowane bundle albo `VERSION` Service Workera różnią się od wartości zapisanych w `service-worker-bundles.json`.
 
 Wynikowa struktura katalogu `dist/`:
 
@@ -174,6 +178,7 @@ dist/
 │  └─ script.min.js          # jedyny plik w dist/js/
 ├─ assets/                   # kopia katalogu assets/ (data, fonts, img, img-src)
 ├─ service-worker.js
+├─ service-worker-bundles.json
 ├─ site.webmanifest
 ├─ robots.txt
 ├─ sitemap.xml
@@ -194,7 +199,8 @@ W projekcie nie skonfigurowano frameworka testowego ani testów jednostkowych cz
 - `scripts/verify-built-js.js` — `dist/js/script.min.js`,
 - `scripts/check-css-assets.js` — odwołania do CSS i JS w stronach źródłowych i w `dist/`, brak zminifikowanych plików w katalogach źródłowych oraz precache i rejestrację Service Workera w `dist/`,
 - `scripts/check-asset-integrity.js` — integralność zasobów stron w katalogu głównym, a z flagą `--dist` — w paczce `dist/`,
-- `scripts/check-tour-catalogue.js` — zgodność ofert z katalogiem `assets/data/tours.json`.
+- `scripts/check-tour-catalogue.js` — zgodność ofert z katalogiem `assets/data/tours.json`,
+- `scripts/check-sw-bundles.js` — zgodność `VERSION` Service Workera i skrótów SHA-256 obu bundli z rejestrem `service-worker-bundles.json`.
 
 Pełny `npm run build` zakończył się powodzeniem na aktualnym stanie repozytorium; obie kontrole integralności zasobów przeskanowały po 12 plików HTML. Skrypty weryfikujące nie wymagają zainstalowanych zależności i nie modyfikują plików. Nie przeprowadzono audytów dostępności, SEO ani wydajności.
 
@@ -235,7 +241,8 @@ Nie przeprowadzono formalnego audytu zgodności, dlatego dokumentacja nie deklar
 ### PWA i obsługa offline
 
 - `site.webmanifest` deklaruje nazwę, `start_url`, `scope`, tryb `standalone`, kolory, ikony 192 i 512 px (w tym warianty `maskable`), trzy skróty aplikacji i dwa zrzuty ekranu. Manifest jest podpięty we wszystkich 12 stronach.
-- `service-worker.js` używa stałej `VERSION` (obecnie `aurora-1.5`) do nazwania dwóch cache'ów: statycznego i HTML. Podczas instalacji precache obejmuje `/`, `/index.html`, `/css/style.min.css`, `/js/script.min.js`, `/site.webmanifest` i `/offline.html` — pliki, które istnieją w `dist/`.
+- `service-worker.js` używa stałej `VERSION` (obecnie `aurora-1.6`) do nazwania dwóch cache'ów: statycznego i HTML. Podczas instalacji precache obejmuje `/`, `/index.html`, `/css/style.min.css`, `/js/script.min.js`, `/site.webmanifest` i `/offline.html` — pliki, które istnieją w `dist/`.
+- Bundle `/css/style.min.css` i `/js/script.min.js` mają stałe adresy i są serwowane z cache'u, więc powracający użytkownicy otrzymują ich nową treść dopiero po zmianie `VERSION`. Wersjonowany w Git plik `service-worker-bundles.json` zapisuje skróty SHA-256 obu bundli zatwierdzone dla bieżącej `VERSION`, a `npm run build` kończy się błędem, gdy wygenerowany bundle albo `VERSION` różni się od zapisu.
 - Service Workera rejestruje wyłącznie produkcyjny bundle `dist/js/script.min.js`; strony ładujące źródła podczas developmentu go nie rejestrują.
 - Żądania HTML są obsługiwane strategią network-first z zapisem odpowiedzi w cache'u HTML i zwrotem `offline.html`, gdy sieć jest niedostępna. Zasoby o typie `style`, `script`, `image` i `font` są obsługiwane strategią cache-first.
 - Podczas aktywacji usuwane są cache'e spoza bieżącej wersji.
@@ -269,7 +276,7 @@ Nie przeprowadzono pomiarów wydajności, dlatego dokumentacja nie zawiera wynik
 - Obrazy rastrowe należy zmieniać w `assets/img-src/`, a następnie uruchamiać `npm run build:images`. Skrypt usuwa z `assets/img/` zarządzane pliki rastrowe, których nie przewiduje bieżący plan generowania. Pliki SVG i inne nierastrowe nie są objęte pipeline'em.
 - Wartości `id` w `assets/data/tours.json` muszą odpowiadać odnośnikom `tour.html?id=` w `tours.html`. Wartości `base` w `assets/data/gallery-data.json` są rozwiązywane względem `assets/img/tours/`.
 - Nowa strona HTML w katalogu głównym musi zawierać dokładnie jedno `<link rel="stylesheet" href="css/style.css" />` i jedno `<script type="module" src="js/script.js"></script>`, które `scripts/build-dist.js` przepisuje w jej kopii w `dist/`. Stronę należy dodać do listy `htmlPages` w `scripts/check-css-assets.js`, a jeżeli ma być indeksowana — także do `sitemap.xml`.
-- Po zmianie zasobów objętych cache'owaniem należy podnieść stałą `VERSION` w `service-worker.js`.
+- Zmiana bundli wymaga podniesienia `VERSION`, a build to wymusza: gdy `check:sw-bundles` zgłosi zmieniony skrót, należy podnieść `VERSION` w `service-worker.js` (np. z `aurora-1.6` na `aurora-1.7`), uruchomić `npm run record:sw-bundles`, a następnie ponownie `npm run build` i zatwierdzić `service-worker-bundles.json` razem z `service-worker.js`. Kontrola obejmuje tylko dwa bundle — po zmianie innych zasobów serwowanych z cache'u (`site.webmanifest`, obrazy, fonty) `VERSION` należy podnieść ręcznie i tak samo zapisać rejestr. Szczegóły opisuje `docs/pipeline-notes.md`.
 - Notatki o pipeline i zawartości paczki dystrybucyjnej znajdują się w [pipeline-notes.md](pipeline-notes.md), a historia zmian w [docs/CHANGELOG.md](docs/CHANGELOG.md).
 
 ### Licencja
@@ -380,6 +387,7 @@ The project has no runtime dependencies; every package is declared under `devDep
 ├─ regulamin.html
 ├─ polityka-prywatnosci.html
 ├─ service-worker.js
+├─ service-worker-bundles.json
 ├─ site.webmanifest
 ├─ robots.txt
 ├─ sitemap.xml
@@ -412,7 +420,7 @@ Previewing the production build requires `npm run build` and an HTTP server root
 
 ### Available Scripts
 
-- `npm run build` — the primary build command: `clean`, `build:stage`, `build:css`, `build:js`, then `check:css-assets`, `check:assets`, `check:assets:dist`, and `check:tour-catalogue`. It produces the complete deployable package in `dist/` and modifies no source files.
+- `npm run build` — the primary build command: `clean`, `build:stage`, `build:css`, `build:js`, then `check:css-assets`, `check:assets`, `check:assets:dist`, `check:tour-catalogue`, and `check:sw-bundles`. It produces the complete deployable package in `dist/` and modifies no source files.
 - `npm run dist` — a backward-compatible alias that runs `npm run build`.
 - `npm run clean` — removes the `dist/` directory.
 - `npm run build:stage` — runs `scripts/build-dist.js`, which places copies of the HTML pages with their references rewritten to `css/style.min.css` and `js/script.min.js`, the `assets/` directory, `service-worker.js`, `site.webmanifest`, `robots.txt`, `sitemap.xml`, and `_headers` into an empty `dist/` directory.
@@ -425,6 +433,8 @@ Previewing the production build requires `npm run build` and an HTTP server root
 - `npm run check:assets` — scans the root HTML pages for missing files in `href`, `src`, and `srcset` attributes, in `og:image` and `twitter:image` URLs, in JSON-LD data, and in `site.webmanifest`.
 - `npm run check:assets:dist` — the same check for the pages and files of the `dist/` package.
 - `npm run check:tour-catalogue` — compares the offer cards in `tours.html` and the tour select of the form in `contact.html` against the catalogue in `assets/data/tours.json`.
+- `npm run check:sw-bundles` — compares `VERSION` in `dist/service-worker.js` and the SHA-256 hashes of `dist/css/style.min.css` and `dist/js/script.min.js` with the Git-tracked record `service-worker-bundles.json`; it never writes the record.
+- `npm run record:sw-bundles` — writes the new `VERSION` from `service-worker.js` and the SHA-256 hashes of both bundles in `dist/` to `service-worker-bundles.json`. It refuses unless `VERSION` is higher than the recorded version, so it cannot approve changed bundles under the existing version.
 - `npm run images:bootstrap` — performs a one-time copy of existing raster files from `assets/img/` into `assets/img-src/`.
 - `npm run build:images` — generates `assets/img/` from `assets/img-src/`; deliberately kept outside the default `build` chain.
 - `npm test` — a placeholder script that exits with an error; no test runner is configured in the project.
@@ -443,6 +453,7 @@ npm run build
 2. `build:stage` — places the production files into `dist/`: copies of the HTML pages with rewritten references, the `assets/` directory, `service-worker.js`, `site.webmanifest`, `robots.txt`, `sitemap.xml`, and `_headers`. A missing file, or a page that does not contain exactly one `<link rel="stylesheet" href="css/style.css" />` and one `<script type="module" src="js/script.js"></script>`, aborts the build.
 3. `build:css` and `build:js` — generate the minified files in `dist/css/` and `dist/js/` and verify them.
 4. `check:css-assets`, `check:assets`, `check:assets:dist`, and `check:tour-catalogue` — verify the sources and the finished package.
+5. `check:sw-bundles` — aborts the build when a generated bundle or the Service Worker `VERSION` differs from the values recorded in `service-worker-bundles.json`.
 
 Resulting `dist/` structure:
 
@@ -455,6 +466,7 @@ dist/
 │  └─ script.min.js          # the only file in dist/js/
 ├─ assets/                   # copy of assets/ (data, fonts, img, img-src)
 ├─ service-worker.js
+├─ service-worker-bundles.json
 ├─ site.webmanifest
 ├─ robots.txt
 ├─ sitemap.xml
@@ -475,7 +487,8 @@ No test framework and no unit or browser tests are configured in the project —
 - `scripts/verify-built-js.js` — `dist/js/script.min.js`,
 - `scripts/check-css-assets.js` — CSS and JS references in the source pages and in `dist/`, the absence of minified files in the source directories, and the Service Worker precache and registration in `dist/`,
 - `scripts/check-asset-integrity.js` — asset integrity of the root pages, and with `--dist`, of the `dist/` package,
-- `scripts/check-tour-catalogue.js` — consistency of the offers with the catalogue in `assets/data/tours.json`.
+- `scripts/check-tour-catalogue.js` — consistency of the offers with the catalogue in `assets/data/tours.json`,
+- `scripts/check-sw-bundles.js` — the Service Worker `VERSION` and the SHA-256 hashes of both bundles against the record in `service-worker-bundles.json`.
 
 A full `npm run build` completed successfully against the current repository state; both asset integrity checks scanned 12 HTML files each. The verification scripts require no installed dependencies and modify no files. No accessibility, SEO, or performance audits were carried out.
 
@@ -516,7 +529,8 @@ No formal conformance audit was carried out, so this documentation makes no WCAG
 ### PWA and Offline Support
 
 - `site.webmanifest` declares the name, `start_url`, `scope`, `standalone` display mode, colors, 192 and 512 px icons (including `maskable` variants), three application shortcuts, and two screenshots. The manifest is linked from all 12 pages.
-- `service-worker.js` uses a `VERSION` constant (currently `aurora-1.5`) to name two caches, one for static assets and one for HTML. On install, the precache covers `/`, `/index.html`, `/css/style.min.css`, `/js/script.min.js`, `/site.webmanifest`, and `/offline.html` — files that exist in `dist/`.
+- `service-worker.js` uses a `VERSION` constant (currently `aurora-1.6`) to name two caches, one for static assets and one for HTML. On install, the precache covers `/`, `/index.html`, `/css/style.min.css`, `/js/script.min.js`, `/site.webmanifest`, and `/offline.html` — files that exist in `dist/`.
+- The bundles `/css/style.min.css` and `/js/script.min.js` have fixed URLs and are served from the cache, so returning visitors receive new bundle contents only after `VERSION` changes. The Git-tracked file `service-worker-bundles.json` records the SHA-256 hashes of both bundles approved for the current `VERSION`, and `npm run build` fails when a generated bundle or `VERSION` differs from the record.
 - Only the production bundle `dist/js/script.min.js` registers the Service Worker; pages that load the sources during development do not.
 - HTML requests are served network-first, storing responses in the HTML cache and returning `offline.html` when the network is unavailable. Requests whose destination is `style`, `script`, `image`, or `font` are served cache-first.
 - On activation, caches outside the current version are deleted.
@@ -550,7 +564,7 @@ No performance measurements were taken, so this documentation contains no result
 - Raster images should be changed in `assets/img-src/`, followed by `npm run build:images`. The script removes managed raster files from `assets/img/` that the current generation plan no longer expects. SVG and other non-raster files are outside the pipeline.
 - The `id` values in `assets/data/tours.json` must match the `tour.html?id=` links in `tours.html`. The `base` values in `assets/data/gallery-data.json` resolve against `assets/img/tours/`.
 - A new root-level HTML page must contain exactly one `<link rel="stylesheet" href="css/style.css" />` and one `<script type="module" src="js/script.js"></script>`, which `scripts/build-dist.js` rewrites in its `dist/` copy. It must be added to the `htmlPages` list in `scripts/check-css-assets.js` and, if it is meant to be indexed, to `sitemap.xml`.
-- Raise the `VERSION` constant in `service-worker.js` after changing cached assets.
+- A bundle change requires a higher `VERSION`, and the build enforces it: when `check:sw-bundles` reports a changed hash, raise `VERSION` in `service-worker.js` (for example from `aurora-1.6` to `aurora-1.7`), run `npm run record:sw-bundles`, run `npm run build` again, and commit `service-worker-bundles.json` together with `service-worker.js`. The check covers only the two bundles — after changing other cache-first files (`site.webmanifest`, images, fonts), raise `VERSION` by hand and record it the same way. `docs/pipeline-notes.md` has the details.
 - Pipeline notes and the contents of the distribution package are documented in [pipeline-notes.md](pipeline-notes.md), and the change history in [docs/CHANGELOG.md](docs/CHANGELOG.md).
 
 ### License
