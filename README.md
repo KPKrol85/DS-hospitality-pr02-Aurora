@@ -52,7 +52,7 @@ Jest to adres kanoniczny zadeklarowany w znacznikach `canonical`, w `sitemap.xml
 
 **Hosting statyczny**
 
-- `_headers`, `_redirects`, `site.webmanifest`, `robots.txt`, `sitemap.xml`
+- `_headers`, `site.webmanifest`, `robots.txt`, `sitemap.xml`
 - Atrybuty formularza Netlify (`data-netlify`, `netlify-honeypot`) w `contact.html`
 
 Projekt nie posiada zależności runtime; wszystkie pakiety są zadeklarowane jako `devDependencies`.
@@ -104,7 +104,6 @@ Projekt nie posiada zależności runtime; wszystkie pakiety są zadeklarowane ja
 ├─ robots.txt
 ├─ sitemap.xml
 ├─ _headers
-├─ _redirects
 ├─ postcss.config.js
 ├─ settings.md
 ├─ pipeline-notes.md
@@ -159,7 +158,7 @@ npm run build
 npm run dist
 ```
 
-`npm run dist` przygotowuje katalog `dist/` zawierający: pliki `*.html` z katalogu głównego, katalog `assets/`, `css/style.min.css`, `js/script.min.js`, `service-worker.js` oraz — jeżeli istnieją — `_headers`, `_redirects`, `site.webmanifest`, `robots.txt` i `sitemap.xml`. Brak któregokolwiek z plików wymaganych (`css/style.min.css`, `js/script.min.js`, `service-worker.js`) przerywa pakowanie.
+`npm run dist` przygotowuje katalog `dist/` zawierający: pliki `*.html` z katalogu głównego, katalog `assets/`, `css/style.min.css`, `js/script.min.js`, `service-worker.js` oraz — jeżeli istnieją — `_headers`, `site.webmanifest`, `robots.txt` i `sitemap.xml`. Brak któregokolwiek z plików wymaganych (`css/style.min.css`, `js/script.min.js`, `service-worker.js`) przerywa pakowanie.
 
 `dist/` jest wykluczony z repozytorium przez `.gitignore`. Pliki `css/style.min.css` i `js/script.min.js` są natomiast wersjonowane, ponieważ odwołują się do nich strony HTML.
 
@@ -180,7 +179,7 @@ Wszystkie cztery skrypty zostały uruchomione bezpośrednio przez `node` na aktu
 
 Repozytorium zawiera konfigurację hostingu statycznego, ale nie zawiera konfiguracji CI/CD ani pliku `netlify.toml`, więc publikacja nie jest zautomatyzowana z poziomu repozytorium.
 
-- `_redirects` — reguła `/* /index.html 200` jako zachowanie zapasowe dla nieodnalezionych ścieżek.
+- `404.html` — utrzymywana strona błędu. Netlify serwuje plik `404.html` z katalogu głównego publikacji ze statusem HTTP 404 dla każdej ścieżki, której nie odpowiada żaden plik. Repozytorium nie zawiera pliku `_redirects` ani reguł przepisywania ścieżek, więc istniejące strony są serwowane bezpośrednio z odpowiadających im plików HTML, a `npm run dist` kopiuje `404.html` do katalogu głównego `dist/`.
 - `_headers` — Content-Security-Policy (m.in. `default-src 'self'`, `object-src 'none'`, `frame-src https://www.google.com` dla osadzonej mapy), Strict-Transport-Security, `X-Content-Type-Options`, `X-Frame-Options: DENY`, Referrer-Policy, Permissions-Policy i Cross-Origin-Opener-Policy.
 - Formularz w `contact.html` używa `method="POST"`, `action="dziekuje.html"`, `data-netlify="true"`, `netlify-honeypot="bot-field"` oraz ukrytego pola `form-name` — jest to sposób obsługi formularzy właściwy dla Netlify.
 - Do wdrożenia przeznaczony jest katalog `dist/` generowany przez `npm run dist`.
@@ -310,7 +309,7 @@ This is the canonical origin declared in the `canonical` tags, in `sitemap.xml`,
 
 **Static hosting**
 
-- `_headers`, `_redirects`, `site.webmanifest`, `robots.txt`, `sitemap.xml`
+- `_headers`, `site.webmanifest`, `robots.txt`, `sitemap.xml`
 - Netlify form attributes (`data-netlify`, `netlify-honeypot`) in `contact.html`
 
 The project has no runtime dependencies; every package is declared under `devDependencies`.
@@ -362,7 +361,6 @@ The project has no runtime dependencies; every package is declared under `devDep
 ├─ robots.txt
 ├─ sitemap.xml
 ├─ _headers
-├─ _redirects
 ├─ postcss.config.js
 ├─ settings.md
 ├─ pipeline-notes.md
@@ -417,7 +415,7 @@ npm run build
 npm run dist
 ```
 
-`npm run dist` prepares a `dist/` directory containing the root `*.html` files, the `assets/` directory, `css/style.min.css`, `js/script.min.js`, `service-worker.js`, and — when present — `_headers`, `_redirects`, `site.webmanifest`, `robots.txt`, and `sitemap.xml`. A missing required file (`css/style.min.css`, `js/script.min.js`, `service-worker.js`) aborts packaging.
+`npm run dist` prepares a `dist/` directory containing the root `*.html` files, the `assets/` directory, `css/style.min.css`, `js/script.min.js`, `service-worker.js`, and — when present — `_headers`, `site.webmanifest`, `robots.txt`, and `sitemap.xml`. A missing required file (`css/style.min.css`, `js/script.min.js`, `service-worker.js`) aborts packaging.
 
 `dist/` is excluded from the repository by `.gitignore`. `css/style.min.css` and `js/script.min.js`, by contrast, are tracked, because the HTML pages reference them.
 
@@ -438,7 +436,7 @@ All four scripts were executed directly with `node` against the current reposito
 
 The repository contains static-hosting configuration but no CI/CD configuration and no `netlify.toml`, so publishing is not automated from within the repository.
 
-- `_redirects` — the `/* /index.html 200` rule acts as the fallback for unmatched paths.
+- `404.html` — the maintained error page. Netlify serves `404.html` from the root of the publish directory, with HTTP status 404, for any path that matches no file. The repository contains no `_redirects` file and no rewrite rules, so existing pages are served directly from their HTML files, and `npm run dist` copies `404.html` to the root of `dist/`.
 - `_headers` — Content-Security-Policy (including `default-src 'self'`, `object-src 'none'`, and `frame-src https://www.google.com` for the embedded map), Strict-Transport-Security, `X-Content-Type-Options`, `X-Frame-Options: DENY`, Referrer-Policy, Permissions-Policy, and Cross-Origin-Opener-Policy.
 - The form in `contact.html` uses `method="POST"`, `action="dziekuje.html"`, `data-netlify="true"`, `netlify-honeypot="bot-field"`, and a hidden `form-name` field — the form-handling convention used by Netlify.
 - The deployable output is the `dist/` directory produced by `npm run dist`.

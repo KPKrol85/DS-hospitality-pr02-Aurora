@@ -1,7 +1,7 @@
 # Aurora Travel — Development Plan
 
 **Last reviewed:** 2026-09-22
-**Project type:** Multi-page static website — hand-written HTML, modular CSS built with PostCSS, ES modules bundled with esbuild, service worker, static-hosting configuration (`_headers`, `_redirects`)
+**Project type:** Multi-page static website — hand-written HTML, modular CSS built with PostCSS, ES modules bundled with esbuild, service worker, static-hosting configuration (`_headers`)
 **Plan status:** Active
 
 ## Planning principles
@@ -51,11 +51,11 @@
 
 **Goal:** Make what is deployed, and what returning visitors receive, match what the repository declares.
 
-- [ ] **PH2-01 — Align unmatched-path routing with the maintained 404 page** — **Priority:** High
-  - [ ] decide which contract holds: the catch-all `/* /index.html 200` in `_redirects`, or the maintained `404.html` with its `noindex,follow` directive; the site is multi-page and static with no client-side router, so the rewrite currently serves no routing purpose
-  - [ ] if `404.html` holds, remove the catch-all rule so unmatched paths fall through to it with a 404 status
-  - [ ] if the rewrite holds, remove `404.html` and every reference that presents it as active
-  - [ ] update the deployment and SEO sections of `README.md` to state the contract that actually holds
+- [x] **PH2-01 — Align unmatched-path routing with the maintained 404 page** — **Priority:** High
+  - [x] decide which contract holds: the catch-all `/* /index.html 200` in `_redirects`, or the maintained `404.html` with its `noindex,follow` directive; the site is multi-page and static with no client-side router, so the rewrite currently serves no routing purpose — **decided:** `404.html` holds
+  - [x] if `404.html` holds, remove the catch-all rule so unmatched paths fall through to it with a 404 status — `_redirects` removed, since the catch-all was its only rule
+  - [ ] if the rewrite holds, remove `404.html` and every reference that presents it as active — **not applicable:** the `404.html` contract was selected
+  - [x] update the deployment and SEO sections of `README.md` to state the contract that actually holds
   - **Completion condition:** exactly one unmatched-path contract exists in the repository and the documentation describes it
   - **Verification:** static inspection of `_redirects`, `404.html` and the affected README sections; runtime behaviour on the host cannot be verified from the repository
   - **Source:** `daily-AUDIT.md` — P1-03
