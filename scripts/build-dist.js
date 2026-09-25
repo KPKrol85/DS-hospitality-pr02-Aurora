@@ -14,6 +14,10 @@ const requiredFiles = [
   "_headers",
 ];
 
+// Build inputs inside a copied directory that are never published. assets/img-src/
+// holds the raster sources that build:images turns into assets/img/.
+const excludedPaths = ["assets/img-src"];
+
 // The maintained pages load the canonical sources. Only their published copies are
 // rewritten to load the generated bundles.
 const assetReferences = [
@@ -53,8 +57,13 @@ function copyFile(relativePath) {
 function copyDirectory(relativePath) {
   const sourcePath = path.join(projectRoot, relativePath);
   const targetPath = path.join(distRoot, relativePath);
+  const excludedSources = new Set(excludedPaths.map((excludedPath) => path.join(projectRoot, excludedPath)));
 
-  fs.cpSync(sourcePath, targetPath, { recursive: true });
+  // Rejecting an excluded directory also skips everything beneath it.
+  fs.cpSync(sourcePath, targetPath, {
+    recursive: true,
+    filter: (source) => !excludedSources.has(source),
+  });
 }
 
 function getHtmlFiles() {
@@ -112,6 +121,7 @@ function main() {
 
   console.log("Dist staging completed. build:css and build:js generate the bundles next.");
   console.log(`Included: ${includedFiles.join(", ")}`);
+  console.log(`Excluded: ${excludedPaths.map((excludedPath) => `${excludedPath}/`).join(", ")}`);
 }
 
 main();

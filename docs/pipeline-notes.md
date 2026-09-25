@@ -43,7 +43,7 @@ Their copies in `dist/` (production):
 `npm run build` runs:
 
 1. `clean` — `scripts/clean-dist.js` removes `dist/`.
-2. `build:stage` — `scripts/build-dist.js` requires an empty `dist/`, writes the rewritten page copies, and copies `assets/`, `service-worker.js`, `site.webmanifest`, `robots.txt`, `sitemap.xml`, and `_headers`. A missing file fails the build.
+2. `build:stage` — `scripts/build-dist.js` requires an empty `dist/`, writes the rewritten page copies, and copies `assets/` without `assets/img-src/`, `service-worker.js`, `site.webmanifest`, `robots.txt`, `sitemap.xml`, and `_headers`. A missing file fails the build.
 3. `build:css` — generates `dist/css/style.min.css`, then runs `verify:css`.
 4. `build:js` — generates `dist/js/script.min.js`, then runs `verify:js`.
 5. `check:css-assets`, `check:assets`, `check:assets:dist`, `check:tour-catalogue` — verify the sources and the finished package.
@@ -62,7 +62,7 @@ dist/
 │  └─ style.min.css
 ├─ js/
 │  └─ script.min.js
-├─ assets/                   # recursive copy: data/, fonts/, img/, img-src/
+├─ assets/                   # recursive copy: data/, fonts/, img/
 ├─ service-worker.js
 ├─ site.webmanifest
 ├─ robots.txt
@@ -72,7 +72,7 @@ dist/
 
 - `dist/css/` and `dist/js/` contain only the bundles; `css/style.css`, `css/modules/`, `js/script.js`, and `js/features/` are not published.
 - No `_redirects` file is published; unmatched paths fall through to `404.html`.
-- `assets/img-src/` is still part of the recursive `assets/` copy; its exclusion is tracked separately as `PH2-02` in `PLAN.md`.
+- `assets/img-src/` is intentionally excluded from deployment. It stays in the repository as the development input that `build:images` reads to generate `assets/img/`; no page, stylesheet, script, data file, or manifest references it. `scripts/build-dist.js` skips exactly this directory during the `assets/` copy (`excludedPaths`), so every other file under `assets/` is still published.
 
 ## Service Worker
 

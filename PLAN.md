@@ -60,11 +60,12 @@
   - **Verification:** static inspection of `_redirects`, `404.html` and the affected README sections; runtime behaviour on the host cannot be verified from the repository
   - **Source:** `daily-AUDIT.md` — P1-03
 
-- [ ] **PH2-02 — Exclude the raster source tree from the distribution package** — **Priority:** High
-  - [ ] exclude `assets/img-src/` from the recursive `assets/` copy in `scripts/build-dist.js:105`; it is the build-input tree for `scripts/build-images.js`, and no HTML, CSS, JS, JSON or manifest file references it
-  - [ ] keep every referenced production asset under `assets/img/`, `assets/data/` and `assets/fonts/` in the package
-  - [ ] update the dist contents list in `docs/pipeline-notes.md` to state the exclusion
+- [x] **PH2-02 — Exclude the raster source tree from the distribution package** — **Priority:** High
+  - [x] exclude `assets/img-src/` from the recursive `assets/` copy in `scripts/build-dist.js:105`; it is the build-input tree for `scripts/build-images.js`, and no HTML, CSS, JS, JSON or manifest file references it
+  - [x] keep every referenced production asset under `assets/img/`, `assets/data/` and `assets/fonts/` in the package
+  - [x] update the dist contents list in `docs/pipeline-notes.md` to state the exclusion
   - **Completion condition:** `npm run dist` produces a `dist/` tree without `assets/img-src/`, and `node scripts/check-asset-integrity.js` still passes
+  - **Verification:** `npm run dist` passed with `check:assets` and `check:assets:dist`; `dist/assets/` matches `assets/` without `img-src/` file for file, and `dist/` is 75 MB instead of about 174 MB
   - **Source:** `daily-AUDIT.md` — P1-04
 
 - [ ] **PH2-03 — Tie service worker cache invalidation to the built bundles** — **Priority:** Medium
