@@ -54,7 +54,7 @@
 - [x] **PH2-01 — Align unmatched-path routing with the maintained 404 page** — **Priority:** High
   - [x] decide which contract holds: the catch-all `/* /index.html 200` in `_redirects`, or the maintained `404.html` with its `noindex,follow` directive; the site is multi-page and static with no client-side router, so the rewrite currently serves no routing purpose — **decided:** `404.html` holds
   - [x] if `404.html` holds, remove the catch-all rule so unmatched paths fall through to it with a 404 status — `_redirects` removed, since the catch-all was its only rule
-  - [ ] if the rewrite holds, remove `404.html` and every reference that presents it as active — **not applicable:** the `404.html` contract was selected
+  - **Not applicable:** removing `404.html` and retaining the catch-all rewrite was rejected because the `404.html` contract was selected
   - [x] update the deployment and SEO sections of `README.md` to state the contract that actually holds
   - **Completion condition:** exactly one unmatched-path contract exists in the repository and the documentation describes it
   - **Verification:** static inspection of `_redirects`, `404.html` and the affected README sections; runtime behaviour on the host cannot be verified from the repository
