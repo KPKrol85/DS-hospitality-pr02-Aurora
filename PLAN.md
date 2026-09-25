@@ -7,8 +7,8 @@
 ## Planning principles
 
 - The plan reflects the repository state verified on 2026-09-22. Every open item is traceable to current source evidence or to a finding in `daily-AUDIT.md` that was re-verified against the implementation.
-- Canonical source ownership is `css/style.css` → `css/style.min.css`, `js/script.js` → `js/script.min.js`, `assets/img-src/` → `assets/img/`. Plan and implement against the canonical source; treat `css/style.min.css` and `js/script.min.js` as generated output only.
-- Any change under `css/` or `js/` requires `npm run build` to refresh the tracked production bundles, and — until `PH2-03` lands — a manual `VERSION` bump in `service-worker.js` for that change to reach returning visitors.
+- Canonical source ownership is `css/style.css` → `dist/css/style.min.css`, `js/script.js` → `dist/js/script.min.js`, `assets/img-src/` → `assets/img/`. Plan and implement against the canonical source; the maintained pages load `css/style.css` and `js/script.js` directly, and the minified bundles are untracked output generated only in `dist/`.
+- Any change under `css/` or `js/` reaches production through `npm run build`, which regenerates `dist/`, and — until `PH2-03` lands — a manual `VERSION` bump in `service-worker.js` for that change to reach returning visitors.
 - A main item is checked only when every required subtask is complete and its completion condition holds.
 - Completed significant changes are recorded in `docs/CHANGELOG.md`. Pending work stays in this file only.
 
@@ -61,14 +61,14 @@
   - **Source:** `daily-AUDIT.md` — P1-03
 
 - [ ] **PH2-02 — Exclude the raster source tree from the distribution package** — **Priority:** High
-  - [ ] exclude `assets/img-src/` from the recursive `assets/` copy in `scripts/build-dist.js:63`; it is the build-input tree for `scripts/build-images.js`, and no HTML, CSS, JS, JSON or manifest file references it
+  - [ ] exclude `assets/img-src/` from the recursive `assets/` copy in `scripts/build-dist.js:105`; it is the build-input tree for `scripts/build-images.js`, and no HTML, CSS, JS, JSON or manifest file references it
   - [ ] keep every referenced production asset under `assets/img/`, `assets/data/` and `assets/fonts/` in the package
   - [ ] update the dist contents list in `docs/pipeline-notes.md` to state the exclusion
   - **Completion condition:** `npm run dist` produces a `dist/` tree without `assets/img-src/`, and `node scripts/check-asset-integrity.js` still passes
   - **Source:** `daily-AUDIT.md` — P1-04
 
 - [ ] **PH2-03 — Tie service worker cache invalidation to the built bundles** — **Priority:** Medium
-  - [ ] make a bundle change detectable: fail the build when `css/style.min.css` or `js/script.min.js` changed and `VERSION` in `service-worker.js:1` did not, or revalidate the two precached bundles at runtime instead of serving them cache-first under fixed filenames
+  - [ ] make a bundle change detectable: fail the build when `dist/css/style.min.css` or `dist/js/script.min.js` changed and `VERSION` in `service-worker.js:1` did not — both bundles are untracked build output, so a change must be detected against a recorded reference rather than Git history — or revalidate the two precached bundles at runtime instead of serving them cache-first under fixed filenames
   - [ ] implement the rule in `scripts/check-css-assets.js` or a dedicated script, and run it from `npm run build`
   - **Completion condition:** a CSS or JS rebuild cannot ship without invalidating the cached bundle for returning visitors
   - **Verification:** the check fails on a rebuilt bundle with an unchanged `VERSION` and passes once the version advances
@@ -123,7 +123,7 @@
   - [ ] remove the `.form__success` element in `contact.html:328` and its rule in `css/modules/components.css:440`, or give it a code path, given that submission navigates to `dziekuje.html`
   - [ ] remove the unreachable `[data-theme="auto"]` block in `css/modules/tokens.css:112`, or implement an auto theme in `js/features/theme.js` and the inline head bootstrap, which currently set only `light` or `dark`
   - [ ] either apply `--z-header`, `--z-overlay` and `--z-modal` to the real stacking contexts, which currently use raw values (20, 90, 850, 900, 1000, 1200), or remove the unused tokens
-  - [ ] rebuild the production bundles so the removals reach the shipped `css/style.min.css` and `js/script.min.js`
+  - [ ] rebuild the production bundles so the removals reach the shipped `dist/css/style.min.css` and `dist/js/script.min.js`
   - **Completion condition:** no exported function, markup element, CSS block or token remains that implies behaviour the project does not implement, and the four verification scripts still pass
   - **Source:** `daily-AUDIT.md` — P2-07
 

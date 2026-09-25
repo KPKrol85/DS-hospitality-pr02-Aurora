@@ -4,6 +4,12 @@ const path = require('path');
 const projectRoot = process.cwd();
 const productionDomain = 'https://hospitality-pr02-aurora.netlify.app';
 
+// By default the maintained pages in the project root are checked; with --dist, the
+// production package that npm run build generates in dist/.
+const checkDist = process.argv.includes('--dist');
+const siteRoot = checkDist ? path.join(projectRoot, 'dist') : projectRoot;
+const siteLabel = checkDist ? 'dist/' : 'the project root';
+
 function getHtmlFiles(rootDir) {
   return fs
     .readdirSync(rootDir)
@@ -32,14 +38,22 @@ function resolveLocalPath(refValue, htmlFilePath) {
   if (!cleanValue) return null;
 
   if (cleanValue.startsWith('/')) {
-    return path.join(projectRoot, cleanValue.replace(/^\//, ''));
+    return path.join(siteRoot, cleanValue.replace(/^\//, ''));
   }
 
   if (cleanValue.startsWith('assets/')) {
-    return path.join(projectRoot, cleanValue);
+    return path.join(siteRoot, cleanValue);
   }
 
   return path.resolve(path.dirname(htmlFilePath), cleanValue);
+}
+
+// Only files inside the checked root count, so the dist/ package cannot pass on a
+// reference that escapes it to a file present only in the sources.
+function existsInSiteRoot(resolvedPath) {
+  const relativePath = path.relative(siteRoot, resolvedPath);
+  const isInside = relativePath !== '..' && !relativePath.startsWith(`..${path.sep}`) && !path.isAbsolute(relativePath);
+  return isInside && fs.existsSync(resolvedPath);
 }
 
 function checkFileReference({
@@ -52,7 +66,7 @@ function checkFileReference({
   brokenReferences,
 }) {
   if (!resolvedPath) return;
-  if (fs.existsSync(resolvedPath)) return;
+  if (existsInSiteRoot(resolvedPath)) return;
 
   const relativeMissing = path.relative(projectRoot, resolvedPath);
   brokenReferences.push(
@@ -91,8 +105,8 @@ function validateProductionDomainAsset(urlValue, sourceFile, line, context, brok
   const pathname = stripQueryAndHash(urlValue.slice(productionDomain.length));
   if (!pathname || pathname === '/') return;
 
-  const resolvedPath = path.join(projectRoot, pathname.replace(/^\//, ''));
-  if (!fs.existsSync(resolvedPath)) {
+  const resolvedPath = path.join(siteRoot, pathname.replace(/^\//, ''));
+  if (!existsInSiteRoot(resolvedPath)) {
     const relativeMissing = path.relative(projectRoot, resolvedPath);
     brokenReferences.push(
       `BROKEN: ${sourceFile}:${line} -> ${context}="${urlValue}" (missing file: ${relativeMissing})`
@@ -117,7 +131,7 @@ function walkJsonLd(value, visitor) {
 function checkManifestFile(manifestPath, sourceHtml, brokenReferences) {
   const manifestRelative = path.relative(projectRoot, manifestPath);
 
-  if (!fs.existsSync(manifestPath)) {
+  if (!existsInSiteRoot(manifestPath)) {
     brokenReferences.push(
       `BROKEN: ${sourceHtml} -> <link rel="manifest"> (missing file: ${manifestRelative})`
     );
@@ -147,7 +161,7 @@ function checkManifestFile(manifestPath, sourceHtml, brokenReferences) {
 
       if (key === 'src' && typeof nested === 'string' && nested.trim()) {
         const resolvedPath = resolveLocalPath(nested, manifestPath);
-        if (!resolvedPath || fs.existsSync(resolvedPath)) continue;
+        if (!resolvedPath || existsInSiteRoot(resolvedPath)) continue;
 
         const missing = path.relative(projectRoot, resolvedPath);
         brokenReferences.push(
@@ -162,8 +176,9 @@ function checkManifestFile(manifestPath, sourceHtml, brokenReferences) {
   walkManifest(manifest, '');
 }
 
-function checkHtmlFile(htmlFile, brokenReferences, manifestRefs) {
-  const htmlPath = path.join(projectRoot, htmlFile);
+function checkHtmlFile(htmlName, brokenReferences, manifestRefs) {
+  const htmlPath = path.join(siteRoot, htmlName);
+  const htmlFile = path.relative(projectRoot, htmlPath);
   const html = fs.readFileSync(htmlPath, 'utf8');
 
   const tagRegex = /<(link|script|img|source|a|meta)\b[^>]*>/gi;
@@ -258,9 +273,19 @@ function checkHtmlFile(htmlFile, brokenReferences, manifestRefs) {
 }
 
 function main() {
-  const htmlFiles = getHtmlFiles(projectRoot);
+  if (!fs.existsSync(siteRoot)) {
+    console.error('Missing dist/. Run npm run build to generate the production package.');
+    process.exit(1);
+  }
+
+  const htmlFiles = getHtmlFiles(siteRoot);
   const brokenReferences = [];
   const manifestRefs = new Set();
+
+  if (htmlFiles.length === 0) {
+    console.error(`Asset integrity check failed: no HTML files found in ${siteLabel}.`);
+    process.exit(1);
+  }
 
   for (const htmlFile of htmlFiles) {
     checkHtmlFile(htmlFile, brokenReferences, manifestRefs);
@@ -279,7 +304,7 @@ function main() {
     process.exit(1);
   }
 
-  console.log(`Asset integrity check passed (${htmlFiles.length} HTML files scanned).`);
+  console.log(`Asset integrity check passed (${htmlFiles.length} HTML files scanned in ${siteLabel}).`);
 }
 
 main();

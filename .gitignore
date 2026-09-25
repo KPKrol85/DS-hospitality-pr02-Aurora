@@ -13,6 +13,12 @@ node_modules/
 /dist/
 
 
+# Obsolete source-tree bundles: minified CSS and JS are generated only in dist/
+
+/css/style.min.css
+/js/script.min.js
+
+
 # Test, coverage and report output
 
 /reports/
@@ -104,9 +110,7 @@ Desktop.ini
 # assets/img-src/
 # assets/img/
 # css/
-# css/style.min.css
 # js/
-# js/script.min.js
 # scripts/
 # docs/
 # package.json

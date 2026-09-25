@@ -105,18 +105,30 @@ function watchForWaitingServiceWorker(registration) {
 }
 
 if ("serviceWorker" in navigator) {
-  window.addEventListener("load", async () => {
-    try {
-      const registration = await navigator.serviceWorker.register("/service-worker.js");
-      watchForWaitingServiceWorker(registration);
+  // __AURORA_PRODUCTION__ is defined as true only in the production bundle (build:js
+  // --define). Development loads the unbundled sources, which lack the bundles the
+  // production worker precaches. Tested inline so esbuild drops the development branch.
+  if (typeof __AURORA_PRODUCTION__ !== "undefined" && __AURORA_PRODUCTION__ === true) {
+    window.addEventListener("load", async () => {
+      try {
+        const registration = await navigator.serviceWorker.register("/service-worker.js");
+        watchForWaitingServiceWorker(registration);
 
-      navigator.serviceWorker.addEventListener("controllerchange", () => {
-        if (isRefreshing) return;
-        isRefreshing = true;
-        window.location.reload();
-      });
-    } catch {
- 
-    }
-  });
+        navigator.serviceWorker.addEventListener("controllerchange", () => {
+          if (isRefreshing) return;
+          isRefreshing = true;
+          window.location.reload();
+        });
+      } catch {
+
+      }
+    });
+  } else {
+    // Drop a worker left on this origin by a production build, so it cannot keep
+    // serving the development sources cache-first.
+    navigator.serviceWorker
+      .getRegistrations()
+      .then((registrations) => registrations.forEach((registration) => registration.unregister()))
+      .catch(() => {});
+  }
 }

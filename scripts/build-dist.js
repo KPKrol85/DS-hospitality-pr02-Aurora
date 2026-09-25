@@ -4,25 +4,41 @@ const path = require("path");
 const projectRoot = process.cwd();
 const distRoot = path.join(projectRoot, "dist");
 
+// Stages the production package. The CSS and JS bundles are not copied: build:css and
+// build:js generate them into dist/css/ and dist/js/ after this step.
 const requiredFiles = [
-  "css/style.min.css",
-  "js/script.min.js",
   "service-worker.js",
-];
-
-const optionalRootFiles = [
-  "_headers",
-  "_redirects",
   "site.webmanifest",
   "robots.txt",
   "sitemap.xml",
+  "_headers",
 ];
+
+// The maintained pages load the canonical sources. Only their published copies are
+// rewritten to load the generated bundles.
+const assetReferences = [
+  {
+    source: '<link rel="stylesheet" href="css/style.css" />',
+    production: '<link rel="stylesheet" href="css/style.min.css" />',
+  },
+  {
+    source: '<script type="module" src="js/script.js"></script>',
+    production: '<script src="js/script.min.js"></script>',
+  },
+];
+
+// Development entry points that no published page may reference.
+const sourceEntryPoints = ["css/style.css", "js/script.js"];
+
+function fail(message) {
+  console.error(message);
+  process.exit(1);
+}
 
 function ensureFileExists(relativePath) {
   const fullPath = path.join(projectRoot, relativePath);
   if (!fs.existsSync(fullPath)) {
-    console.error(`Missing required deployment file: ${relativePath}`);
-    process.exit(1);
+    fail(`Missing required deployment file: ${relativePath}`);
   }
 }
 
@@ -48,36 +64,53 @@ function getHtmlFiles() {
     .sort();
 }
 
+// Each page must contain every source reference exactly once, so a page whose tags
+// changed fails the build instead of shipping a reference the rewrite skipped.
+function toProductionHtml(htmlFile) {
+  let html = fs.readFileSync(path.join(projectRoot, htmlFile), "utf8");
+
+  for (const { source, production } of assetReferences) {
+    const parts = html.split(source);
+    if (parts.length !== 2) {
+      fail(`${htmlFile}: expected exactly one ${source}, found ${parts.length - 1}`);
+    }
+    html = parts.join(production);
+  }
+
+  for (const entryPoint of sourceEntryPoints) {
+    if (html.includes(entryPoint)) {
+      fail(`${htmlFile}: still references the development entry point ${entryPoint} after rewriting`);
+    }
+  }
+
+  return html;
+}
+
 function main() {
-  const htmlFiles = getHtmlFiles();
+  if (fs.existsSync(distRoot) && fs.readdirSync(distRoot).length > 0) {
+    fail("dist/ is not empty. Run npm run clean first; npm run build does this before staging.");
+  }
+
+  const productionPages = getHtmlFiles().map((htmlFile) => [htmlFile, toProductionHtml(htmlFile)]);
   const includedFiles = [];
 
+  requiredFiles.forEach(ensureFileExists);
   fs.mkdirSync(distRoot, { recursive: true });
 
-  for (const relativePath of requiredFiles) {
-    ensureFileExists(relativePath);
-    copyFile(relativePath);
-    includedFiles.push(relativePath);
+  for (const [htmlFile, html] of productionPages) {
+    fs.writeFileSync(path.join(distRoot, htmlFile), html);
+    includedFiles.push(htmlFile);
   }
 
   copyDirectory("assets");
   includedFiles.push("assets/");
 
-  for (const htmlFile of htmlFiles) {
-    copyFile(htmlFile);
-    includedFiles.push(htmlFile);
-  }
-
-  for (const relativePath of optionalRootFiles) {
-    if (!fs.existsSync(path.join(projectRoot, relativePath))) {
-      continue;
-    }
-
+  for (const relativePath of requiredFiles) {
     copyFile(relativePath);
     includedFiles.push(relativePath);
   }
 
-  console.log("Dist build completed.");
+  console.log("Dist staging completed. build:css and build:js generate the bundles next.");
   console.log(`Included: ${includedFiles.join(", ")}`);
 }
 

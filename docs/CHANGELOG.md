@@ -50,6 +50,7 @@ All significant changes to this project are documented in this file.
 - Added a `dist` packaging step that clears `dist/`, runs the full build, and copies the root HTML pages, `assets/`, production CSS and JS, service worker, manifest, `robots.txt`, `sitemap.xml`, `_headers`, and `_redirects`.
 - Added a manual `sharp` image pipeline that generates `assets/img/` output from `assets/img-src/` sources and is kept outside the default build chain.
 - Added a `_redirects` rule that serves `/index.html` with status 200 for unmatched paths on static hosting.
+- Refactored the build pipeline to separate development sources from production output: updated all 12 HTML pages to load canonical CSS and JavaScript, moved PostCSS and esbuild minification exclusively to `dist/css/` and `dist/js/`, and removed the tracked source-tree `.min` files. Updated `npm run build` to produce a complete deployable `dist/`, aligned the asset verification scripts with both development and production paths, and preserved `npm run dist` as an alias. Separated development and production Service Worker handling, raised the cache version to `aurora-1.5`, and synchronized the build documentation.
 
 ### Testing
 

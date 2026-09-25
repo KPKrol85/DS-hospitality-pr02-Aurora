@@ -7,49 +7,62 @@
 | Script | Command | What it does | When to use it |
 |---|---|---|---|
 | `test` | `echo "Error: no test specified" && exit 1` | Placeholder script that intentionally exits with an error. No automated test suite is configured in `package.json`. | Use only to confirm that no npm-based test runner has been implemented yet. |
-| `clean` | `node scripts/clean-dist.js` | Removes the existing `dist/` output directory before a fresh distribution build. | Run before preparing a clean deployment package. |
+| `clean` | `node scripts/clean-dist.js` | Removes the existing `dist/` output directory. | Runs first in `build`; run it on its own before calling `build:stage` directly. |
 | `images:bootstrap` | `node scripts/images-bootstrap.js` | Performs a one-time bootstrap copy of existing raster assets from `assets/img/` into `assets/img-src/`, preserving folder structure and skipping SVG and non-raster files. | Use once when initializing the standardized image workflow, or again with a clean source tree if you need to repopulate `img-src`. |
 | `build:images` | `node scripts/build-images.js` | Generates production-ready raster output from `assets/img-src/` into `assets/img/`, preserving folder structure and current naming conventions. This command is intentionally manual and is not part of the default build chain. | Use only after adding or updating source raster images in `assets/img-src/`. |
-| `build:css` | `postcss css/style.css -o css/style.min.css && npm run verify:css` | Builds production CSS from the source entry file and then verifies the generated output. | Use after any source CSS change when you need an updated production stylesheet. |
-| `verify:css` | `node scripts/verify-built-css.js` | Checks whether `css/style.min.css` exists and whether the built CSS no longer contains source-only patterns such as unresolved `@import` rules. | Run after CSS generation or when validating the production stylesheet. |
-| `build:js` | `esbuild js/script.js --bundle --minify --target=es2018 --outfile=js/script.min.js && npm run verify:js` | Bundles and minifies the JavaScript entrypoint and then verifies the generated file. | Use after editing JS source modules and before packaging or deployment. |
-| `verify:js` | `node scripts/verify-built-js.js` | Checks whether `js/script.min.js` exists and whether the built output no longer contains source-module syntax. | Run after JS generation or when validating the production bundle. |
-| `watch:css` | `postcss css/style.css -o css/style.min.css --watch` | Watches the source CSS entry and rebuilds `css/style.min.css` on change. | Use during CSS-focused development when you want automatic rebuilds. |
-| `watch:js` | `esbuild js/script.js --bundle --minify --target=es2018 --outfile=js/script.min.js --watch` | Watches JS source files and rebuilds the production bundle on change. | Use during JS-focused development when you want automatic bundle updates. |
-| `check:css-assets` | `node scripts/check-css-assets.js` | Validates CSS/JS asset expectations in the repo, including service worker references and production asset usage. | Run before deployment or after changing build output naming and asset references. |
-| `build` | `npm run build:css && npm run build:js && npm run check:css-assets && npm run check:assets && npm run check:tour-catalogue` | Standard application build for CSS and JS plus repository-level asset and tour catalogue verification. It does not regenerate raster images. | Use as the normal local build and pre-deploy verification command. |
-| `check:assets` | `node scripts/check-asset-integrity.js` | Scans source HTML files for broken asset references and reports integrity issues. | Run after editing HTML, changing asset names, or before shipping. |
+| `build:stage` | `node scripts/build-dist.js` | Stages the production package into an empty `dist/`: copies of the root HTML pages with `<link rel="stylesheet" href="css/style.css" />` and `<script type="module" src="js/script.js"></script>` rewritten to `<link rel="stylesheet" href="css/style.min.css" />` and `<script src="js/script.min.js"></script>`, the `assets/` directory, `service-worker.js`, `site.webmanifest`, `robots.txt`, `sitemap.xml`, and `_headers`. Fails when `dist/` is not empty, a required file is missing, or a page does not contain each source reference exactly once. The root pages are never modified. | Runs as the second step of `build`. |
+| `build:css` | `postcss css/style.css -o dist/css/style.min.css && npm run verify:css` | Builds the production stylesheet from the source entry file into `dist/css/` and then verifies the generated output. | Runs in `build`; run it on its own to refresh the stylesheet in an existing `dist/`. |
+| `verify:css` | `node scripts/verify-built-css.js` | Checks whether `dist/css/style.min.css` exists and whether the built CSS no longer contains source-only patterns such as unresolved `@import` rules or sourcemap references. | Run after CSS generation or when validating the production stylesheet. |
+| `build:js` | `esbuild js/script.js --bundle --minify --target=es2018 --define:__AURORA_PRODUCTION__=true --outfile=dist/js/script.min.js && npm run verify:js` | Bundles and minifies the JavaScript entrypoint into `dist/js/` with the production flag that enables Service Worker registration, and then verifies the generated file. | Runs in `build`; run it on its own to refresh the bundle in an existing `dist/`. |
+| `verify:js` | `node scripts/verify-built-js.js` | Checks whether `dist/js/script.min.js` exists, whether the built output no longer contains source-module syntax, and whether the production flag was substituted. | Run after JS generation or when validating the production bundle. |
+| `watch:css` | `postcss css/style.css -o dist/css/style.min.css --watch` | Watches the source CSS entry and rebuilds `dist/css/style.min.css` on change. | Use only while previewing an existing `dist/`; source development needs no rebuilds. |
+| `watch:js` | `esbuild js/script.js --bundle --minify --target=es2018 --define:__AURORA_PRODUCTION__=true --outfile=dist/js/script.min.js --watch` | Watches JS source files and rebuilds `dist/js/script.min.js` on change. | Use only while previewing an existing `dist/`; source development needs no rebuilds. |
+| `check:css-assets` | `node scripts/check-css-assets.js` | Checks that the 12 maintained pages load `css/style.css` and `js/script.js` (ES module) and none of the minified files; that `css/style.min.css` and `js/script.min.js` do not exist in the source tree; that the 12 pages in `dist/` load `css/style.min.css` and `js/script.min.js` and none of the source entry points; that `dist/css/` and `dist/js/` contain only the generated bundles; and that `dist/service-worker.js` precaches `/css/style.min.css` and `/js/script.min.js`, contains no legacy source paths, precaches only files present in `dist/`, and is the worker the bundle registers. | Runs in `build`; run it after changing asset references, page tags, or the service worker. |
+| `build` | `npm run clean && npm run build:stage && npm run build:css && npm run build:js && npm run check:css-assets && npm run check:assets && npm run check:assets:dist && npm run check:tour-catalogue` | Primary build: cleans `dist/`, stages the production files, generates the production CSS and JS, and verifies the sources and the finished package. It modifies no source files and does not regenerate raster images. | Use as the normal build, pre-deploy verification, and deployment packaging command. |
+| `check:assets` | `node scripts/check-asset-integrity.js` | Scans the root HTML pages for broken `href`, `src`, and `srcset` references, `og:image`, `twitter:image`, and JSON-LD URLs on the production domain, and `site.webmanifest` entries. | Run after editing HTML, changing asset names, or before shipping. |
+| `check:assets:dist` | `node scripts/check-asset-integrity.js --dist` | Runs the same scan against the pages and files in `dist/`; a reference only counts when its file exists inside `dist/`. | Runs in `build`; run it on its own to re-check an existing `dist/`. |
 | `check:tour-catalogue` | `node scripts/check-tour-catalogue.js` | Compares the tour listing cards in `tours.html` (name, duration, price, `data-days`, `data-price`, tour detail link) and the contact form tour select in `contact.html` (option values and labels) against the canonical catalogue `assets/data/tours.json`, and fails on any missing, duplicate, unknown, or mismatched offer. | Run after editing `assets/data/tours.json`, the tour listing cards, or the contact form tour select. |
-| `dist` | `npm run clean && npm run build && node scripts/build-dist.js` | Cleans old output, runs the standard application build, and prepares the final `dist/` folder without regenerating raster images. | Use when preparing the project for deployment or final handoff, assuming `assets/img/` already contains current production-ready images. |
+| `dist` | `npm run build` | Backward-compatible alias of `build`; it runs the same pipeline once. | Use where older instructions call for `npm run dist`. |
 
 ## Recommended workflow
 
 ### Local development
 1. `npm install`
 2. Run `npm run images:bootstrap` once to populate `assets/img-src/`
-3. Work on source files
-4. Use `npm run watch:css` and/or `npm run watch:js` when you want automatic rebuilds
+3. Serve the project root over HTTP (ES modules and `fetch()` do not work over `file://`) and work on the source files. The pages load `css/style.css` and `js/script.js` directly, so changes are visible on reload without any build or watch command.
+4. The source pages do not register the Service Worker. They unregister a production worker left on the same origin, for example by a `dist/` preview served at the same address.
 5. Run `npm run build:images` only after changing raster images in `assets/img-src/`
 
-### Pre-deployment check
+### Production preview
 1. `npm run build`
-2. Review warnings or failures from:
+2. Serve `dist/` over HTTP.
+3. Optionally run `npm run watch:css` and/or `npm run watch:js` to refresh the bundles in `dist/`. HTML and asset changes need another `npm run build`. The production Service Worker serves the bundles cache-first, so bypass it while previewing rebuilt bundles.
+
+### Pre-deployment check and distribution build
+1. If you changed raster image sources, run `npm run build:images` first.
+2. `npm run build`
+3. Review failures from:
+   - `build:stage`
    - `verify:css`
    - `verify:js`
    - `check:css-assets`
    - `check:assets`
+   - `check:assets:dist`
    - `check:tour-catalogue`
-3. If you changed raster image sources, run `npm run build:images` separately before packaging or deployment.
+4. If `dist/css/style.min.css` or `dist/js/script.min.js` differs from the deployed version, raise `VERSION` in `service-worker.js` and rebuild; the build does not revise it automatically.
 
-### Distribution build
-1. `npm run dist`
-2. Deploy the generated `dist/` directory with the expected static hosting setup
+### Deployment
+1. Deploy `dist/` manually to Netlify as the publish directory. It is the complete site root, including `404.html`, `offline.html`, `service-worker.js`, and `_headers`.
+2. Do not deploy the repository root: its pages load the unminified sources and do not register the Service Worker.
 
 ## Notes
-- The source CSS entry is `css/style.css`.
-- The production CSS file is `css/style.min.css`.
-- The source JS entry is `js/script.js`.
-- The production JS file is `js/script.min.js`.
+- The canonical sources are the root HTML pages, `css/style.css` with `css/modules/`, `js/script.js` with `js/features/`, `service-worker.js`, and `assets/`.
+- The source CSS entry is `css/style.css`; the production CSS file is `dist/css/style.min.css`.
+- The source JS entry is `js/script.js`; the production JS file is `dist/js/script.min.js`.
+- Minified CSS and JS are generated only in `dist/`. `css/style.min.css` and `js/script.min.js` are ignored in the source tree, and `check:css-assets` fails when they exist there.
+- The maintained pages reference the sources; only their copies in `dist/` reference the minified files. `scripts/build-dist.js` rewrites the two references in the copies and never writes to the root pages.
+- `dist/` is rebuilt from scratch by every `build`, and nothing in the build reads from `dist/`.
+- Only the production bundle registers `service-worker.js`, because esbuild replaces `__AURORA_PRODUCTION__` with `true` and removes the development branch.
 - `assets/img-src/` is the source-of-truth directory for raster image inputs.
 - `assets/img/` remains the production image directory consumed by HTML, CSS, JS, manifest files, and JSON data.
 - Standard `build` and `dist` commands assume `assets/img/` is already up to date.
