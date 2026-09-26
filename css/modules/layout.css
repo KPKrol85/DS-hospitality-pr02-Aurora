@@ -92,6 +92,10 @@
     transform 0.12s ease,
     box-shadow 0.18s ease;
 }
+/* Set by initNav() once its handlers are attached; html.js alone does not prove that. */
+.nav__toggle:not([data-nav-ready]) {
+  visibility: hidden;
+}
 .nav__toggle:active {
   transform: scale(0.97);
 }
@@ -128,7 +132,7 @@
   right: 0;
   z-index: 850;
   padding: var(--space-4);
-  display: flex;
+  display: none;
   flex-direction: column;
   gap: var(--space-6);
   background: var(--bg);
@@ -136,6 +140,10 @@
   box-shadow: var(--shadow-md);
   backdrop-filter: blur(6px);
   color: inherit;
+}
+/* Below 900px the drawer is collapsed unless the toggle, which precedes it in the header, is expanded. */
+.nav__toggle[aria-expanded="true"] ~ .nav {
+  display: flex;
 }
 .site-header.is-compact .nav {
   top: calc(var(--header-h-compact) + 0.22rem);
@@ -238,6 +246,7 @@
   }
   .nav {
     position: static;
+    display: flex;
     flex-direction: row;
     align-items: center;
     padding: 0;

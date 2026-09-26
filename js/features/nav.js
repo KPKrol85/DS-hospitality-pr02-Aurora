@@ -10,42 +10,29 @@ export function initNav() {
   let lastFocused = null;
   const mq = window.matchMedia("(min-width: 900px)");
 
-  const syncNavVisibility = () => {
-    if (mq.matches) {
-      nav.hidden = false;
-    } else if (!isOpen) {
-      nav.hidden = true;
-    }
+  // CSS shows the drawer below 900px only while the toggle is aria-expanded, and the desktop
+  // navigation always, so this module changes only the expanded state, scroll lock and focus.
+  const setExpanded = (expanded) => {
+    isOpen = expanded;
+    toggle.setAttribute("aria-expanded", String(expanded));
+    document.body.style.overflow = expanded ? "hidden" : "";
   };
 
   mq.addEventListener("change", () => {
-    if (mq.matches) {
-      isOpen = false;
-      document.body.style.overflow = "";
-      toggle.setAttribute("aria-expanded", "false");
+    if (mq.matches && isOpen) {
+      setExpanded(false);
     }
-    syncNavVisibility();
   });
 
-  syncNavVisibility();
-
   const openNav = () => {
-    isOpen = true;
-    nav.hidden = false;
-    toggle.setAttribute("aria-expanded", "true");
-    document.body.style.overflow = "hidden";
     lastFocused = document.activeElement;
+    setExpanded(true);
     focusable = Array.from(nav.querySelectorAll(focusableSelectors));
     focusable[0]?.focus();
   };
 
   const closeNav = () => {
-    isOpen = false;
-    toggle.setAttribute("aria-expanded", "false");
-    document.body.style.overflow = "";
-    if (!mq.matches) {
-      nav.hidden = true;
-    }
+    setExpanded(false);
     if (lastFocused) {
       lastFocused.focus();
     }
@@ -61,7 +48,7 @@ export function initNav() {
 
   nav.addEventListener("click", (event) => {
     const link = event.target instanceof HTMLElement ? event.target.closest("a") : null;
-    if (link) {
+    if (link && isOpen) {
       closeNav();
     }
   });
@@ -84,4 +71,6 @@ export function initNav() {
       }
     }
   });
+
+  toggle.setAttribute("data-nav-ready", "");
 }
