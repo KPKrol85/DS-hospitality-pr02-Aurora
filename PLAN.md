@@ -115,12 +115,13 @@
 
 **Goal:** Bring the only self-generated runtime UI into the site's language and design system, and remove code that implies capabilities the project does not have.
 
-- [ ] **PH4-01 — Bring the service worker update banner into the site language and design system** — **Priority:** Low
-  - [ ] translate the banner text, both button labels and the `aria-label` in `js/script.js:56` and `js/script.js:59` into Polish, matching the `lang="pl"` documents they appear in
-  - [ ] replace the inline `cssText` literals (`#1f2937`, `#fff`, `#111827`) with rules in the canonical stylesheet, using the existing design tokens and light/dark theme variables
-  - [ ] place the banner inside the layering scale used by the rest of the interface instead of the inline `z-index:9999`
+- [x] **PH4-01 — Bring the service worker update banner into the site language and design system** — **Priority:** Low
+  - [x] translate the banner text, both button labels and the `aria-label` in `js/script.js:56` and `js/script.js:59` into Polish, matching the `lang="pl"` documents they appear in
+  - [x] replace the inline `cssText` literals (`#1f2937`, `#fff`, `#111827`) with rules in the canonical stylesheet, using the existing design tokens and light/dark theme variables
+  - [x] place the banner inside the layering scale used by the rest of the interface instead of the inline `z-index:9999`
   - **Completion condition:** the banner reads in Polish and renders correctly in both themes with no inline colour literals
   - **Depends on:** `PH4-02` for the layering-token decision
+  - **Verification:** Polish copy, themes, responsive layout, keyboard, layering and SW update flow passed browser checks; `npm run build` passed under `aurora-1.11`
   - **Source:** `daily-AUDIT.md` — P2-06
 
 - [ ] **PH4-02 — Remove or complete the unreachable code paths** — **Priority:** Low

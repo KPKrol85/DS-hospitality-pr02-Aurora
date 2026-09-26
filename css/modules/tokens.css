@@ -87,6 +87,8 @@
   --z-header: 50;
   --z-overlay: 80;
   --z-modal: 100;
+  /* Above page content and filters; below the project notice, navigation, header and lightbox */
+  --z-update-banner: 70;
 }
 
 [data-theme="dark"] {

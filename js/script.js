@@ -69,28 +69,27 @@ function promptServiceWorkerUpdate(registration) {
 
   const banner = document.createElement("div");
   banner.id = "sw-update-banner";
+  banner.className = "sw-update-banner";
   banner.setAttribute("role", "status");
   banner.setAttribute("aria-live", "polite");
-  banner.style.cssText =
-    "position:fixed;left:1rem;right:1rem;bottom:1rem;z-index:9999;display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.75rem 1rem;background:#1f2937;color:#fff;border-radius:.5rem;box-shadow:0 6px 20px rgba(0,0,0,.2);font-size:.95rem;";
 
   const text = document.createElement("span");
-  text.textContent = "New version available.";
+  text.className = "sw-update-banner__text";
+  text.textContent = "Dostępna jest nowa wersja strony.";
 
   const actions = document.createElement("div");
-  actions.style.cssText = "display:flex;gap:.5rem;align-items:center;";
+  actions.className = "sw-update-banner__actions";
 
   const refreshButton = document.createElement("button");
   refreshButton.type = "button";
-  refreshButton.textContent = "Refresh";
-  refreshButton.style.cssText = "padding:.35rem .75rem;border:none;border-radius:.35rem;background:#fff;color:#111827;cursor:pointer;";
+  refreshButton.className = "btn";
+  refreshButton.textContent = "Odśwież";
 
   const dismissButton = document.createElement("button");
   dismissButton.type = "button";
-  dismissButton.setAttribute("aria-label", "Dismiss update notification");
-  dismissButton.textContent = "Dismiss";
-  dismissButton.style.cssText =
-    "padding:.35rem .75rem;border:1px solid rgba(255,255,255,.45);border-radius:.35rem;background:transparent;color:#fff;cursor:pointer;";
+  dismissButton.className = "btn btn--ghost";
+  dismissButton.setAttribute("aria-label", "Zamknij powiadomienie o aktualizacji");
+  dismissButton.textContent = "Zamknij";
 
   refreshButton.addEventListener("click", () => {
     registration.waiting?.postMessage({ type: "SKIP_WAITING" });
