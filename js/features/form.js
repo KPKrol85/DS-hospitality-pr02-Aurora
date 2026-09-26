@@ -6,7 +6,6 @@ export function initForm() {
 
   form.setAttribute('novalidate', '');
 
-  const successMessage = form.querySelector('.form__success');
   const tourSelect = form.querySelector('select[name="tour"]');
   const dateStart = form.querySelector('#date-start');
   const dateEnd = form.querySelector('#date-end');
@@ -45,9 +44,6 @@ export function initForm() {
 
   form.addEventListener('submit', event => {
     clearErrors(form);
-    if (successMessage) {
-      successMessage.hidden = true;
-    }
 
     let firstInvalidField = null;
     const fields = form.querySelectorAll('input, select, textarea');
@@ -144,11 +140,13 @@ function formatDateForInput() {
   return now.toISOString().split('T')[0];
 }
 
+// Selects the offer linked from tours.html as contact.html?tour=<catalogue id>. Only a value
+// that matches an option is applied; any other would leave the select with no option selected.
 function prefillFromQuery(select) {
   if (!select) return;
   const params = new URLSearchParams(window.location.search);
   const tour = params.get('tour');
-  if (tour) {
+  if (tour && Array.from(select.options).some(option => option.value === tour)) {
     select.value = tour;
   }
 }

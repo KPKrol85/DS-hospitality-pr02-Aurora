@@ -124,14 +124,15 @@
   - **Verification:** Polish copy, themes, responsive layout, keyboard, layering and SW update flow passed browser checks; `npm run build` passed under `aurora-1.11`
   - **Source:** `daily-AUDIT.md` — P2-06
 
-- [ ] **PH4-02 — Remove or complete the unreachable code paths** — **Priority:** Low
-  - [ ] remove the empty `initFiltersDropdowns()` export in `js/features/tours-filters.js:53` together with its import and call in `js/script.js:21`
-  - [ ] either link the six "Zapytaj o ofertę" buttons in `tours.html` with `?tour=<catalogue id>` so `prefillFromQuery` has a caller, or remove `prefillFromQuery` from `js/features/form.js:147` — **Depends on:** `PH1-02` for option values that match the catalogue ids
-  - [ ] remove the `.form__success` element in `contact.html:328` and its rule in `css/modules/components.css:440`, or give it a code path, given that submission navigates to `dziekuje.html`
-  - [ ] remove the unreachable `[data-theme="auto"]` block in `css/modules/tokens.css:112`, or implement an auto theme in `js/features/theme.js` and the inline head bootstrap, which currently set only `light` or `dark`
-  - [ ] either apply `--z-header`, `--z-overlay` and `--z-modal` to the real stacking contexts, which currently use raw values (20, 90, 850, 900, 1000, 1200), or remove the unused tokens
-  - [ ] rebuild the production bundles so the removals reach the shipped `dist/css/style.min.css` and `dist/js/script.min.js`
+- [x] **PH4-02 — Remove or complete the unreachable code paths** — **Priority:** Low
+  - [x] remove the empty `initFiltersDropdowns()` export in `js/features/tours-filters.js:53` together with its import and call in `js/script.js:21`
+  - [x] either link the six "Zapytaj o ofertę" buttons in `tours.html` with `?tour=<catalogue id>` so `prefillFromQuery` has a caller, or remove `prefillFromQuery` from `js/features/form.js:147` — **Depends on:** `PH1-02` for option values that match the catalogue ids
+  - [x] remove the `.form__success` element in `contact.html:328` and its rule in `css/modules/components.css:440`, or give it a code path, given that submission navigates to `dziekuje.html`
+  - [x] remove the unreachable `[data-theme="auto"]` block in `css/modules/tokens.css:112`, or implement an auto theme in `js/features/theme.js` and the inline head bootstrap, which currently set only `light` or `dark`
+  - [x] either apply `--z-header`, `--z-overlay` and `--z-modal` to the real stacking contexts, which currently use raw values (20, 90, 850, 900, 1000, 1200), or remove the unused tokens
+  - [x] rebuild the production bundles so the removals reach the shipped `dist/css/style.min.css` and `dist/js/script.min.js`
   - **Completion condition:** no exported function, markup element, CSS block or token remains that implies behaviour the project does not implement, and the four verification scripts still pass
+  - **Verification:** filtering, offer prefill, form validation and submission, themes, layering and the SW update banner passed browser checks; `npm run build` passed under `aurora-1.12`
   - **Source:** `daily-AUDIT.md` — P2-07
 
 ## Phase 5 — Documentation contracts

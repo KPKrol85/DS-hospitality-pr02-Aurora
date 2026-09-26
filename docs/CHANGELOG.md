@@ -29,6 +29,7 @@ All significant changes to this project are documented in this file.
 - Consolidated shared legal-page styling into `css/modules/legal.css`, including responsive and accessible table presentation.
 - Updated the terms of use using the KP_Code template, aligned with Aurora Travel's demonstrational scope, active contact form, and proprietary licensing.
 - Updated the Service Worker notification with Polish text, theme-aware styling, accessible controls and consistent layering. Updated the Service Worker cache to `aurora-1.11`.
+- Removed unreachable JavaScript, form markup and theme CSS, enabled tour-specific contact form prefill, and standardized UI layering with design tokens. Updated the Service Worker cache to `aurora-1.12`.
 
 ### Fixed
 

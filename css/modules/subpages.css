@@ -241,7 +241,7 @@
 .gallery-filters {
   position: sticky;
   top: 54px;
-  z-index: 10;
+  z-index: var(--z-gallery-filters);
   padding: 0;
   box-shadow: var(--shadow-focus);
   background: color-mix(in oklab, var(--bg) 42%, transparent);

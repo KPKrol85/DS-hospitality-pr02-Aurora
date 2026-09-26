@@ -49,5 +49,3 @@ function sortCards(cards, sortValue) {
   });
   return sorted;
 }
-
-export function initFiltersDropdowns() {}

@@ -83,12 +83,19 @@
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --dur-1: 150ms;
   --dur-2: 250ms;
-  /* Layering */
-  --z-header: 50;
-  --z-overlay: 80;
-  --z-modal: 100;
+  /* Layering, lowest to highest */
+  --z-gallery-filters: 10;
+  --z-filters: 20;
   /* Above page content and filters; below the project notice, navigation, header and lightbox */
   --z-update-banner: 70;
+  /* Project notice */
+  --z-overlay: 90;
+  /* Mobile navigation drawer; nested in the header, so on the page it stacks at --z-header */
+  --z-nav: 850;
+  --z-header: 900;
+  --z-skip-link: 1000;
+  /* Lightbox */
+  --z-modal: 1200;
 }
 
 [data-theme="dark"] {
@@ -108,22 +115,4 @@
   --shadow-lg: 0 25px 60px rgba(0, 0, 0, 0.42);
   --shadow-hover-md: 0 22px 50px rgba(0, 0, 0, 0.45);
   --shadow-hover-lg: 0 26px 60px rgba(0, 0, 0, 0.5);
-}
-
-@media (prefers-color-scheme: dark) {
-  [data-theme="auto"] {
-    --bg: #05060a;
-    --bg-elev: #0e121b;
-    --text: #f2f4f8;
-    --muted: #a3aec2;
-    --primary: #6fd1ff;
-    --primary-alt: #0f6d8c;
-    --border: rgba(111, 209, 255, 0.25);
-    /* Shadows - dark */
-    --shadow-sm: 0 10px 25px rgba(0, 0, 0, 0.35);
-    --shadow-md: 0 18px 40px rgba(0, 0, 0, 0.4);
-    --shadow-lg: 0 25px 60px rgba(0, 0, 0, 0.45);
-    --shadow-hover-md: 0 22px 50px rgba(0, 0, 0, 0.5);
-    --shadow-hover-lg: 0 26px 60px rgba(0, 0, 0, 0.55);
-  }
 }

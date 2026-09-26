@@ -2,7 +2,7 @@ import { initNav } from "./features/nav.js";
 import { initThemeToggle } from "./features/theme.js";
 import { initCompactHeader } from "./features/compact-header.js";
 import { initReveal } from "./features/reveal.js";
-import { initToursFilters, initFiltersDropdowns } from "./features/tours-filters.js";
+import { initToursFilters } from "./features/tours-filters.js";
 import { initTabs } from "./features/tabs.js";
 import { initAccordionFaq } from "./features/accordion-faq.js";
 import { initForm } from "./features/form.js";
@@ -18,7 +18,6 @@ document.addEventListener("DOMContentLoaded", () => {
   runInitializer("initThemeToggle", initThemeToggle);
   runInitializer("initCompactHeader", initCompactHeader);
   runInitializer("initToursFilters", initToursFilters);
-  runInitializer("initFiltersDropdowns", initFiltersDropdowns);
   runInitializer("initTabs", initTabs);
   runInitializer("initAccordionFaq", initAccordionFaq);
   runInitializer("initForm", initForm);

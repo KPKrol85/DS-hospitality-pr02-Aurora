@@ -291,7 +291,7 @@
 
 .section--filters {
   position: relative;
-  z-index: 20;
+  z-index: var(--z-filters);
   overflow: visible;
   padding: var(--space-6) 0;
 }
@@ -437,11 +437,6 @@ html[data-theme="dark"] .filters__select {
   color: #c0392b;
   font-size: var(--fs-1);
 }
-.form__success {
-  margin-top: var(--space-2);
-  color: #0a8754;
-  font-weight: var(--fw-medium);
-}
 .form[data-form] {
   position: relative;
 }
@@ -573,7 +568,7 @@ html[data-theme="dark"] .filters__select {
 .project-notice {
   position: fixed;
   inset: 0;
-  z-index: 90;
+  z-index: var(--z-overlay);
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -694,7 +689,7 @@ html[data-theme="dark"] .filters__select {
 .lightbox {
   position: fixed;
   inset: 0;
-  z-index: 1200;
+  z-index: var(--z-modal);
   background: color-mix(in oklab, var(--bg) 66%, transparent);
   backdrop-filter: blur(8px);
   box-shadow: inset 0 0 120px color-mix(in oklab, var(--muted) 20%, transparent);

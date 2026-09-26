@@ -88,7 +88,7 @@
   color: #fff;
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-sm);
-  z-index: 1000;
+  z-index: var(--z-skip-link);
   transition: transform 0.2s ease;
 }
 .skip-link:focus {
