@@ -1,3 +1,10 @@
+// Accessible name of a thumbnail button marked with data-lightbox-trigger. Uses the first
+// description that contains text, so a placeholder alt such as "..." falls back to the caption.
+export function getLightboxTriggerLabel(...descriptions) {
+  const description = descriptions.map((text) => (text || "").trim()).find((text) => /[\p{L}\p{N}]/u.test(text));
+  return description ? `Otwórz zdjęcie: ${description}` : "Otwórz zdjęcie";
+}
+
 export function initLightbox() {
   const overlay = document.querySelector("[data-lightbox]");
   if (!overlay) return;
@@ -31,12 +38,12 @@ export function initLightbox() {
     document.body.style.overflow = previousBodyOverflow;
   }
 
-  function open(img) {
+  function open(img, trigger) {
     collectImages();
     if (!images.includes(img)) return;
 
     current = img;
-    lastFocus = document.activeElement;
+    lastFocus = trigger;
     overlay.hidden = false;
     updateContent(img);
     closeBtn.focus();
@@ -51,7 +58,7 @@ export function initLightbox() {
       document.exitFullscreen().catch(() => {});
     }
 
-    if (lastFocus instanceof HTMLElement) {
+    if (lastFocus instanceof HTMLElement && lastFocus.isConnected) {
       lastFocus.focus();
     }
   }
@@ -89,26 +96,16 @@ export function initLightbox() {
     }
   }
 
+  // Thumbnails are native buttons, so Enter and Space arrive here as a click as well.
   document.addEventListener("click", (event) => {
-    const picture = event.target.closest("picture.tour-gallery__item, picture.gallery-item");
-    if (!picture) return;
+    const trigger = event.target.closest("button[data-lightbox-trigger]");
+    if (!trigger) return;
 
-    const img = picture.querySelector("img[data-lightbox-src]");
+    const img = trigger.querySelector("img[data-lightbox-src]");
     if (!img) return;
     if (!img.closest("[data-gallery]")) return;
 
-    open(img);
-  });
-
-  document.addEventListener("keydown", (event) => {
-    if (event.key !== "Enter" && event.key !== " ") return;
-    const img = document.activeElement;
-    if (!(img instanceof HTMLImageElement)) return;
-    if (!img.matches("img[data-lightbox-src]")) return;
-    if (!img.closest("[data-gallery]")) return;
-
-    event.preventDefault();
-    open(img);
+    open(img, trigger);
   });
 
   closeBtn.addEventListener("click", close);

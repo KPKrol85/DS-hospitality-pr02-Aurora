@@ -35,6 +35,7 @@ All significant changes to this project are documented in this file.
 - Fixed tour offers stating different names, durations, and prices across pages: synchronized the six `tours.html` listing cards (title, `N dni` duration, price, `data-days`, `data-price`), the contact form tour select (all six offers, with catalogue IDs as option values), and the homepage Tokio and Maldives durations with the canonical catalogue `assets/data/tours.json`, and added `scripts/check-tour-catalogue.js` (`npm run check:tour-catalogue`), run by `npm run build`, which fails when the listing cards or the contact select drift from the catalogue.
 - Fixed unmatched-path routing by removing the `_redirects` catch-all rule that served `index.html` with HTTP 200, allowing Netlify to use the maintained `404.html` page for unknown URLs with HTTP 404. Updated the Polish and English README sections to reflect the corrected routing and deployment configuration.
 - Fixed lightbox navigation to respect active gallery filters, keeping previous/next buttons, arrow keys, and swipe gestures within visible images while preserving correct navigation after filter changes. Updated the Service Worker cache version to `aurora-1.7`.
+- Improved gallery and tour thumbnail accessibility with native buttons, descriptive Polish labels, visible keyboard focus, and reliable lightbox activation via click, Enter, and Space. Preserved responsive images, filtered navigation, and focus restoration. Updated the Service Worker cache to `aurora-1.8`.
 
 ### Security
 

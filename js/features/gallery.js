@@ -1,3 +1,5 @@
+import { getLightboxTriggerLabel } from "./lightbox.js";
+
 const GALLERY_DATA_URL = "assets/data/gallery-data.json";
 const GALLERY_IMAGE_SIZES = "(min-width: 1024px) 360px, (min-width: 560px) 50vw, 100vw";
 
@@ -39,15 +41,20 @@ function createGalleryFigure(item) {
   figure.className = "reveal";
   figure.dataset.country = item.country;
 
-  const picture = document.createElement("picture");
-  picture.className = "gallery-item";
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "gallery-item";
+  button.dataset.lightboxTrigger = "";
+  button.setAttribute("aria-label", getLightboxTriggerLabel(item.alt, item.caption));
 
+  const picture = document.createElement("picture");
   picture.append(createSource(item.base, "avif"), createSource(item.base, "webp"), createImage(item));
+  button.append(picture);
 
   const figcaption = document.createElement("figcaption");
   figcaption.textContent = item.caption || "";
 
-  figure.append(picture, figcaption);
+  figure.append(button, figcaption);
   return figure;
 }
 
@@ -71,7 +78,6 @@ function createImage(item) {
   img.loading = "lazy";
   img.dataset.lightboxSrc = item.lightbox || `${basePath}-1600x1040.jpg`;
   img.dataset.caption = item.caption || "";
-  img.tabIndex = 0;
 
   return img;
 }

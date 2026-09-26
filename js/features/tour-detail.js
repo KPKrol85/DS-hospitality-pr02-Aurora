@@ -1,3 +1,5 @@
+import { getLightboxTriggerLabel } from "./lightbox.js";
+
 export function initTourDetail() {
   const params = new URLSearchParams(window.location.search);
   const rawTourId = params.get("id");
@@ -39,7 +41,7 @@ function fillTourContent(tour) {
 
   const galleryEl = document.querySelector("[data-tour-gallery]");
   if (galleryEl && tour.images.length > 0) {
-    galleryEl.innerHTML = tour.images.map((img) => createPictureMarkup(img.base, img.alt, img.caption)).join("");
+    galleryEl.innerHTML = tour.images.map((img) => createGalleryItemMarkup(img)).join("");
   }
 }
 
@@ -70,6 +72,15 @@ function sanitizeTourHtml(html) {
   });
 
   return template.innerHTML;
+}
+
+// Gallery thumbnails open the lightbox; the main image reuses createPictureMarkup without a button.
+function createGalleryItemMarkup(image) {
+  return `
+    <button type="button" class="tour-gallery__button" data-lightbox-trigger aria-label="${getLightboxTriggerLabel(image.alt, image.caption)}">
+      ${createPictureMarkup(image.base, image.alt, image.caption)}
+    </button>
+  `;
 }
 
 function createPictureMarkup(base, alt, caption = "") {
@@ -107,7 +118,6 @@ function createPictureMarkup(base, alt, caption = "") {
         loading="lazy"
         data-lightbox-src="${basePath}-1600x1040.jpg"
 data-caption="${caption}"
-        tabindex="0"
       />
     </picture>
   `;
