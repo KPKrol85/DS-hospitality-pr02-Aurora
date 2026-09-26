@@ -80,10 +80,11 @@
 
 **Goal:** Make interactive behaviour match what is on screen, and make the served markup correct when the bundle does not run.
 
-- [ ] **PH3-01 — Restrict lightbox navigation to visible gallery items** — **Priority:** Medium
-  - [ ] have `collectImages()` in `js/features/lightbox.js:21` exclude figures hidden by the active filter, which `js/features/gallery-filters.js:23` marks with `.is-hidden`
-  - [ ] keep the current index valid when the visible set changes
+- [x] **PH3-01 — Restrict lightbox navigation to visible gallery items** — **Priority:** Medium
+  - [x] have `collectImages()` in `js/features/lightbox.js:21` exclude figures hidden by the active filter, which `js/features/gallery-filters.js:23` marks with `.is-hidden` — images with an `.is-hidden` ancestor are skipped; `gallery-filters.js` is unchanged
+  - [x] keep the current index valid when the visible set changes — the lightbox tracks the displayed image instead of a numeric index and locates it in a freshly collected visible set on every step; it closes when that image is no longer visible
   - **Completion condition:** with a destination filter applied, the previous/next controls, the arrow keys and the swipe gestures stay within the filtered set
+  - **Verification:** browser smoke test on the unbundled sources — with the Maroko, Islandia and Tokio filters the previous/next controls, ArrowLeft/ArrowRight and synthetic swipe events stayed within the six filtered images and wrapped at both ends; the All filter cycled through all 36 images; switching to All while open continued from the displayed image, and switching to a filter that hides it closed the lightbox on the next step; the tour detail lightbox cycled through its six images; `npm run build` passed under `aurora-1.7`
   - **Source:** `daily-AUDIT.md` — P2-01
 
 - [ ] **PH3-02 — Expose gallery and tour thumbnails as real controls** — **Priority:** Medium

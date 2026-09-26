@@ -11,14 +11,15 @@ export function initLightbox() {
   if (!preview || !caption || !closeBtn || !prevBtn || !nextBtn) return;
 
   let images = [];
-  let index = 0;
+  let current = null;
   let lastFocus = null;
   let previousBodyOverflow = "";
 
   const focusable = [closeBtn, prevBtn, nextBtn];
 
+  // Only the images currently shown: the gallery filter hides excluded figures with .is-hidden.
   function collectImages() {
-    images = Array.from(document.querySelectorAll("[data-gallery] img[data-lightbox-src]"));
+    images = Array.from(document.querySelectorAll("[data-gallery] img[data-lightbox-src]")).filter((img) => !img.closest(".is-hidden"));
   }
 
   function lockScroll() {
@@ -30,12 +31,11 @@ export function initLightbox() {
     document.body.style.overflow = previousBodyOverflow;
   }
 
-  function open(newIndex) {
+  function open(img) {
     collectImages();
-    index = newIndex;
-    const img = images[index];
-    if (!img) return;
+    if (!images.includes(img)) return;
 
+    current = img;
     lastFocus = document.activeElement;
     overlay.hidden = false;
     updateContent(img);
@@ -56,10 +56,18 @@ export function initLightbox() {
     }
   }
 
+  // Steps from the displayed image through the images visible now, so a filter change
+  // while the lightbox is open cannot leave it on a stale index.
   function navigate(step) {
-    if (!images.length) return;
-    index = (index + step + images.length) % images.length;
-    updateContent(images[index]);
+    collectImages();
+    const position = images.indexOf(current);
+    if (position === -1) {
+      close();
+      return;
+    }
+
+    current = images[(position + step + images.length) % images.length];
+    updateContent(current);
   }
 
   function updateContent(img) {
@@ -89,10 +97,7 @@ export function initLightbox() {
     if (!img) return;
     if (!img.closest("[data-gallery]")) return;
 
-    collectImages();
-    const idx = images.indexOf(img);
-    if (idx === -1) return;
-    open(idx);
+    open(img);
   });
 
   document.addEventListener("keydown", (event) => {
@@ -103,10 +108,7 @@ export function initLightbox() {
     if (!img.closest("[data-gallery]")) return;
 
     event.preventDefault();
-    collectImages();
-    const idx = images.indexOf(img);
-    if (idx === -1) return;
-    open(idx);
+    open(img);
   });
 
   closeBtn.addEventListener("click", close);
