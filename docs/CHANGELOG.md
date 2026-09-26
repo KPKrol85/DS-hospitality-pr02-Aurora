@@ -37,6 +37,7 @@ All significant changes to this project are documented in this file.
 - Fixed lightbox navigation to respect active gallery filters, keeping previous/next buttons, arrow keys, and swipe gestures within visible images while preserving correct navigation after filter changes. Updated the Service Worker cache version to `aurora-1.7`.
 - Improved gallery and tour thumbnail accessibility with native buttons, descriptive Polish labels, visible keyboard focus, and reliable lightbox activation via click, Enter, and Space. Preserved responsive images, filtered navigation, and focus restoration. Updated the Service Worker cache to `aurora-1.8`.
 - Fixed the static tours counter and mobile navigation fallback when JavaScript is unavailable. The page now displays the correct initial offer count, keeps the mobile drawer collapsed until activated, and preserves desktop navigation without scripting. Updated the Service Worker cache to `aurora-1.9`.
+- Fixed reveal visibility when JavaScript fails by isolating feature initializers and enabling animations only after successful reveal setup. Preserved gallery animations and reduced-motion behaviour. Updated the Service Worker cache to `aurora-1.10`.
 
 ### Security
 

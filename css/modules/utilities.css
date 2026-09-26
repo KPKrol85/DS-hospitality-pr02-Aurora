@@ -94,23 +94,27 @@
 .skip-link:focus {
   transform: translate(-50%, 10%);
 }
-html.js .reveal {
+/* Set by initReveal() once every .reveal element is observed; html.js alone does not prove that.
+   Content may already be painted by then, so entering the hidden state is instant and only
+   .is-visible animates. */
+html.reveal-ready .reveal {
   opacity: 0;
   transform: translateY(40px);
+  transition: none;
+}
+html.reveal-ready .reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
   transition:
     opacity 0.6s ease,
     transform 0.6s ease;
 }
-html.js .reveal.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-html.js .gallery-grid figure.reveal {
+html.reveal-ready .gallery-grid figure.reveal {
   transform: translateY(16px);
+}
+html.reveal-ready .gallery-grid figure.reveal.is-visible {
+  transform: translateY(0);
   transition:
     opacity 0.35s ease-out,
     transform 0.35s ease-out;
-}
-html.js .gallery-grid figure.reveal.is-visible {
-  transform: translateY(0);
 }

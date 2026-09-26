@@ -13,28 +13,47 @@ import { initGallery } from "./features/gallery.js";
 import { initGalleryFilters } from "./features/gallery-filters.js";
 import { initProjectNotice } from "./features/project-notice.js";
 
-document.addEventListener("DOMContentLoaded", async () => {
-  initNav();
-  initThemeToggle();
-  initCompactHeader();
-  initToursFilters();
-  initFiltersDropdowns();
-  initTabs();
-  initAccordionFaq();
-  initForm();
-  initAriaCurrent();
+document.addEventListener("DOMContentLoaded", () => {
+  runInitializer("initNav", initNav);
+  runInitializer("initThemeToggle", initThemeToggle);
+  runInitializer("initCompactHeader", initCompactHeader);
+  runInitializer("initToursFilters", initToursFilters);
+  runInitializer("initFiltersDropdowns", initFiltersDropdowns);
+  runInitializer("initTabs", initTabs);
+  runInitializer("initAccordionFaq", initAccordionFaq);
+  runInitializer("initForm", initForm);
+  runInitializer("initAriaCurrent", initAriaCurrent);
 
   if (document.body.dataset.page === "gallery") {
-    await initGallery();
-    initGalleryFilters();
+    // The filters and reveal need the rendered figures. runInitializer never rejects, so reveal
+    // still starts for the rest of the page when the gallery fails.
+    runInitializer("initGallery", initGallery)
+      .then(() => runInitializer("initGalleryFilters", initGalleryFilters))
+      .then(() => runInitializer("initReveal", initReveal));
+  } else {
+    runInitializer("initReveal", initReveal);
   }
 
-  initReveal();
-  initTourDetail();
-  initLightbox();
-  initProjectNotice();
-  updateYear();
+  runInitializer("initTourDetail", initTourDetail);
+  runInitializer("initLightbox", initLightbox);
+  runInitializer("initProjectNotice", initProjectNotice);
+  runInitializer("updateYear", updateYear);
 });
+
+// Runs one initializer so that its synchronous throw or asynchronous rejection is reported
+// without stopping the others. The returned promise fulfils once the initializer settles.
+function runInitializer(name, init) {
+  try {
+    return Promise.resolve(init()).catch((error) => reportInitializerError(name, error));
+  } catch (error) {
+    reportInitializerError(name, error);
+    return Promise.resolve();
+  }
+}
+
+function reportInitializerError(name, error) {
+  console.error(`Błąd inicjalizacji: ${name}`, error);
+}
 
 function updateYear() {
   const yearEl = document.getElementById("current-year");

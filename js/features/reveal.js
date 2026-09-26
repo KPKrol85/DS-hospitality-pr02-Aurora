@@ -1,3 +1,7 @@
+// CSS hides unrevealed .reveal elements only under this class, so content stays visible
+// whenever reveal is not set up: no JavaScript, a missing bundle or a failure below.
+const READY_CLASS = "reveal-ready";
+
 export function initReveal() {
   const elements = Array.from(document.querySelectorAll(".reveal"));
 
@@ -23,5 +27,13 @@ export function initReveal() {
     },
   );
 
-  elements.forEach((el) => observer.observe(el));
+  try {
+    elements.forEach((el) => observer.observe(el));
+  } catch (error) {
+    // Leave no partial observation behind; without READY_CLASS every element stays visible.
+    observer.disconnect();
+    throw error;
+  }
+
+  document.documentElement.classList.add(READY_CLASS);
 }
