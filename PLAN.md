@@ -139,11 +139,12 @@
 
 **Goal:** Make the canonical README describe the repository as it is currently laid out.
 
-- [ ] **PH5-01 — Correct the documentation links and project structure in `README.md`** — **Priority:** Low
-  - [ ] update the `settings.md` and `pipeline-notes.md` links in both the PL and EN sections (`README.md:153`, `README.md:250`, `README.md:411`, `README.md:508`) to `docs/settings.md` and `docs/pipeline-notes.md`, which is where the files now live
-  - [ ] update both project structure trees so `docs/` lists `CHANGELOG.md`, `settings.md` and `pipeline-notes.md`, and the two files no longer appear at the project root
-  - [ ] list the root-level documentation files the repository actually tracks, or state explicitly that the tree is abridged
+- [x] **PH5-01 — Correct the documentation links and project structure in `README.md`** — **Priority:** Low
+  - [x] update the `settings.md` and `pipeline-notes.md` links in both the PL and EN sections (`README.md:153`, `README.md:250`, `README.md:411`, `README.md:508`) to `docs/settings.md` and `docs/pipeline-notes.md`, which is where the files now live
+  - [x] update both project structure trees so `docs/` lists `CHANGELOG.md`, `settings.md` and `pipeline-notes.md`, and the two files no longer appear at the project root
+  - [x] list the root-level documentation files the repository actually tracks, or state explicitly that the tree is abridged
   - **Completion condition:** every relative documentation link in `README.md` resolves to an existing file, and both structure trees match the repository layout
+  - **Verification:** both README language sections, relative documentation links and project structure trees were checked against the tracked repository files
 
 ## Optional future improvements
 

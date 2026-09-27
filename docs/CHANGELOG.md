@@ -49,6 +49,7 @@ All significant changes to this project are documented in this file.
 
 - Added bilingual Polish and English project documentation in `README.md` covering features, technology stack, project structure, build, deployment, and maintenance ownership.
 - Added `settings.md` and `pipeline-notes.md` documenting every npm script, the recommended development workflow, and the canonical source versus generated-output ownership rules.
+- Corrected README documentation links and aligned the Polish and English project structure trees with the actual repository layout.
 
 ### Build and Tooling
 
