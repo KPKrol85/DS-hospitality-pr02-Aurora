@@ -148,9 +148,10 @@
 
 ## Optional future improvements
 
-- [ ] **O-01 — Add automated coverage for the data-driven views**
+- [x] **O-01 — Add automated coverage for the data-driven views**
   - **Value:** `package.json` defines `test` as a placeholder that exits 1, and the filtering, sorting, tour rendering and form validation logic in `js/features/` has no automated coverage. Both Phase 1 defects are the class a small unit or DOM-level suite catches, and `assets/data/tours.json` and `assets/data/gallery-data.json` provide ready fixtures.
   - **Scope boundary:** non-blocking; the four repository verification scripts already pass and cover repository-level integrity.
+  - **Verification:** `npm test` passed 88 Vitest tests and caught a temporary filter regression; `npm run build` passed under `aurora-1.12` with unchanged bundles.
 
 - [ ] **O-02 — Extend asset integrity checking to runtime-generated paths**
   - **Value:** `scripts/check-asset-integrity.js` scans HTML tags, `srcset` candidates, JSON-LD, social images and the manifest. The image paths built in `js/features/gallery.js:79` and `js/features/tour-detail.js`, and the `url()` references in `css/modules/fonts.css`, fall outside it; they resolve today, but a renamed directory would not be reported.

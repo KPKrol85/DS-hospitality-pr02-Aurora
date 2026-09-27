@@ -20,6 +20,7 @@ All significant changes to this project are documented in this file.
 - Added a dismissible project notice that discloses the demonstration character of the site and stores acceptance in `localStorage`.
 - Added responsive image delivery with `avif`, `webp`, and `jpg` variants, self-hosted variable fonts, and lazy loading for images and the embedded map.
 - Added SEO metadata for indexable pages, including canonical URLs, Open Graph and Twitter Card tags, JSON-LD structured data, `robots.txt`, and `sitemap.xml`, with `noindex` applied to the 404, offline, thank-you, and tour detail pages.
+- Added 88 automated regression tests with Vitest and jsdom for tour filtering, gallery rendering, tour details and contact form validation, replacing the placeholder `npm test` command.
 
 ### Changed
 

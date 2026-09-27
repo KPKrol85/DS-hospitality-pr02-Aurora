@@ -6,7 +6,7 @@
 
 | Script | Command | What it does | When to use it |
 |---|---|---|---|
-| `test` | `echo "Error: no test specified" && exit 1` | Placeholder script that intentionally exits with an error. No automated test suite is configured in `package.json`. | Use only to confirm that no npm-based test runner has been implemented yet. |
+| `test` | `vitest run` | Runs the Vitest regression suite in `tests/` once, in a jsdom environment, as configured in `vitest.config.mjs`. It covers tour filtering and sorting, gallery rendering and filtering, tour detail rendering and HTML sanitization, and contact form validation and tour prefill. The tests import the modules in `js/features/`, mount markup from the maintained HTML pages, use the data in `assets/data/`, mock `fetch`, and fix the current date. It is not part of `build`. | Run after changing those modules, their pages, or the JSON data, and before a production build that ships such a change. |
 | `clean` | `node scripts/clean-dist.js` | Removes the existing `dist/` output directory. | Runs first in `build`; run it on its own before calling `build:stage` directly. |
 | `images:bootstrap` | `node scripts/images-bootstrap.js` | Performs a one-time bootstrap copy of existing raster assets from `assets/img/` into `assets/img-src/`, preserving folder structure and skipping SVG and non-raster files. | Use once when initializing the standardized image workflow, or again with a clean source tree if you need to repopulate `img-src`. |
 | `build:images` | `node scripts/build-images.js` | Generates production-ready raster output from `assets/img-src/` into `assets/img/`, preserving folder structure and current naming conventions. This command is intentionally manual and is not part of the default build chain. | Use only after adding or updating source raster images in `assets/img-src/`. |
@@ -42,8 +42,9 @@
 
 ### Pre-deployment check and distribution build
 1. If you changed raster image sources, run `npm run build:images` first.
-2. `npm run build`
-3. Review failures from:
+2. If you changed the data-driven views (`js/features/`, their pages, or `assets/data/`), run `npm test`.
+3. `npm run build`
+4. Review failures from:
    - `build:stage`
    - `verify:css`
    - `verify:js`
@@ -52,12 +53,12 @@
    - `check:assets:dist`
    - `check:tour-catalogue`
    - `check:sw-bundles`
-4. When `check:sw-bundles` reports a changed bundle hash and the change is intended, complete the cache version update:
+5. When `check:sw-bundles` reports a changed bundle hash and the change is intended, complete the cache version update:
    1. raise `VERSION` in `service-worker.js` above the version recorded in `service-worker-bundles.json`, for example from `aurora-1.6` to `aurora-1.7`;
    2. `npm run record:sw-bundles` to record the new version with the hashes of the bundles now in `dist/`;
    3. `npm run build`, which must pass;
    4. commit `service-worker-bundles.json` together with `service-worker.js` and the source change.
-5. `check:sw-bundles` covers only the two bundles. When another cache-first file changes (`site.webmanifest`, images, fonts), raise `VERSION` and run `npm run record:sw-bundles` and `npm run build` the same way.
+6. `check:sw-bundles` covers only the two bundles. When another cache-first file changes (`site.webmanifest`, images, fonts), raise `VERSION` and run `npm run record:sw-bundles` and `npm run build` the same way.
 
 ### Deployment
 1. Deploy `dist/` manually to Netlify as the publish directory. It is the complete site root, including `404.html`, `offline.html`, `service-worker.js`, and `_headers`.
@@ -77,3 +78,4 @@
 - Standard `build` and `dist` commands assume `assets/img/` is already up to date.
 - The image pipeline preserves relative folder structure and keeps current deterministic file naming.
 - The repository uses custom Node scripts in `scripts/` to enforce build integrity and packaging rules.
+- `tests/` and `vitest.config.mjs` are development-only: `js/script.js` does not import them and `build:stage` does not copy them, so they never reach `dist/`.

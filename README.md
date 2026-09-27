@@ -49,6 +49,7 @@ Jest to adres kanoniczny zadeklarowany w znacznikach `canonical`, w `sitemap.xml
 **Walidacja**
 
 - Własne skrypty Node w katalogu `scripts/`
+- Vitest ze środowiskiem jsdom (testy regresji widoków opartych na danych w katalogu `tests/`)
 
 **Hosting statyczny**
 
@@ -83,6 +84,7 @@ Projekt nie posiada zależności runtime; wszystkie pakiety są zadeklarowane ja
 │  ├─ features/              # moduły funkcjonalne init*
 │  └─ script.js              # punkt wejścia JS
 ├─ scripts/                  # skrypty build, pakowania i walidacji
+├─ tests/                    # testy regresji Vitest (jsdom) widoków opartych na danych
 ├─ dist/                     # paczka produkcyjna generowana przez npm run build (wykluczona z Git)
 ├─ docs/
 │  ├─ CHANGELOG.md
@@ -107,6 +109,7 @@ Projekt nie posiada zależności runtime; wszystkie pakiety są zadeklarowane ja
 ├─ sitemap.xml
 ├─ _headers
 ├─ postcss.config.js
+├─ vitest.config.mjs
 ├─ AGENTS.md
 ├─ CLAUDE.md
 ├─ PLAN.md
@@ -123,7 +126,7 @@ Projekt nie posiada zależności runtime; wszystkie pakiety są zadeklarowane ja
 npm install
 ```
 
-Repozytorium zawiera `package-lock.json` w formacie `lockfileVersion: 3`. Wymagane są Node.js i npm; repozytorium nie deklaruje wymaganej wersji Node.js (brak pola `engines` oraz plików `.nvmrc` i `.node-version`). Projekt nie korzysta ze zmiennych środowiskowych.
+Repozytorium zawiera `package-lock.json` w formacie `lockfileVersion: 3`. Wymagane są Node.js i npm; repozytorium nie deklaruje wymaganej wersji Node.js (brak pola `engines` oraz plików `.nvmrc` i `.node-version`). Pakiety testowe deklarują własne wymagania: Vitest 5 — Node.js `^22.12.0 || ^24.0.0 || >=26.0.0`, jsdom 30 — `^22.22.2 || ^24.15.0 || >=26.0.0`; build produkcyjny z nich nie korzysta. Projekt nie korzysta ze zmiennych środowiskowych.
 
 ### Development lokalny
 
@@ -154,7 +157,7 @@ Podgląd wersji produkcyjnej wymaga uruchomienia `npm run build` i serwera HTTP 
 - `npm run record:sw-bundles` — zapisuje w `service-worker-bundles.json` nową wartość `VERSION` z `service-worker.js` i skróty SHA-256 obu bundli z `dist/`. Odmawia zapisu, jeżeli `VERSION` nie jest wyższa od zapisanej wersji, więc nie zatwierdzi zmienionych bundli pod dotychczasową wersją.
 - `npm run images:bootstrap` — jednorazowo kopiuje istniejące pliki rastrowe z `assets/img/` do `assets/img-src/`.
 - `npm run build:images` — generuje `assets/img/` z `assets/img-src/`; celowo pozostaje poza domyślnym łańcuchem `build`.
-- `npm test` — skrypt zastępczy kończący się błędem; w projekcie nie skonfigurowano żadnego runnera testów.
+- `npm test` — jednorazowo, bez trybu obserwowania, uruchamia testy regresji Vitest z katalogu `tests/` w środowisku jsdom; nie wchodzi w skład `npm run build`.
 
 Szczegółowy opis każdego skryptu i rekomendowany przebieg pracy zawiera [settings.md](docs/settings.md).
 
@@ -198,7 +201,13 @@ Wykonanie `npm run build` wymaga zainstalowanych zależności.
 
 ### Testy i walidacja
 
-W projekcie nie skonfigurowano frameworka testowego ani testów jednostkowych czy przeglądarkowych — `npm test` jest skryptem zastępczym kończącym się błędem. Kontrolę jakości zapewniają skrypty Node uruchamiane w ramach `npm run build`, które osobno sprawdzają źródła i paczkę produkcyjną:
+```bash
+npm test
+```
+
+`npm test` uruchamia testy regresji (Vitest, środowisko jsdom) widoków opartych na danych: filtrowania i sortowania ofert (`tours-filters.js`), renderowania i filtrowania galerii (`gallery.js`, `gallery-filters.js`), strony szczegółów wycieczki wraz z sanityzacją HTML (`tour-detail.js`) oraz walidacji formularza kontaktowego i wyboru oferty z parametru `?tour=` (`form.js`). Testy importują rzeczywiste moduły z `js/features/`, znaczniki wczytują z utrzymywanych stron HTML, a dane — z `assets/data/*.json`. `fetch` jest mockowany, a bieżąca data ustalona, więc pakiet nie wykonuje żądań sieciowych i nie zależy od dnia ani strefy czasowej. Testy nie są częścią `npm run build` i nie trafiają do `dist/`; należy je uruchomić po zmianie tych modułów, ich stron lub danych. W projekcie nie ma testów przeglądarkowych.
+
+Integralność źródeł i paczki produkcyjnej sprawdzają skrypty Node uruchamiane w ramach `npm run build`:
 
 - `scripts/verify-built-css.js` — `dist/css/style.min.css`,
 - `scripts/verify-built-js.js` — `dist/js/script.min.js`,
@@ -342,6 +351,7 @@ This is the canonical origin declared in the `canonical` tags, in `sitemap.xml`,
 **Validation**
 
 - Custom Node scripts in `scripts/`
+- Vitest with a jsdom environment (regression tests for the data-driven views in `tests/`)
 
 **Static hosting**
 
@@ -376,6 +386,7 @@ The project has no runtime dependencies; every package is declared under `devDep
 │  ├─ features/              # init* feature modules
 │  └─ script.js              # JS entry point
 ├─ scripts/                  # build, packaging, and validation scripts
+├─ tests/                    # Vitest (jsdom) regression tests for the data-driven views
 ├─ dist/                     # production package generated by npm run build (excluded from Git)
 ├─ docs/
 │  ├─ CHANGELOG.md
@@ -400,6 +411,7 @@ The project has no runtime dependencies; every package is declared under `devDep
 ├─ sitemap.xml
 ├─ _headers
 ├─ postcss.config.js
+├─ vitest.config.mjs
 ├─ AGENTS.md
 ├─ CLAUDE.md
 ├─ PLAN.md
@@ -416,7 +428,7 @@ The project has no runtime dependencies; every package is declared under `devDep
 npm install
 ```
 
-The repository ships a `package-lock.json` with `lockfileVersion: 3`. Node.js and npm are required; the repository does not declare a required Node.js version (no `engines` field, no `.nvmrc`, no `.node-version`). The project uses no environment variables.
+The repository ships a `package-lock.json` with `lockfileVersion: 3`. Node.js and npm are required; the repository does not declare a required Node.js version (no `engines` field, no `.nvmrc`, no `.node-version`). The test packages declare their own requirements: Vitest 5 needs Node.js `^22.12.0 || ^24.0.0 || >=26.0.0` and jsdom 30 needs `^22.22.2 || ^24.15.0 || >=26.0.0`; the production build does not use them. The project uses no environment variables.
 
 ### Local Development
 
@@ -447,7 +459,7 @@ Previewing the production build requires `npm run build` and an HTTP server root
 - `npm run record:sw-bundles` — writes the new `VERSION` from `service-worker.js` and the SHA-256 hashes of both bundles in `dist/` to `service-worker-bundles.json`. It refuses unless `VERSION` is higher than the recorded version, so it cannot approve changed bundles under the existing version.
 - `npm run images:bootstrap` — performs a one-time copy of existing raster files from `assets/img/` into `assets/img-src/`.
 - `npm run build:images` — generates `assets/img/` from `assets/img-src/`; deliberately kept outside the default `build` chain.
-- `npm test` — a placeholder script that exits with an error; no test runner is configured in the project.
+- `npm test` — runs the Vitest regression suite in `tests/` once, without watch mode, in a jsdom environment; it is not part of `npm run build`.
 
 A per-script breakdown and the recommended workflow are documented in [settings.md](docs/settings.md).
 
@@ -491,7 +503,13 @@ Running `npm run build` requires installed dependencies.
 
 ### Testing and Validation
 
-No test framework and no unit or browser tests are configured in the project — `npm test` is a placeholder that exits with an error. Quality control is provided by Node scripts executed as part of `npm run build`, which check the sources and the production package separately:
+```bash
+npm test
+```
+
+`npm test` runs the regression suite (Vitest, jsdom environment) for the data-driven views: tour filtering and sorting (`tours-filters.js`), gallery rendering and filtering (`gallery.js`, `gallery-filters.js`), the tour detail page including its HTML sanitization (`tour-detail.js`), and contact form validation and offer selection from the `?tour=` parameter (`form.js`). The tests import the actual modules from `js/features/`, load their markup from the maintained HTML pages and their data from `assets/data/*.json`. `fetch` is mocked and the current date is fixed, so the suite makes no network requests and does not depend on the day or time zone. The tests are not part of `npm run build` and do not reach `dist/`; run them after changing those modules, their pages, or the data. The project has no browser tests.
+
+Source and production package integrity is checked by Node scripts executed as part of `npm run build`:
 
 - `scripts/verify-built-css.js` — `dist/css/style.min.css`,
 - `scripts/verify-built-js.js` — `dist/js/script.min.js`,
