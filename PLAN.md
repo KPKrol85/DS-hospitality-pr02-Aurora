@@ -163,6 +163,7 @@
   - **Scope boundary:** non-blocking; the current header set is a deliberate, functioning baseline and no injection path was identified.
   - **Verification:** `npm test` passed 127 Vitest tests, both CSP checks caught changed bootstraps and a stale `dist/_headers`, headless Chrome enforced the policy served from `dist/_headers`, and `npm run build` passed under `aurora-1.12` with unchanged bundles.
 
-- [ ] **O-04 — Preload the self-hosted variable fonts**
+- [x] **O-04 — Preload the self-hosted variable fonts**
   - **Value:** the two `woff2` variable fonts declared in `css/modules/fonts.css` with `font-display: swap` are discovered only after the stylesheet parses, and no page contains a `rel="preload"` link.
   - **Scope boundary:** non-blocking; stated as a loading-order property, not a measured improvement.
+  - **Verification:** headless Chrome showed each preloaded font (Manrope on all 12 pages, Inter on `index.html` only) requested once and reused by the stylesheet, `npm test` passed 133 Vitest tests, and `npm run build` passed under `aurora-1.13` with unchanged bundles.
