@@ -153,9 +153,10 @@
   - **Scope boundary:** non-blocking; the four repository verification scripts already pass and cover repository-level integrity.
   - **Verification:** `npm test` passed 88 Vitest tests and caught a temporary filter regression; `npm run build` passed under `aurora-1.12` with unchanged bundles.
 
-- [ ] **O-02 — Extend asset integrity checking to runtime-generated paths**
+- [x] **O-02 — Extend asset integrity checking to runtime-generated paths**
   - **Value:** `scripts/check-asset-integrity.js` scans HTML tags, `srcset` candidates, JSON-LD, social images and the manifest. The image paths built in `js/features/gallery.js:79` and `js/features/tour-detail.js`, and the `url()` references in `css/modules/fonts.css`, fall outside it; they resolve today, but a renamed directory would not be reported.
   - **Scope boundary:** non-blocking; broadens existing tooling and changes no runtime behaviour.
+  - **Verification:** `npm test` passed 101 Vitest tests, both asset checks caught a temporarily missing image variant, font and `dist/`-only file, and `npm run build` passed under `aurora-1.12` with unchanged bundles.
 
 - [ ] **O-03 — Pin the theme bootstrap with a CSP hash**
   - **Value:** `_headers` sets `script-src 'self' 'unsafe-inline'`, and the only inline script in the project is the theme bootstrap repeated in each page head. A hash would remove the blanket allowance while keeping the flash-of-wrong-theme prevention intact.

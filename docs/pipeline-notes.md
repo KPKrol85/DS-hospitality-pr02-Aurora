@@ -127,8 +127,8 @@ Intentional cache version update:
 | `npm run verify:css` | `dist/css/style.min.css` exists and contains no `@import` directive or sourcemap reference |
 | `npm run verify:js` | `dist/js/script.min.js` exists, contains no `import`/`export` syntax, and has the production flag substituted |
 | `npm run check:css-assets` | Maintained pages load the sources and no minified file; no minified bundle in the source tree; `dist/` pages load the bundles and no source entry point; `dist/css/` and `dist/js/` hold only the bundles; the Service Worker precache includes both bundles, contains no legacy source paths, and resolves to files in `dist/`; the bundle registers the staged worker |
-| `npm run check:assets` | Root pages: `href`, `src`, `srcset`, `og:image`, `twitter:image`, JSON-LD URLs, and `site.webmanifest` entries |
-| `npm run check:assets:dist` | The same scan for `dist/`; references must resolve to files inside `dist/` |
+| `npm run check:assets` | Root pages: `href`, `src`, `srcset`, `og:image`, `twitter:image`, JSON-LD URLs, and `site.webmanifest` entries; local `url()` and `@import` references of the linked stylesheets; the image variants and lightbox images that `gallery.js` and `tour-detail.js` build from `assets/data/` |
+| `npm run check:assets:dist` | The same scan for `dist/`, including `dist/css/style.min.css` and the data in `dist/assets/data/`; references must resolve to files inside `dist/` |
 | `npm run check:tour-catalogue` | `tours.html` listing cards and the `contact.html` tour select match `assets/data/tours.json` |
 | `npm run check:sw-bundles` | `VERSION` in `dist/service-worker.js` and the SHA-256 of `dist/css/style.min.css` and `dist/js/script.min.js` match `service-worker-bundles.json` |
 

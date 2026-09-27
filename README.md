@@ -150,8 +150,8 @@ Podgląd wersji produkcyjnej wymaga uruchomienia `npm run build` i serwera HTTP 
 - `npm run verify:css` — sprawdza, czy `dist/css/style.min.css` istnieje i nie zawiera dyrektyw `@import` ani odwołań do map źródeł.
 - `npm run verify:js` — sprawdza, czy `dist/js/script.min.js` istnieje, nie zawiera składni `import` ani `export` i został zbudowany z flagą produkcyjną.
 - `npm run check:css-assets` — sprawdza, czy 12 stron w katalogu głównym odwołuje się do źródeł kanonicznych, a ich kopie w `dist/` — do plików produkcyjnych, czy w katalogach źródłowych nie ma plików `css/style.min.css` ani `js/script.min.js`, czy `dist/css/` i `dist/js/` zawierają wyłącznie wygenerowane pliki oraz czy każda pozycja precache w `dist/service-worker.js` istnieje w `dist/`.
-- `npm run check:assets` — skanuje strony HTML w katalogu głównym w poszukiwaniu brakujących plików w atrybutach `href`, `src` i `srcset`, w adresach `og:image` i `twitter:image`, w danych JSON-LD oraz w `site.webmanifest`.
-- `npm run check:assets:dist` — ta sama kontrola dla stron i plików paczki `dist/`.
+- `npm run check:assets` — skanuje strony HTML w katalogu głównym w poszukiwaniu brakujących plików w atrybutach `href`, `src` i `srcset`, w adresach `og:image` i `twitter:image`, w danych JSON-LD oraz w `site.webmanifest`, a także w lokalnych odwołaniach `url()` i `@import` arkuszy stylów (fonty, mapa SVG) i w ścieżkach obrazów, które `gallery.js` i `tour-detail.js` budują z `assets/data/*.json` (cztery rozmiary w AVIF, WebP i JPG oraz obraz lightboxa). Brakujące, nieczytelne lub błędne dane również kończą kontrolę błędem.
+- `npm run check:assets:dist` — ta sama kontrola dla stron, arkusza `dist/css/style.min.css`, danych i plików paczki `dist/`; odwołanie liczy się tylko wtedy, gdy plik istnieje w `dist/`.
 - `npm run check:tour-catalogue` — porównuje karty ofert w `tours.html` i listę wycieczek formularza w `contact.html` z katalogiem `assets/data/tours.json`.
 - `npm run check:sw-bundles` — porównuje `VERSION` w `dist/service-worker.js` oraz skróty SHA-256 plików `dist/css/style.min.css` i `dist/js/script.min.js` z wersjonowanym w Git rejestrem `service-worker-bundles.json`; nigdy go nie zapisuje.
 - `npm run record:sw-bundles` — zapisuje w `service-worker-bundles.json` nową wartość `VERSION` z `service-worker.js` i skróty SHA-256 obu bundli z `dist/`. Odmawia zapisu, jeżeli `VERSION` nie jest wyższa od zapisanej wersji, więc nie zatwierdzi zmienionych bundli pod dotychczasową wersją.
@@ -205,14 +205,14 @@ Wykonanie `npm run build` wymaga zainstalowanych zależności.
 npm test
 ```
 
-`npm test` uruchamia testy regresji (Vitest, środowisko jsdom) widoków opartych na danych: filtrowania i sortowania ofert (`tours-filters.js`), renderowania i filtrowania galerii (`gallery.js`, `gallery-filters.js`), strony szczegółów wycieczki wraz z sanityzacją HTML (`tour-detail.js`) oraz walidacji formularza kontaktowego i wyboru oferty z parametru `?tour=` (`form.js`). Testy importują rzeczywiste moduły z `js/features/`, znaczniki wczytują z utrzymywanych stron HTML, a dane — z `assets/data/*.json`. `fetch` jest mockowany, a bieżąca data ustalona, więc pakiet nie wykonuje żądań sieciowych i nie zależy od dnia ani strefy czasowej. Testy nie są częścią `npm run build` i nie trafiają do `dist/`; należy je uruchomić po zmianie tych modułów, ich stron lub danych. W projekcie nie ma testów przeglądarkowych.
+`npm test` uruchamia testy regresji (Vitest, środowisko jsdom) widoków opartych na danych: filtrowania i sortowania ofert (`tours-filters.js`), renderowania i filtrowania galerii (`gallery.js`, `gallery-filters.js`), strony szczegółów wycieczki wraz z sanityzacją HTML (`tour-detail.js`) oraz walidacji formularza kontaktowego i wyboru oferty z parametru `?tour=` (`form.js`). Uruchamiają też `scripts/check-asset-integrity.js` na małych stronach tworzonych w katalogu tymczasowym, aby potwierdzić wykrywanie brakujących obrazów, fontów i plików `dist/`. Testy importują rzeczywiste moduły z `js/features/`, znaczniki wczytują z utrzymywanych stron HTML, a dane — z `assets/data/*.json`. `fetch` jest mockowany, a bieżąca data ustalona, więc pakiet nie wykonuje żądań sieciowych i nie zależy od dnia ani strefy czasowej. Testy nie są częścią `npm run build` i nie trafiają do `dist/`; należy je uruchomić po zmianie tych modułów, ich stron lub danych. W projekcie nie ma testów przeglądarkowych.
 
 Integralność źródeł i paczki produkcyjnej sprawdzają skrypty Node uruchamiane w ramach `npm run build`:
 
 - `scripts/verify-built-css.js` — `dist/css/style.min.css`,
 - `scripts/verify-built-js.js` — `dist/js/script.min.js`,
 - `scripts/check-css-assets.js` — odwołania do CSS i JS w stronach źródłowych i w `dist/`, brak zminifikowanych plików w katalogach źródłowych oraz precache i rejestrację Service Workera w `dist/`,
-- `scripts/check-asset-integrity.js` — integralność zasobów stron w katalogu głównym, a z flagą `--dist` — w paczce `dist/`,
+- `scripts/check-asset-integrity.js` — integralność zasobów stron, arkuszy stylów i ścieżek obrazów budowanych z danych JSON w katalogu głównym, a z flagą `--dist` — w paczce `dist/`,
 - `scripts/check-tour-catalogue.js` — zgodność ofert z katalogiem `assets/data/tours.json`,
 - `scripts/check-sw-bundles.js` — zgodność `VERSION` Service Workera i skrótów SHA-256 obu bundli z rejestrem `service-worker-bundles.json`.
 
@@ -452,8 +452,8 @@ Previewing the production build requires `npm run build` and an HTTP server root
 - `npm run verify:css` — checks that `dist/css/style.min.css` exists and contains no `@import` directives or sourcemap references.
 - `npm run verify:js` — checks that `dist/js/script.min.js` exists, contains no `import` or `export` syntax, and was built with the production flag.
 - `npm run check:css-assets` — checks that the 12 root pages reference the canonical sources and their `dist/` copies the production files, that the source directories contain no `css/style.min.css` or `js/script.min.js`, that `dist/css/` and `dist/js/` contain only the generated files, and that every precache entry in `dist/service-worker.js` exists in `dist/`.
-- `npm run check:assets` — scans the root HTML pages for missing files in `href`, `src`, and `srcset` attributes, in `og:image` and `twitter:image` URLs, in JSON-LD data, and in `site.webmanifest`.
-- `npm run check:assets:dist` — the same check for the pages and files of the `dist/` package.
+- `npm run check:assets` — scans the root HTML pages for missing files in `href`, `src`, and `srcset` attributes, in `og:image` and `twitter:image` URLs, in JSON-LD data, and in `site.webmanifest`, as well as in the local `url()` and `@import` references of the stylesheets (fonts, the map SVG) and in the image paths that `gallery.js` and `tour-detail.js` build from `assets/data/*.json` (four sizes in AVIF, WebP, and JPG plus the lightbox image). Missing, unreadable, or malformed data also fails the check.
+- `npm run check:assets:dist` — the same check for the pages, the `dist/css/style.min.css` stylesheet, the data, and the files of the `dist/` package; a reference only counts when its file exists in `dist/`.
 - `npm run check:tour-catalogue` — compares the offer cards in `tours.html` and the tour select of the form in `contact.html` against the catalogue in `assets/data/tours.json`.
 - `npm run check:sw-bundles` — compares `VERSION` in `dist/service-worker.js` and the SHA-256 hashes of `dist/css/style.min.css` and `dist/js/script.min.js` with the Git-tracked record `service-worker-bundles.json`; it never writes the record.
 - `npm run record:sw-bundles` — writes the new `VERSION` from `service-worker.js` and the SHA-256 hashes of both bundles in `dist/` to `service-worker-bundles.json`. It refuses unless `VERSION` is higher than the recorded version, so it cannot approve changed bundles under the existing version.
@@ -507,14 +507,14 @@ Running `npm run build` requires installed dependencies.
 npm test
 ```
 
-`npm test` runs the regression suite (Vitest, jsdom environment) for the data-driven views: tour filtering and sorting (`tours-filters.js`), gallery rendering and filtering (`gallery.js`, `gallery-filters.js`), the tour detail page including its HTML sanitization (`tour-detail.js`), and contact form validation and offer selection from the `?tour=` parameter (`form.js`). The tests import the actual modules from `js/features/`, load their markup from the maintained HTML pages and their data from `assets/data/*.json`. `fetch` is mocked and the current date is fixed, so the suite makes no network requests and does not depend on the day or time zone. The tests are not part of `npm run build` and do not reach `dist/`; run them after changing those modules, their pages, or the data. The project has no browser tests.
+`npm test` runs the regression suite (Vitest, jsdom environment) for the data-driven views: tour filtering and sorting (`tours-filters.js`), gallery rendering and filtering (`gallery.js`, `gallery-filters.js`), the tour detail page including its HTML sanitization (`tour-detail.js`), and contact form validation and offer selection from the `?tour=` parameter (`form.js`). It also runs `scripts/check-asset-integrity.js` against small sites written to a temporary directory to confirm that missing images, fonts, and `dist/` files are reported. The tests import the actual modules from `js/features/`, load their markup from the maintained HTML pages and their data from `assets/data/*.json`. `fetch` is mocked and the current date is fixed, so the suite makes no network requests and does not depend on the day or time zone. The tests are not part of `npm run build` and do not reach `dist/`; run them after changing those modules, their pages, or the data. The project has no browser tests.
 
 Source and production package integrity is checked by Node scripts executed as part of `npm run build`:
 
 - `scripts/verify-built-css.js` — `dist/css/style.min.css`,
 - `scripts/verify-built-js.js` — `dist/js/script.min.js`,
 - `scripts/check-css-assets.js` — CSS and JS references in the source pages and in `dist/`, the absence of minified files in the source directories, and the Service Worker precache and registration in `dist/`,
-- `scripts/check-asset-integrity.js` — asset integrity of the root pages, and with `--dist`, of the `dist/` package,
+- `scripts/check-asset-integrity.js` — asset integrity of the root pages, their stylesheets, and the image paths built from the JSON data, and with `--dist`, of the `dist/` package,
 - `scripts/check-tour-catalogue.js` — consistency of the offers with the catalogue in `assets/data/tours.json`,
 - `scripts/check-sw-bundles.js` — the Service Worker `VERSION` and the SHA-256 hashes of both bundles against the record in `service-worker-bundles.json`.
 
