@@ -32,6 +32,7 @@ All significant changes to this project are documented in this file.
 - Updated the Service Worker notification with Polish text, theme-aware styling, accessible controls and consistent layering. Updated the Service Worker cache to `aurora-1.11`.
 - Removed unreachable JavaScript, form markup and theme CSS, enabled tour-specific contact form prefill, and standardized UI layering with design tokens. Updated the Service Worker cache to `aurora-1.12`.
 - Extended asset integrity checks to cover runtime-generated gallery and tour images, lightbox assets, and local CSS resources in both source and production builds.
+- Replaced inline script permissions with SHA-256 CSP hashes for the theme bootstrap and added automated CSP verification for source and production builds.
 
 ### Fixed
 

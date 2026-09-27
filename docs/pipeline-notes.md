@@ -11,6 +11,7 @@
 | CSS source | `css/style.css` and `css/modules/` | yes | Loaded directly by the maintained pages |
 | JS source | `js/script.js` and `js/features/` | yes | Loaded directly as ES modules by the maintained pages |
 | Service worker | `service-worker.js` | yes | Copied unchanged to `dist/`; registered only by the production bundle |
+| Security headers | `_headers` | yes | Approved Netlify headers, including the Content-Security-Policy with the SHA-256 hashes of the inline scripts; copied unchanged to `dist/`; never written by the build |
 | Bundle approval record | `service-worker-bundles.json` | yes | SHA-256 of both bundles approved for the worker's `VERSION`; read by `npm run build`, written only by `npm run record:sw-bundles`; not published |
 | Production pages | `dist/*.html` | no | Copies of the maintained pages with the two asset references rewritten |
 | Production CSS | `dist/css/style.min.css` | no | PostCSS with `postcss-import`, `autoprefixer`, `cssnano` |
@@ -47,7 +48,7 @@ Their copies in `dist/` (production):
 2. `build:stage` — `scripts/build-dist.js` requires an empty `dist/`, writes the rewritten page copies, and copies `assets/` without `assets/img-src/`, `service-worker.js`, `site.webmanifest`, `robots.txt`, `sitemap.xml`, and `_headers`. A missing file fails the build.
 3. `build:css` — generates `dist/css/style.min.css`, then runs `verify:css`.
 4. `build:js` — generates `dist/js/script.min.js`, then runs `verify:js`.
-5. `check:css-assets`, `check:assets`, `check:assets:dist`, `check:tour-catalogue` — verify the sources and the finished package.
+5. `check:css-assets`, `check:assets`, `check:assets:dist`, `check:csp`, `check:csp:dist`, `check:tour-catalogue` — verify the sources and the finished package (see [Content Security Policy for inline scripts](#content-security-policy-for-inline-scripts)).
 6. `check:sw-bundles` — compares both generated bundles and the `VERSION` of `dist/service-worker.js` with `service-worker-bundles.json` (see [Service Worker cache version](#service-worker-cache-version)).
 
 - `npm run dist` is a backward-compatible alias that runs `npm run build` once.
@@ -120,6 +121,31 @@ Intentional cache version update:
 
 `npm run record:sw-bundles` refuses to write when `VERSION` in `service-worker.js` does not advance the recorded version of the same name (numbers compare segment by segment, so `aurora-1.10` follows `aurora-1.9`), when the existing record is missing or malformed, or when either bundle is missing. It therefore cannot replace the hashes of a version already recorded. `npm run record:sw-bundles -- --init` creates the first record and refuses when one exists; a missing record is restored from Git, not recreated.
 
+## Content Security Policy for inline scripts
+
+`_headers` sets one Content-Security-Policy for every path (`/*`). Its `script-src` allows the site's own script files through `'self'` and, instead of `'unsafe-inline'`, only the inline scripts whose SHA-256 hash it lists. The only inline script is the theme bootstrap in the head of each page, which applies the stored or preferred theme before the stylesheet loads. It exists in three textual variants with the same behaviour — one on nine pages, one with extra blank lines in `contact.html`, and one with an extra blank line in `cookies.html` and `offline.html` — so `script-src` lists three hashes. The other directives, including `style-src 'self' 'unsafe-inline'`, are unaffected.
+
+- A hash covers the exact text between `<script>` and `</script>`, indentation and blank lines included. The browser hashes that text after HTML parsing has turned CRLF and lone CR line endings into LF, so CRLF and LF checkouts produce the same hashes; `scripts/check-csp.js` normalizes line endings the same way before hashing with Node's `crypto`.
+- JSON-LD blocks (`type="application/ld+json"`) are never executed and need no hash. Any other inline `<script>` counts as executable, whatever its type. Inline event handler attributes and `javascript:` URLs cannot be approved by a hash, so the policy blocks them.
+
+`_headers` is the approved policy: the checks read it and never update it, so a new or changed inline script fails the build until its hash has been reviewed and added by hand. `npm run check:csp` hashes every inline script of the maintained pages and fails when:
+
+- an inline script has no approved hash in `script-src`, or `script-src` approves a hash that no page uses;
+- `script-src` contains `'unsafe-inline'` or a nonce, lacks `'self'`, or is overridden for inline scripts by `script-src-elem` or `script-src-attr`;
+- `_headers` does not hold exactly one Content-Security-Policy, in the `/*` rule, with one `script-src` directive;
+- a page has an inline event handler, a `javascript:` URL, an unterminated `<script>`, or a script file from another origin.
+
+`npm run check:csp:dist` runs the same check for the pages in `dist/` against `dist/_headers`, the policy published with them, so a changed page in the package fails even when the sources are correct. It also fails when `dist/_headers` is missing or its Content-Security-Policy differs from `_headers`. Both checks run in `npm run build` after `build:stage` has staged the pages and `_headers`.
+
+Changing an inline script:
+
+1. Change the script in the maintained pages.
+2. `npm run check:csp` — reports the hash of each script that is not approved.
+3. Review the change. If it is intended, add the reported hash to `script-src` in `_headers` and remove the hashes the check then reports as unused.
+4. `npm run build` — must pass.
+
+A change to `_headers` alone leaves the pages and bundles unchanged, so `check:sw-bundles` requires no new `VERSION`. The Service Worker stores each cached HTML response with the headers it was served with, so a cached page keeps the policy it arrived with; the precached `offline.html` receives a changed policy when a new `VERSION` replaces the caches.
+
 ## Verification
 
 | Command | Scope |
@@ -129,6 +155,8 @@ Intentional cache version update:
 | `npm run check:css-assets` | Maintained pages load the sources and no minified file; no minified bundle in the source tree; `dist/` pages load the bundles and no source entry point; `dist/css/` and `dist/js/` hold only the bundles; the Service Worker precache includes both bundles, contains no legacy source paths, and resolves to files in `dist/`; the bundle registers the staged worker |
 | `npm run check:assets` | Root pages: `href`, `src`, `srcset`, `og:image`, `twitter:image`, JSON-LD URLs, and `site.webmanifest` entries; local `url()` and `@import` references of the linked stylesheets; the image variants and lightbox images that `gallery.js` and `tour-detail.js` build from `assets/data/` |
 | `npm run check:assets:dist` | The same scan for `dist/`, including `dist/css/style.min.css` and the data in `dist/assets/data/`; references must resolve to files inside `dist/` |
+| `npm run check:csp` | Every inline script of the root pages matches a SHA-256 hash in `script-src` of `_headers`, and every approved hash is used; no `'unsafe-inline'`, nonce, overriding `script-src-elem` or `script-src-attr`, inline event handler, `javascript:` URL, or script file from another origin |
+| `npm run check:csp:dist` | The same for the pages in `dist/` against `dist/_headers`, whose Content-Security-Policy must equal the one in `_headers` |
 | `npm run check:tour-catalogue` | `tours.html` listing cards and the `contact.html` tour select match `assets/data/tours.json` |
 | `npm run check:sw-bundles` | `VERSION` in `dist/service-worker.js` and the SHA-256 of `dist/css/style.min.css` and `dist/js/script.min.js` match `service-worker-bundles.json` |
 

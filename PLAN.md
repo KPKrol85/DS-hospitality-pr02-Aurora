@@ -158,9 +158,10 @@
   - **Scope boundary:** non-blocking; broadens existing tooling and changes no runtime behaviour.
   - **Verification:** `npm test` passed 101 Vitest tests, both asset checks caught a temporarily missing image variant, font and `dist/`-only file, and `npm run build` passed under `aurora-1.12` with unchanged bundles.
 
-- [ ] **O-03 — Pin the theme bootstrap with a CSP hash**
+- [x] **O-03 — Pin the theme bootstrap with a CSP hash**
   - **Value:** `_headers` sets `script-src 'self' 'unsafe-inline'`, and the only inline script in the project is the theme bootstrap repeated in each page head. A hash would remove the blanket allowance while keeping the flash-of-wrong-theme prevention intact.
   - **Scope boundary:** non-blocking; the current header set is a deliberate, functioning baseline and no injection path was identified.
+  - **Verification:** `npm test` passed 127 Vitest tests, both CSP checks caught changed bootstraps and a stale `dist/_headers`, headless Chrome enforced the policy served from `dist/_headers`, and `npm run build` passed under `aurora-1.12` with unchanged bundles.
 
 - [ ] **O-04 — Preload the self-hosted variable fonts**
   - **Value:** the two `woff2` variable fonts declared in `css/modules/fonts.css` with `font-display: swap` are discovered only after the stylesheet parses, and no page contains a `rel="preload"` link.

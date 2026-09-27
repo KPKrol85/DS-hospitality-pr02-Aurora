@@ -140,7 +140,7 @@ Podgląd wersji produkcyjnej wymaga uruchomienia `npm run build` i serwera HTTP 
 
 ### Dostępne skrypty
 
-- `npm run build` — główna komenda budowania: `clean`, `build:stage`, `build:css`, `build:js`, a następnie `check:css-assets`, `check:assets`, `check:assets:dist`, `check:tour-catalogue` i `check:sw-bundles`. Tworzy kompletną paczkę wdrożeniową w `dist/` i nie modyfikuje plików źródłowych.
+- `npm run build` — główna komenda budowania: `clean`, `build:stage`, `build:css`, `build:js`, a następnie `check:css-assets`, `check:assets`, `check:assets:dist`, `check:csp`, `check:csp:dist`, `check:tour-catalogue` i `check:sw-bundles`. Tworzy kompletną paczkę wdrożeniową w `dist/` i nie modyfikuje plików źródłowych.
 - `npm run dist` — alias zgodności wstecznej, który uruchamia `npm run build`.
 - `npm run clean` — usuwa katalog `dist/`.
 - `npm run build:stage` — uruchamia `scripts/build-dist.js`, który w pustym katalogu `dist/` umieszcza kopie stron HTML z odwołaniami przepisanymi na `css/style.min.css` i `js/script.min.js`, katalog `assets/`, `service-worker.js`, `site.webmanifest`, `robots.txt`, `sitemap.xml` i `_headers`.
@@ -152,6 +152,8 @@ Podgląd wersji produkcyjnej wymaga uruchomienia `npm run build` i serwera HTTP 
 - `npm run check:css-assets` — sprawdza, czy 12 stron w katalogu głównym odwołuje się do źródeł kanonicznych, a ich kopie w `dist/` — do plików produkcyjnych, czy w katalogach źródłowych nie ma plików `css/style.min.css` ani `js/script.min.js`, czy `dist/css/` i `dist/js/` zawierają wyłącznie wygenerowane pliki oraz czy każda pozycja precache w `dist/service-worker.js` istnieje w `dist/`.
 - `npm run check:assets` — skanuje strony HTML w katalogu głównym w poszukiwaniu brakujących plików w atrybutach `href`, `src` i `srcset`, w adresach `og:image` i `twitter:image`, w danych JSON-LD oraz w `site.webmanifest`, a także w lokalnych odwołaniach `url()` i `@import` arkuszy stylów (fonty, mapa SVG) i w ścieżkach obrazów, które `gallery.js` i `tour-detail.js` budują z `assets/data/*.json` (cztery rozmiary w AVIF, WebP i JPG oraz obraz lightboxa). Brakujące, nieczytelne lub błędne dane również kończą kontrolę błędem.
 - `npm run check:assets:dist` — ta sama kontrola dla stron, arkusza `dist/css/style.min.css`, danych i plików paczki `dist/`; odwołanie liczy się tylko wtedy, gdy plik istnieje w `dist/`.
+- `npm run check:csp` — sprawdza, czy każdy skrypt inline stron w katalogu głównym (bootstrap motywu) ma swój skrót SHA-256 w dyrektywie `script-src` w `_headers`, czy `script-src` nie zawiera `'unsafe-inline'` ani nieużywanych skrótów oraz czy strony nie zawierają atrybutów obsługi zdarzeń ani adresów `javascript:`. Bloki JSON-LD i pliki skryptów z tej samej domeny nie wymagają skrótu. Nigdy nie modyfikuje `_headers`.
+- `npm run check:csp:dist` — ta sama kontrola dla stron w `dist/` względem `dist/_headers`; kończy się błędem również wtedy, gdy brakuje `dist/_headers` albo jego Content-Security-Policy różni się od `_headers`.
 - `npm run check:tour-catalogue` — porównuje karty ofert w `tours.html` i listę wycieczek formularza w `contact.html` z katalogiem `assets/data/tours.json`.
 - `npm run check:sw-bundles` — porównuje `VERSION` w `dist/service-worker.js` oraz skróty SHA-256 plików `dist/css/style.min.css` i `dist/js/script.min.js` z wersjonowanym w Git rejestrem `service-worker-bundles.json`; nigdy go nie zapisuje.
 - `npm run record:sw-bundles` — zapisuje w `service-worker-bundles.json` nową wartość `VERSION` z `service-worker.js` i skróty SHA-256 obu bundli z `dist/`. Odmawia zapisu, jeżeli `VERSION` nie jest wyższa od zapisanej wersji, więc nie zatwierdzi zmienionych bundli pod dotychczasową wersją.
@@ -172,7 +174,7 @@ npm run build
 1. `clean` — usuwa poprzedni katalog `dist/`.
 2. `build:stage` — umieszcza w `dist/` pliki produkcyjne: kopie stron HTML z przepisanymi odwołaniami, katalog `assets/`, `service-worker.js`, `site.webmanifest`, `robots.txt`, `sitemap.xml` i `_headers`. Brak któregokolwiek z tych plików albo strona, która nie zawiera dokładnie jednego `<link rel="stylesheet" href="css/style.css" />` i jednego `<script type="module" src="js/script.js"></script>`, przerywa build.
 3. `build:css` i `build:js` — generują zminifikowane pliki w `dist/css/` i `dist/js/` i weryfikują je.
-4. `check:css-assets`, `check:assets`, `check:assets:dist` i `check:tour-catalogue` — weryfikują źródła i gotową paczkę.
+4. `check:css-assets`, `check:assets`, `check:assets:dist`, `check:csp`, `check:csp:dist` i `check:tour-catalogue` — weryfikują źródła i gotową paczkę.
 5. `check:sw-bundles` — przerywa build, jeżeli wygenerowane bundle albo `VERSION` Service Workera różnią się od wartości zapisanych w `service-worker-bundles.json`.
 
 Wynikowa struktura katalogu `dist/`:
@@ -205,7 +207,7 @@ Wykonanie `npm run build` wymaga zainstalowanych zależności.
 npm test
 ```
 
-`npm test` uruchamia testy regresji (Vitest, środowisko jsdom) widoków opartych na danych: filtrowania i sortowania ofert (`tours-filters.js`), renderowania i filtrowania galerii (`gallery.js`, `gallery-filters.js`), strony szczegółów wycieczki wraz z sanityzacją HTML (`tour-detail.js`) oraz walidacji formularza kontaktowego i wyboru oferty z parametru `?tour=` (`form.js`). Uruchamiają też `scripts/check-asset-integrity.js` na małych stronach tworzonych w katalogu tymczasowym, aby potwierdzić wykrywanie brakujących obrazów, fontów i plików `dist/`. Testy importują rzeczywiste moduły z `js/features/`, znaczniki wczytują z utrzymywanych stron HTML, a dane — z `assets/data/*.json`. `fetch` jest mockowany, a bieżąca data ustalona, więc pakiet nie wykonuje żądań sieciowych i nie zależy od dnia ani strefy czasowej. Testy nie są częścią `npm run build` i nie trafiają do `dist/`; należy je uruchomić po zmianie tych modułów, ich stron lub danych. W projekcie nie ma testów przeglądarkowych.
+`npm test` uruchamia testy regresji (Vitest, środowisko jsdom) widoków opartych na danych: filtrowania i sortowania ofert (`tours-filters.js`), renderowania i filtrowania galerii (`gallery.js`, `gallery-filters.js`), strony szczegółów wycieczki wraz z sanityzacją HTML (`tour-detail.js`) oraz walidacji formularza kontaktowego i wyboru oferty z parametru `?tour=` (`form.js`). Uruchamiają też `scripts/check-asset-integrity.js` na małych stronach tworzonych w katalogu tymczasowym, aby potwierdzić wykrywanie brakujących obrazów, fontów i plików `dist/`, oraz `scripts/check-csp.js` na kopiach stron i `_headers`, aby potwierdzić wykrywanie zmienionych lub nowych skryptów inline i nieaktualnej polityki. Każdy wariant bootstrapu motywu jest wykonywany podczas parsowania swojej strony w jsdom — z zapisanym motywem, preferencją systemową i niedostępnym `localStorage` — a następnie sprawdzane jest przełączanie motywu. Testy importują rzeczywiste moduły z `js/features/`, znaczniki wczytują z utrzymywanych stron HTML, a dane — z `assets/data/*.json`. `fetch` jest mockowany, a bieżąca data ustalona, więc pakiet nie wykonuje żądań sieciowych i nie zależy od dnia ani strefy czasowej. Testy nie są częścią `npm run build` i nie trafiają do `dist/`; należy je uruchomić po zmianie tych modułów, ich stron lub danych. W projekcie nie ma testów przeglądarkowych.
 
 Integralność źródeł i paczki produkcyjnej sprawdzają skrypty Node uruchamiane w ramach `npm run build`:
 
@@ -213,17 +215,18 @@ Integralność źródeł i paczki produkcyjnej sprawdzają skrypty Node uruchami
 - `scripts/verify-built-js.js` — `dist/js/script.min.js`,
 - `scripts/check-css-assets.js` — odwołania do CSS i JS w stronach źródłowych i w `dist/`, brak zminifikowanych plików w katalogach źródłowych oraz precache i rejestrację Service Workera w `dist/`,
 - `scripts/check-asset-integrity.js` — integralność zasobów stron, arkuszy stylów i ścieżek obrazów budowanych z danych JSON w katalogu głównym, a z flagą `--dist` — w paczce `dist/`,
+- `scripts/check-csp.js` — zgodność skrótów SHA-256 skryptów inline stron w katalogu głównym z dyrektywą `script-src` w `_headers`, a z flagą `--dist` — stron w `dist/` z `dist/_headers`,
 - `scripts/check-tour-catalogue.js` — zgodność ofert z katalogiem `assets/data/tours.json`,
 - `scripts/check-sw-bundles.js` — zgodność `VERSION` Service Workera i skrótów SHA-256 obu bundli z rejestrem `service-worker-bundles.json`.
 
-Pełny `npm run build` zakończył się powodzeniem na aktualnym stanie repozytorium; obie kontrole integralności zasobów przeskanowały po 12 plików HTML. Skrypty weryfikujące nie wymagają zainstalowanych zależności i nie modyfikują plików. Nie przeprowadzono audytów dostępności, SEO ani wydajności.
+Pełny `npm run build` zakończył się powodzeniem na aktualnym stanie repozytorium; obie kontrole integralności zasobów i obie kontrole CSP przeskanowały po 12 plików HTML. Skrypty weryfikujące nie wymagają zainstalowanych zależności i nie modyfikują plików. Nie przeprowadzono audytów dostępności, SEO ani wydajności.
 
 ### Wdrożenie
 
 Repozytorium zawiera konfigurację hostingu statycznego, ale nie zawiera konfiguracji CI/CD ani pliku `netlify.toml`, więc publikacja nie jest zautomatyzowana z poziomu repozytorium.
 
 - `404.html` — utrzymywana strona błędu. Netlify serwuje plik `404.html` z katalogu głównego publikacji ze statusem HTTP 404 dla każdej ścieżki, której nie odpowiada żaden plik. Repozytorium nie zawiera pliku `_redirects` ani reguł przepisywania ścieżek, więc istniejące strony są serwowane bezpośrednio z odpowiadających im plików HTML, a `npm run build` kopiuje `404.html` do katalogu głównego `dist/`.
-- `_headers` — Content-Security-Policy (m.in. `default-src 'self'`, `object-src 'none'`, `frame-src https://www.google.com` dla osadzonej mapy), Strict-Transport-Security, `X-Content-Type-Options`, `X-Frame-Options: DENY`, Referrer-Policy, Permissions-Policy i Cross-Origin-Opener-Policy.
+- `_headers` — Content-Security-Policy (m.in. `default-src 'self'`, `script-src 'self'` ze skrótami SHA-256 trzech wariantów bootstrapu motywu zamiast `'unsafe-inline'`, `object-src 'none'`, `frame-src https://www.google.com` dla osadzonej mapy), Strict-Transport-Security, `X-Content-Type-Options`, `X-Frame-Options: DENY`, Referrer-Policy, Permissions-Policy i Cross-Origin-Opener-Policy.
 - Formularz w `contact.html` używa `method="POST"`, `action="dziekuje.html"`, `data-netlify="true"`, `netlify-honeypot="bot-field"` oraz ukrytego pola `form-name` — jest to sposób obsługi formularzy właściwy dla Netlify.
 - Wdrożenie jest ręczne: katalog `dist/` wygenerowany przez `npm run build` publikuje się w Netlify jako katalog główny publikacji. Katalogu głównego repozytorium nie należy publikować — jego strony ładują niezminifikowane źródła i nie rejestrują Service Workera.
 
@@ -290,6 +293,7 @@ Nie przeprowadzono pomiarów wydajności, dlatego dokumentacja nie zawiera wynik
 - Obrazy rastrowe należy zmieniać w `assets/img-src/`, a następnie uruchamiać `npm run build:images`. Skrypt usuwa z `assets/img/` zarządzane pliki rastrowe, których nie przewiduje bieżący plan generowania. Pliki SVG i inne nierastrowe nie są objęte pipeline'em.
 - Wartości `id` w `assets/data/tours.json` muszą odpowiadać odnośnikom `tour.html?id=` w `tours.html`. Wartości `base` w `assets/data/gallery-data.json` są rozwiązywane względem `assets/img/tours/`.
 - Nowa strona HTML w katalogu głównym musi zawierać dokładnie jedno `<link rel="stylesheet" href="css/style.css" />` i jedno `<script type="module" src="js/script.js"></script>`, które `scripts/build-dist.js` przepisuje w jej kopii w `dist/`. Stronę należy dodać do listy `htmlPages` w `scripts/check-css-assets.js`, a jeżeli ma być indeksowana — także do `sitemap.xml`.
+- `_headers` jest zatwierdzoną polityką bezpieczeństwa i żaden skrypt go nie aktualizuje. Zmiana bootstrapu motywu albo nowy skrypt inline wymaga przeglądu i ręcznego dodania skrótu zgłoszonego przez `npm run check:csp` do `script-src` oraz usunięcia skrótów, których żadna strona już nie używa; do tego czasu build kończy się błędem. Szczegóły opisuje `docs/pipeline-notes.md`.
 - Zmiana bundli wymaga podniesienia `VERSION`, a build to wymusza: gdy `check:sw-bundles` zgłosi zmieniony skrót, należy podnieść `VERSION` w `service-worker.js` (np. z `aurora-1.6` na `aurora-1.7`), uruchomić `npm run record:sw-bundles`, a następnie ponownie `npm run build` i zatwierdzić `service-worker-bundles.json` razem z `service-worker.js`. Kontrola obejmuje tylko dwa bundle — po zmianie innych zasobów serwowanych z cache'u (`site.webmanifest`, obrazy, fonty) `VERSION` należy podnieść ręcznie i tak samo zapisać rejestr. Szczegóły opisuje `docs/pipeline-notes.md`.
 - Notatki o pipeline i zawartości paczki dystrybucyjnej znajdują się w [pipeline-notes.md](docs/pipeline-notes.md), a historia zmian w [docs/CHANGELOG.md](docs/CHANGELOG.md).
 
@@ -442,7 +446,7 @@ Previewing the production build requires `npm run build` and an HTTP server root
 
 ### Available Scripts
 
-- `npm run build` — the primary build command: `clean`, `build:stage`, `build:css`, `build:js`, then `check:css-assets`, `check:assets`, `check:assets:dist`, `check:tour-catalogue`, and `check:sw-bundles`. It produces the complete deployable package in `dist/` and modifies no source files.
+- `npm run build` — the primary build command: `clean`, `build:stage`, `build:css`, `build:js`, then `check:css-assets`, `check:assets`, `check:assets:dist`, `check:csp`, `check:csp:dist`, `check:tour-catalogue`, and `check:sw-bundles`. It produces the complete deployable package in `dist/` and modifies no source files.
 - `npm run dist` — a backward-compatible alias that runs `npm run build`.
 - `npm run clean` — removes the `dist/` directory.
 - `npm run build:stage` — runs `scripts/build-dist.js`, which places copies of the HTML pages with their references rewritten to `css/style.min.css` and `js/script.min.js`, the `assets/` directory, `service-worker.js`, `site.webmanifest`, `robots.txt`, `sitemap.xml`, and `_headers` into an empty `dist/` directory.
@@ -454,6 +458,8 @@ Previewing the production build requires `npm run build` and an HTTP server root
 - `npm run check:css-assets` — checks that the 12 root pages reference the canonical sources and their `dist/` copies the production files, that the source directories contain no `css/style.min.css` or `js/script.min.js`, that `dist/css/` and `dist/js/` contain only the generated files, and that every precache entry in `dist/service-worker.js` exists in `dist/`.
 - `npm run check:assets` — scans the root HTML pages for missing files in `href`, `src`, and `srcset` attributes, in `og:image` and `twitter:image` URLs, in JSON-LD data, and in `site.webmanifest`, as well as in the local `url()` and `@import` references of the stylesheets (fonts, the map SVG) and in the image paths that `gallery.js` and `tour-detail.js` build from `assets/data/*.json` (four sizes in AVIF, WebP, and JPG plus the lightbox image). Missing, unreadable, or malformed data also fails the check.
 - `npm run check:assets:dist` — the same check for the pages, the `dist/css/style.min.css` stylesheet, the data, and the files of the `dist/` package; a reference only counts when its file exists in `dist/`.
+- `npm run check:csp` — checks that every inline script of the root pages (the theme bootstrap) has its SHA-256 hash in the `script-src` directive of `_headers`, that `script-src` contains no `'unsafe-inline'` and no unused hashes, and that the pages contain no inline event handler attributes or `javascript:` URLs. JSON-LD blocks and same-origin script files need no hash. It never modifies `_headers`.
+- `npm run check:csp:dist` — the same check for the pages in `dist/` against `dist/_headers`; it also fails when `dist/_headers` is missing or its Content-Security-Policy differs from `_headers`.
 - `npm run check:tour-catalogue` — compares the offer cards in `tours.html` and the tour select of the form in `contact.html` against the catalogue in `assets/data/tours.json`.
 - `npm run check:sw-bundles` — compares `VERSION` in `dist/service-worker.js` and the SHA-256 hashes of `dist/css/style.min.css` and `dist/js/script.min.js` with the Git-tracked record `service-worker-bundles.json`; it never writes the record.
 - `npm run record:sw-bundles` — writes the new `VERSION` from `service-worker.js` and the SHA-256 hashes of both bundles in `dist/` to `service-worker-bundles.json`. It refuses unless `VERSION` is higher than the recorded version, so it cannot approve changed bundles under the existing version.
@@ -474,7 +480,7 @@ npm run build
 1. `clean` — removes the previous `dist/` directory.
 2. `build:stage` — places the production files into `dist/`: copies of the HTML pages with rewritten references, the `assets/` directory, `service-worker.js`, `site.webmanifest`, `robots.txt`, `sitemap.xml`, and `_headers`. A missing file, or a page that does not contain exactly one `<link rel="stylesheet" href="css/style.css" />` and one `<script type="module" src="js/script.js"></script>`, aborts the build.
 3. `build:css` and `build:js` — generate the minified files in `dist/css/` and `dist/js/` and verify them.
-4. `check:css-assets`, `check:assets`, `check:assets:dist`, and `check:tour-catalogue` — verify the sources and the finished package.
+4. `check:css-assets`, `check:assets`, `check:assets:dist`, `check:csp`, `check:csp:dist`, and `check:tour-catalogue` — verify the sources and the finished package.
 5. `check:sw-bundles` — aborts the build when a generated bundle or the Service Worker `VERSION` differs from the values recorded in `service-worker-bundles.json`.
 
 Resulting `dist/` structure:
@@ -507,7 +513,7 @@ Running `npm run build` requires installed dependencies.
 npm test
 ```
 
-`npm test` runs the regression suite (Vitest, jsdom environment) for the data-driven views: tour filtering and sorting (`tours-filters.js`), gallery rendering and filtering (`gallery.js`, `gallery-filters.js`), the tour detail page including its HTML sanitization (`tour-detail.js`), and contact form validation and offer selection from the `?tour=` parameter (`form.js`). It also runs `scripts/check-asset-integrity.js` against small sites written to a temporary directory to confirm that missing images, fonts, and `dist/` files are reported. The tests import the actual modules from `js/features/`, load their markup from the maintained HTML pages and their data from `assets/data/*.json`. `fetch` is mocked and the current date is fixed, so the suite makes no network requests and does not depend on the day or time zone. The tests are not part of `npm run build` and do not reach `dist/`; run them after changing those modules, their pages, or the data. The project has no browser tests.
+`npm test` runs the regression suite (Vitest, jsdom environment) for the data-driven views: tour filtering and sorting (`tours-filters.js`), gallery rendering and filtering (`gallery.js`, `gallery-filters.js`), the tour detail page including its HTML sanitization (`tour-detail.js`), and contact form validation and offer selection from the `?tour=` parameter (`form.js`). It also runs `scripts/check-asset-integrity.js` against small sites written to a temporary directory to confirm that missing images, fonts, and `dist/` files are reported, and `scripts/check-csp.js` against copies of the pages and `_headers` to confirm that changed or new inline scripts and a stale policy are reported. Each variant of the theme bootstrap runs while jsdom parses its page — with a stored theme, the system preference, and unavailable `localStorage` — followed by a check of theme switching. The tests import the actual modules from `js/features/`, load their markup from the maintained HTML pages and their data from `assets/data/*.json`. `fetch` is mocked and the current date is fixed, so the suite makes no network requests and does not depend on the day or time zone. The tests are not part of `npm run build` and do not reach `dist/`; run them after changing those modules, their pages, or the data. The project has no browser tests.
 
 Source and production package integrity is checked by Node scripts executed as part of `npm run build`:
 
@@ -515,17 +521,18 @@ Source and production package integrity is checked by Node scripts executed as p
 - `scripts/verify-built-js.js` — `dist/js/script.min.js`,
 - `scripts/check-css-assets.js` — CSS and JS references in the source pages and in `dist/`, the absence of minified files in the source directories, and the Service Worker precache and registration in `dist/`,
 - `scripts/check-asset-integrity.js` — asset integrity of the root pages, their stylesheets, and the image paths built from the JSON data, and with `--dist`, of the `dist/` package,
+- `scripts/check-csp.js` — the SHA-256 hashes of the inline scripts of the root pages against the `script-src` directive in `_headers`, and with `--dist`, of the pages in `dist/` against `dist/_headers`,
 - `scripts/check-tour-catalogue.js` — consistency of the offers with the catalogue in `assets/data/tours.json`,
 - `scripts/check-sw-bundles.js` — the Service Worker `VERSION` and the SHA-256 hashes of both bundles against the record in `service-worker-bundles.json`.
 
-A full `npm run build` completed successfully against the current repository state; both asset integrity checks scanned 12 HTML files each. The verification scripts require no installed dependencies and modify no files. No accessibility, SEO, or performance audits were carried out.
+A full `npm run build` completed successfully against the current repository state; both asset integrity checks and both CSP checks scanned 12 HTML files each. The verification scripts require no installed dependencies and modify no files. No accessibility, SEO, or performance audits were carried out.
 
 ### Deployment
 
 The repository contains static-hosting configuration but no CI/CD configuration and no `netlify.toml`, so publishing is not automated from within the repository.
 
 - `404.html` — the maintained error page. Netlify serves `404.html` from the root of the publish directory, with HTTP status 404, for any path that matches no file. The repository contains no `_redirects` file and no rewrite rules, so existing pages are served directly from their HTML files, and `npm run build` copies `404.html` to the root of `dist/`.
-- `_headers` — Content-Security-Policy (including `default-src 'self'`, `object-src 'none'`, and `frame-src https://www.google.com` for the embedded map), Strict-Transport-Security, `X-Content-Type-Options`, `X-Frame-Options: DENY`, Referrer-Policy, Permissions-Policy, and Cross-Origin-Opener-Policy.
+- `_headers` — Content-Security-Policy (including `default-src 'self'`, `script-src 'self'` with the SHA-256 hashes of the three theme bootstrap variants instead of `'unsafe-inline'`, `object-src 'none'`, and `frame-src https://www.google.com` for the embedded map), Strict-Transport-Security, `X-Content-Type-Options`, `X-Frame-Options: DENY`, Referrer-Policy, Permissions-Policy, and Cross-Origin-Opener-Policy.
 - The form in `contact.html` uses `method="POST"`, `action="dziekuje.html"`, `data-netlify="true"`, `netlify-honeypot="bot-field"`, and a hidden `form-name` field — the form-handling convention used by Netlify.
 - Deployment is manual: publish the `dist/` directory produced by `npm run build` to Netlify as the publish root. Do not publish the repository root — its pages load the unminified sources and do not register the Service Worker.
 
@@ -592,6 +599,7 @@ No performance measurements were taken, so this documentation contains no result
 - Raster images should be changed in `assets/img-src/`, followed by `npm run build:images`. The script removes managed raster files from `assets/img/` that the current generation plan no longer expects. SVG and other non-raster files are outside the pipeline.
 - The `id` values in `assets/data/tours.json` must match the `tour.html?id=` links in `tours.html`. The `base` values in `assets/data/gallery-data.json` resolve against `assets/img/tours/`.
 - A new root-level HTML page must contain exactly one `<link rel="stylesheet" href="css/style.css" />` and one `<script type="module" src="js/script.js"></script>`, which `scripts/build-dist.js` rewrites in its `dist/` copy. It must be added to the `htmlPages` list in `scripts/check-css-assets.js` and, if it is meant to be indexed, to `sitemap.xml`.
+- `_headers` is the approved security policy, and no script updates it. A change to the theme bootstrap or a new inline script requires a review, adding the hash reported by `npm run check:csp` to `script-src` by hand, and removing hashes that no page uses any more; until then the build fails. `docs/pipeline-notes.md` has the details.
 - A bundle change requires a higher `VERSION`, and the build enforces it: when `check:sw-bundles` reports a changed hash, raise `VERSION` in `service-worker.js` (for example from `aurora-1.6` to `aurora-1.7`), run `npm run record:sw-bundles`, run `npm run build` again, and commit `service-worker-bundles.json` together with `service-worker.js`. The check covers only the two bundles — after changing other cache-first files (`site.webmanifest`, images, fonts), raise `VERSION` by hand and record it the same way. `docs/pipeline-notes.md` has the details.
 - Pipeline notes and the contents of the distribution package are documented in [pipeline-notes.md](docs/pipeline-notes.md), and the change history in [docs/CHANGELOG.md](docs/CHANGELOG.md).
 
