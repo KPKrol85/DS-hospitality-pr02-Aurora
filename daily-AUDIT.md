@@ -32,6 +32,7 @@ None detected.
 
 ### [P1-01] Phone validation rejects the format the field itself demonstrates
 
+- **Status:** RESOLVED — implemented and verified. Details are recorded in `docs/CHANGELOG.md`.
 - **Classification:** Defect
 - **Evidence:** `contact.html:278`, `js/features/form.js:100`
 - **Current behavior:** The `pattern` attribute is written as `^[0-9+\\-\\s]{7,}$`. The doubled backslashes make the character class resolve to digits, `+`, a literal backslash and the letter `s` — space and hyphen are not in it. Compiled and tested against the attribute value as stored in the file, `"+48 600 900 700"` (the field's own `placeholder`) and `"600-900-700"` both fail, while `"600900700"` passes. The same double-escaping appears in the JS length check, where `/[\\s-]/g` strips backslashes, `s` and hyphens but not whitespace. With JavaScript enabled, `validateField` reads `field.validity.patternMismatch` and calls `event.preventDefault()`, so submission is blocked; with JavaScript disabled the native `pattern` blocks it as well, because `novalidate` is only added by `initForm`.
@@ -40,6 +41,7 @@ None detected.
 
 ### [P1-02] Tour catalogue is duplicated across three sources that already contradict each other
 
+- **Status:** RESOLVED — implemented and verified. Details are recorded in `docs/CHANGELOG.md`.
 - **Classification:** Contract mismatch
 - **Evidence:** `tours.html:274` / `tours.html:311` vs `assets/data/tours.json:213`; `contact.html:286`
 - **Current behavior:** The same offers are defined independently in the hard-coded cards in `tours.html`, in `assets/data/tours.json` (which `js/features/tour-detail.js` renders on `tour.html`), and in the required "Wybrana wycieczka" select in `contact.html`. Four of the six offers already disagree: Malediwy shows "Od 32 000 PLN / os." on the listing and "od 18 000 PLN / os." on the detail page; Patagonia shows 14 dni / 28 000 versus 10 days / 19 500; Tokio shows 12 dni versus 9 days (and "Dwutygodniowy program" in `index.html:317`); Islandia shows "Islandia Fjord Moments" 9 dni / 19 000 versus "Islandia Arctic Wonders" 7 days / 13 000. The contact select lists only four of the six offers — Maroko and Islandia are absent — and its option values (`tokio`, `nyc`) match neither the `tours.json` ids (`tokio-kyoto`, `nowy-jork`) nor the card ids.
@@ -48,6 +50,7 @@ None detected.
 
 ### [P1-03] Catch-all rewrite makes the project's own 404 page unreachable
 
+- **Status:** RESOLVED — implemented and verified. Details are recorded in `docs/CHANGELOG.md`.
 - **Classification:** Contract mismatch
 - **Evidence:** `_redirects:1`, `404.html`
 - **Current behavior:** `_redirects` contains the single rule `/* /index.html 200`. The rule is intentional and documented (`README.md:183`, `docs/CHANGELOG.md`), but the repository also maintains a full `404.html` with its own hero, copy and `noindex,follow` directive, and `README.md:208` documents that page as part of the metadata contract. Because the rewrite returns the homepage with HTTP 200 for every path that has no matching file, no request can reach `404.html`. This is a multi-page static site with no client-side router, so the rewrite serves no routing purpose.
@@ -56,6 +59,7 @@ None detected.
 
 ### [P1-04] Distribution build ships the 100 MB raster source tree
 
+- **Status:** RESOLVED — implemented and verified. Details are recorded in `docs/CHANGELOG.md`.
 - **Classification:** Contract mismatch
 - **Evidence:** `scripts/build-dist.js:63`, `settings.md`, `assets/img-src/`
 - **Current behavior:** `build-dist.js` copies `assets/` recursively into `dist/`. That directory contains `assets/img-src/` — 184 files, 100 MB — which `settings.md` and `README.md:324` both define as the build-input source tree consumed by `scripts/build-images.js`, not as deployable output. No HTML, CSS, JS, JSON or manifest file in the project references `assets/img-src/`; a repository-wide search returns only the image pipeline scripts. Production images live in `assets/img/` (74 MB).
@@ -66,6 +70,7 @@ None detected.
 
 ### [P2-01] Lightbox navigation ignores the active gallery filter
 
+- **Status:** RESOLVED — implemented and verified. Details are recorded in `docs/CHANGELOG.md`.
 - **Classification:** Defect
 - **Evidence:** `js/features/lightbox.js:21`, `js/features/gallery-filters.js:23`
 - **Current behavior:** `collectImages()` selects every `[data-gallery] img[data-lightbox-src]` in the document. Filtering hides figures by adding `.is-hidden`, which resolves to `display: none` (`css/modules/subpages.css:302`), but `querySelectorAll` still returns those elements. The previous/next controls, the arrow keys and the swipe gestures therefore cycle through all 36 gallery images regardless of the filter in effect.
@@ -74,6 +79,7 @@ None detected.
 
 ### [P2-02] Gallery and tour images are keyboard-focusable but not exposed as controls
 
+- **Status:** RESOLVED — implemented and verified. Details are recorded in `docs/CHANGELOG.md`.
 - **Classification:** Defect
 - **Evidence:** `js/features/gallery.js:74`, `js/features/tour-detail.js:110`
 - **Current behavior:** Both renderers give each `<img>` `tabindex="0"` and a `cursor: pointer` style, and `js/features/lightbox.js:98` opens the lightbox on Enter or Space. The element keeps its implicit image role and carries no accessible name beyond the photo's `alt` text, no `role`, and no indication that activating it does anything.
@@ -82,6 +88,7 @@ None detected.
 
 ### [P2-03] Static markup ships JavaScript-dependent states with no non-JS fallback
 
+- **Status:** RESOLVED — implemented and verified. Details are recorded in `docs/CHANGELOG.md`.
 - **Classification:** Defect
 - **Evidence:** `tours.html:217`, `css/modules/layout.css:124`
 - **Current behavior:** The results counter is hard-coded to `0` in the markup and corrected only by `initToursFilters` on `DOMContentLoaded`, so the served HTML states "Dopasowane oferty: 0" while six offer cards are present below it. Separately, `.nav` is styled as a fixed drawer panel with a background and shadow and is hidden only by the `hidden` attribute that `js/features/nav.js:13` sets; no CSS rule hides it below the 900px breakpoint. Without the bundle, the mobile drawer stays permanently open over the page content while `.nav__toggle` remains visible, keeps `aria-expanded="false"`, and does nothing. No `<noscript>` element exists anywhere in the project.
@@ -90,6 +97,7 @@ None detected.
 
 ### [P2-04] All revealed content depends on one unguarded initialization chain
 
+- **Status:** RESOLVED — implemented and verified. Details are recorded in `docs/CHANGELOG.md`.
 - **Classification:** Source-visible risk
 - **Evidence:** `css/modules/utilities.css:76`, `js/script.js:16`
 - **Current behavior:** The inline head script adds the `js` class unconditionally, and `html.js .reveal { opacity: 0; transform: translateY(40px) }` then hides every `.reveal` element until `initReveal` adds `is-visible`. `initReveal` is the tenth call in a single unguarded `DOMContentLoaded` handler, after nine other initializers. A throw in any of them, or a failure to load `js/script.min.js` at all, leaves the class applied and `is-visible` never added.
@@ -98,6 +106,7 @@ None detected.
 
 ### [P2-05] Cached CSS and JS can only be invalidated by a manual version bump
 
+- **Status:** RESOLVED — implemented and verified. Details are recorded in `docs/CHANGELOG.md`.
 - **Classification:** Source-visible risk
 - **Evidence:** `service-worker.js:1`, `service-worker.js:8`, `service-worker.js:55`
 - **Current behavior:** `VERSION` is the hand-maintained constant `"aurora-1.3"` and both cache names derive from it. `css/style.min.css` and `js/script.min.js` are precached under fixed, unhashed filenames and served cache-first with no revalidation. Rebuilding either file without editing `service-worker.js` leaves the worker byte-identical, so no `updatefound` event fires and returning visitors keep the previously cached bundle indefinitely. `scripts/check-css-assets.js` verifies that the precache list names the production paths but does not check that the version advanced.
@@ -106,6 +115,7 @@ None detected.
 
 ### [P2-06] Service worker update banner is English-only and bypasses the theme
 
+- **Status:** RESOLVED — implemented and verified. Details are recorded in `docs/CHANGELOG.md`.
 - **Classification:** Defect
 - **Evidence:** `js/script.js:56`, `js/script.js:59`
 - **Current behavior:** The banner injected into these `lang="pl"` pages reads "New version available." with "Refresh" and "Dismiss" buttons and an English `aria-label`. It is positioned and coloured entirely through an inline `cssText` string with literal hex values (`#1f2937`, `#fff`, `#111827`) and `z-index:9999`, so it uses neither the design tokens nor the light/dark theme, and it sits above every layer defined in CSS.
@@ -114,6 +124,7 @@ None detected.
 
 ### [P2-07] Dead code paths and unreachable rules remain in the shipped output
 
+- **Status:** RESOLVED — implemented and verified. Details are recorded in `docs/CHANGELOG.md`.
 - **Classification:** Maintenance risk
 - **Evidence:** `js/features/tours-filters.js:53`, `js/features/form.js:147`, `contact.html:328`, `css/modules/tokens.css:112`
 - **Current behavior:** `initFiltersDropdowns()` is an empty exported function that `js/script.js:21` still imports and calls. `prefillFromQuery` reads a `?tour=` parameter that nothing links to — the six "Zapytaj o ofertę" buttons in `tours.html` all point at bare `contact.html`. The `.form__success` message is only ever set to `hidden = true` by `js/features/form.js:49` and has no code path that shows it, since submission navigates to `dziekuje.html`. The `[data-theme="auto"]` block is unreachable because both the inline bootstrap and `js/features/theme.js:2` only ever set `light` or `dark`, and it is present in the built `css/style.min.css`. The layering tokens `--z-header`, `--z-overlay` and `--z-modal` are defined and never used; every layer instead uses a raw value (20, 90, 850, 900, 1000, 1200, and 9999 inline in JS).
@@ -124,24 +135,28 @@ None detected.
 
 ### Automated test coverage for the data-driven views
 
+- **Status:** RESOLVED — implemented and verified. Details are recorded in `docs/CHANGELOG.md`.
 - **Evidence:** `package.json` defines `test` as a placeholder that exits 1, and the only executable checks are the four static verification scripts. The filtering, sorting, tour rendering and form validation logic in `js/features/` has no automated coverage.
 - **Potential value:** The two P1 content findings (catalogue drift, phone pattern) are exactly the class of defect a small unit or DOM-level test suite catches before release, and the data files provide ready-made fixtures.
 - **Scope boundary:** Optional. The project already has meaningful repository-level verification, and this is an addition to it rather than a correction of anything currently broken.
 
 ### Extend asset integrity checking to runtime-generated paths
 
+- **Status:** RESOLVED — implemented and verified. Details are recorded in `docs/CHANGELOG.md`.
 - **Evidence:** `scripts/check-asset-integrity.js` scans HTML tags, JSON-LD, social images and the manifest. The image paths built in `js/features/gallery.js:79` and `js/features/tour-detail.js:76`, and the `url()` references in `css/modules/fonts.css`, fall outside it.
 - **Potential value:** Those paths currently all resolve, as verified in this audit, but nothing in the build would report it if a renamed directory broke them; the check would then cover the full asset surface rather than the static half.
 - **Scope boundary:** Optional. It broadens existing tooling and changes no runtime behaviour.
 
 ### Replace `script-src 'unsafe-inline'` with a hash for the theme bootstrap
 
+- **Status:** RESOLVED — implemented and verified. Details are recorded in `docs/CHANGELOG.md`.
 - **Evidence:** `_headers` sets `script-src 'self' 'unsafe-inline'`. The only inline script in the project is the theme bootstrap repeated in each page head; the JSON-LD blocks are not affected by `script-src`.
 - **Potential value:** Pinning that one script by hash would remove the blanket allowance for inline script execution while keeping the flash-of-wrong-theme prevention intact.
 - **Scope boundary:** Optional. The current header set is already a deliberate, functioning security baseline, and no injection path was found in this audit.
 
 ### Preload the self-hosted variable fonts
 
+- **Status:** RESOLVED — implemented and verified. Details are recorded in `docs/CHANGELOG.md`.
 - **Evidence:** `css/modules/fonts.css` declares two self-hosted `woff2` variable fonts with `font-display: swap`, and no page contains a `rel="preload"` link.
 - **Potential value:** The fonts are only discovered after the stylesheet parses, so preloading them would shorten the swap window on first visit.
 - **Scope boundary:** Optional. No measurement was taken in this audit, so the benefit is stated as a loading-order property, not as a quantified improvement.
