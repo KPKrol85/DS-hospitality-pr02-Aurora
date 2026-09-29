@@ -34,6 +34,7 @@ All significant changes to this project are documented in this file.
 - Extended asset integrity checks to cover runtime-generated gallery and tour images, lightbox assets, and local CSS resources in both source and production builds.
 - Replaced inline script permissions with SHA-256 CSP hashes for the theme bootstrap and added automated CSP verification for source and production builds.
 - Optimized variable font loading with selective preload hints for Manrope and Inter, and updated the Service Worker to refresh cached pages.
+- Standardized native control typography across the site and updated the Service Worker cache to `aurora-1.14`.
 
 ### Fixed
 

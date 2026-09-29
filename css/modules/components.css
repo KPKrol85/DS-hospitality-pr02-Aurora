@@ -680,8 +680,6 @@ html[data-theme="dark"] .filters__select {
 }
 .sw-update-banner__actions .btn {
   min-height: 2.75rem;
-  font-family: inherit;
-  font-size: inherit;
 }
 
 /* Lightbox */

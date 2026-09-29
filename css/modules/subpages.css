@@ -185,7 +185,6 @@
   border-radius: var(--radius-lg);
   background: none;
   color: inherit;
-  font: inherit;
   cursor: zoom-in;
 }
 .tour-gallery__button:focus-visible {
@@ -331,7 +330,6 @@
   border-radius: var(--radius-lg);
   background: none;
   color: inherit;
-  font: inherit;
   cursor: pointer;
 }
 .gallery-item:focus-visible {
