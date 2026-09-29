@@ -63,16 +63,20 @@ describe("initGallery", () => {
     const picture = figures()[0].querySelector("picture");
     const [avif, webp, img] = picture.children;
     const path = "assets/img/tours/islandia/islandia-01";
+    // The .gallery-grid column slot. A <source> without its own sizes would use 100vw.
+    const sizes = "(min-width: 1280px) 390px, (min-width: 1024px) 31vw, (min-width: 560px) 46vw, 92vw";
 
     expect(avif.tagName).toBe("SOURCE");
     expect(avif.type).toBe("image/avif");
     expect(avif.getAttribute("srcset")).toBe(`${path}-400x260.avif 400w, ${path}-800x520.avif 800w, ${path}-1200x780.avif 1200w, ${path}-1600x1040.avif 1600w`);
+    expect(avif.getAttribute("sizes")).toBe(sizes);
     expect(webp.type).toBe("image/webp");
     expect(webp.getAttribute("srcset")).toBe(`${path}-400x260.webp 400w, ${path}-800x520.webp 800w, ${path}-1200x780.webp 1200w, ${path}-1600x1040.webp 1600w`);
+    expect(webp.getAttribute("sizes")).toBe(sizes);
     expect(img.tagName).toBe("IMG");
     expect(img.getAttribute("src")).toBe(`${path}-1200x780.jpg`);
     expect(img.getAttribute("srcset")).toBe(`${path}-400x260.jpg 400w, ${path}-800x520.jpg 800w, ${path}-1200x780.jpg 1200w, ${path}-1600x1040.jpg 1600w`);
-    expect(img.getAttribute("sizes")).toBe("(min-width: 1024px) 360px, (min-width: 560px) 50vw, 100vw");
+    expect(img.getAttribute("sizes")).toBe(sizes);
     expect(img.getAttribute("width")).toBe("1200");
     expect(img.getAttribute("height")).toBe("780");
     // jsdom does not reflect the loading property to the attribute, as browsers do.
@@ -80,6 +84,9 @@ describe("initGallery", () => {
 
     figures().forEach((figure, index) => {
       expect(figure.querySelector("img").getAttribute("src")).toBe(`assets/img/tours/${galleryData[index].base}-1200x780.jpg`);
+      figure.querySelectorAll("source, img").forEach((element) => {
+        expect(element.getAttribute("sizes")).toBe(sizes);
+      });
     });
   });
 

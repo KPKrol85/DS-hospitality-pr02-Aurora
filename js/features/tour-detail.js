@@ -1,5 +1,13 @@
 import { getLightboxTriggerLabel } from "./lightbox.js";
 
+// Rendered widths inside the .tour-detail article (css/modules/subpages.css): the .container is
+// about 92vw wide up to 1200px, and the article's padding takes 48px of it.
+// Main image: the first of the 1.2fr / 1.4fr hero columns from 900px (at most 517px), full width below.
+const TOUR_MAIN_IMAGE_SIZES = "(min-width: 1280px) 520px, (min-width: 900px) 43vw, calc(92vw - 48px)";
+// Thumbnails: three columns from 900px (at most 373px); below, auto-fit columns of at least 180px
+// give three columns from about 700px, two from about 480px and one below.
+const TOUR_THUMBNAIL_SIZES = "(min-width: 1280px) 375px, (min-width: 700px) 31vw, (min-width: 480px) 46vw, calc(92vw - 48px)";
+
 export function initTourDetail() {
   const params = new URLSearchParams(window.location.search);
   const rawTourId = params.get("id");
@@ -36,7 +44,7 @@ function fillTourContent(tour) {
   const mainImage = tour.images[0];
   const mainImageContainer = document.querySelector("[data-tour-main-image]");
   if (mainImage && mainImageContainer) {
-    mainImageContainer.innerHTML = createPictureMarkup(mainImage.base, mainImage.alt, mainImage.caption);
+    mainImageContainer.innerHTML = createPictureMarkup(mainImage, TOUR_MAIN_IMAGE_SIZES);
   }
 
   const galleryEl = document.querySelector("[data-tour-gallery]");
@@ -78,12 +86,13 @@ function sanitizeTourHtml(html) {
 function createGalleryItemMarkup(image) {
   return `
     <button type="button" class="tour-gallery__button" data-lightbox-trigger aria-label="${getLightboxTriggerLabel(image.alt, image.caption)}">
-      ${createPictureMarkup(image.base, image.alt, image.caption)}
+      ${createPictureMarkup(image, TOUR_THUMBNAIL_SIZES)}
     </button>
   `;
 }
 
-function createPictureMarkup(base, alt, caption = "") {
+// sizes describes the slot of the calling context and applies to every source and the img.
+function createPictureMarkup({ base, alt, caption = "" }, sizes) {
   const basePath = `assets/img/tours/${base}`;
 
   return `
@@ -94,6 +103,7 @@ function createPictureMarkup(base, alt, caption = "") {
           ${basePath}-800x520.avif 800w,
           ${basePath}-1200x780.avif 1200w,
           ${basePath}-1600x1040.avif 1600w"
+        sizes="${sizes}"
         type="image/avif"
       />
       <source
@@ -102,6 +112,7 @@ function createPictureMarkup(base, alt, caption = "") {
           ${basePath}-800x520.webp 800w,
           ${basePath}-1200x780.webp 1200w,
           ${basePath}-1600x1040.webp 1600w"
+        sizes="${sizes}"
         type="image/webp"
       />
       <img
@@ -111,7 +122,7 @@ function createPictureMarkup(base, alt, caption = "") {
           ${basePath}-800x520.jpg 800w,
           ${basePath}-1200x780.jpg 1200w,
           ${basePath}-1600x1040.jpg 1600w"
-        sizes="(min-width: 900px) 360px, 100vw"
+        sizes="${sizes}"
         width="1200"
         height="780"
         alt="${alt}"

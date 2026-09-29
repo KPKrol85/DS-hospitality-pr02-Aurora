@@ -19,6 +19,15 @@ function candidates(path, format) {
   return [`${path}-400x260.${format} 400w`, `${path}-800x520.${format} 800w`, `${path}-1200x780.${format} 1200w`, `${path}-1600x1040.${format} 1600w`];
 }
 
+// The main image and the thumbnails render at different widths, so each context declares its own
+// slot on every source and the img. A <source> without its own sizes would use 100vw.
+const mainImageSizes = "(min-width: 1280px) 520px, (min-width: 900px) 43vw, calc(92vw - 48px)";
+const thumbnailSizes = "(min-width: 1280px) 375px, (min-width: 700px) 31vw, (min-width: 480px) 46vw, calc(92vw - 48px)";
+
+function sizesOf(picture) {
+  return Array.from(picture.querySelectorAll("source, img")).map((element) => element.getAttribute("sizes"));
+}
+
 async function renderTour(pathAndQuery, catalogue = tours) {
   setUrl(pathAndQuery);
   const fetchMock = stubFetchJson(catalogue);
@@ -72,6 +81,7 @@ describe("initTourDetail", () => {
     expect(srcsetCandidates(sources[1])).toEqual(candidates(path, "webp"));
     expect(images[0].getAttribute("src")).toBe(`${path}-1200x780.jpg`);
     expect(srcsetCandidates(images[0])).toEqual(candidates(path, "jpg"));
+    expect(sizesOf(container)).toEqual([mainImageSizes, mainImageSizes, mainImageSizes]);
     expect(images[0].alt).toBe(first.alt);
     expect(images[0].dataset.lightboxSrc).toBe(`${path}-1600x1040.jpg`);
     expect(images[0].dataset.caption).toBe(first.caption);
@@ -93,6 +103,7 @@ describe("initTourDetail", () => {
       expect(button.classList.contains("tour-gallery__button")).toBe(true);
       expect(button.hasAttribute("data-lightbox-trigger")).toBe(true);
       expect(img.getAttribute("src")).toBe(`assets/img/tours/${image.base}-1200x780.jpg`);
+      expect(sizesOf(button)).toEqual([thumbnailSizes, thumbnailSizes, thumbnailSizes]);
       expect(img.alt).toBe(image.alt);
       expect(img.dataset.lightboxSrc).toBe(`assets/img/tours/${image.base}-1600x1040.jpg`);
       expect(img.dataset.caption).toBe(image.caption);

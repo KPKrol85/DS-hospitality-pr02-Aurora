@@ -1,7 +1,10 @@
 import { getLightboxTriggerLabel } from "./lightbox.js";
 
 const GALLERY_DATA_URL = "assets/data/gallery-data.json";
-const GALLERY_IMAGE_SIZES = "(min-width: 1024px) 360px, (min-width: 560px) 50vw, 100vw";
+// Column widths of .gallery-grid (css/modules/subpages.css) in the .container, which is about 92vw
+// wide up to its 1200px maximum: three columns from 1024px (at most (1200px - 2 gaps) / 3 = 389px),
+// two from 560px, one below. Every <source> and the <img> share this value.
+const GALLERY_IMAGE_SIZES = "(min-width: 1280px) 390px, (min-width: 1024px) 31vw, (min-width: 560px) 46vw, 92vw";
 
 export async function initGallery() {
   const gallery = document.querySelector("[data-gallery]");
@@ -62,6 +65,7 @@ function createSource(base, format) {
   const source = document.createElement("source");
   source.type = `image/${format}`;
   source.srcset = createSrcset(base, format);
+  source.sizes = GALLERY_IMAGE_SIZES;
   return source;
 }
 
