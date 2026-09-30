@@ -34,7 +34,6 @@
 }
 .hero__actions .btn {
   width: 160px;
-  font-size: var(--fs-2);
 }
 .hero__logo {
   display: none;

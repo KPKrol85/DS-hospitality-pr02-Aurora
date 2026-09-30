@@ -131,20 +131,10 @@
 }
 .tour-card__actions .btn {
   flex: 1;
-  padding: var(--space-2) var(--space-4);
-  font-size: var(--fs-1);
   max-width: 148px;
 }
 .tour-card .btn--text {
   margin: 0 auto var(--space-4);
-  font-size: var(--fs-2);
-  padding: var(--space-2) var(--space-4);
-}
-.btn--text::before {
-  content: "→";
-  margin-right: var(--space-2);
-  display: inline-block;
-  transition: transform 0.2s ease;
 }
 @media (min-width: 760px) {
   .tour-card--detailed {
@@ -164,10 +154,6 @@
     box-shadow: var(--shadow-hover-md);
     border-color: var(--border);
     background: color-mix(in oklab, var(--bg-elev) 88%, #ffffff 2%);
-  }
-  .btn--text:hover::before,
-  .tour-card .btn--text:hover::before {
-    transform: translateX(3px);
   }
 }
 
@@ -443,7 +429,6 @@ html[data-theme="dark"] .filters__select {
 .form .btn {
   justify-self: flex-end;
   margin-top: var(--space-3);
-  padding: var(--space-3) var(--space-4);
   min-width: 220px;
 }
 .form__field + .form__field--split {
@@ -512,16 +497,24 @@ html[data-theme="dark"] .filters__select {
 
 /* Buttons */
 
-/* btn */
+/* Variants (default, --ghost, --text) set colours and decoration; sizes (default, --sm, --lg) set
+   the font size, padding and minimum height. Every variant keeps the 1px border of .btn and changes
+   only its colour, so a size has the same border box in every variant. Context rules may place and
+   widen a button, but not size it. */
+
+/* btn: default variant, default size */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-height: 2.75rem;
   padding: var(--space-2) var(--space-5);
   border-radius: var(--radius-pill);
-  border: none;
+  border: 1px solid transparent;
+  font-size: var(--fs-2);
   font-weight: var(--fw-semibold);
-  background: var(--gradient-primary);
+  line-height: var(--lh-normal);
+  background: var(--gradient-primary) border-box;
   color: #fff;
   cursor: pointer;
   transition:
@@ -536,7 +529,7 @@ html[data-theme="dark"] .filters__select {
 /* btn-ghost */
 .btn--ghost {
   background: transparent;
-  border: 1px solid var(--border);
+  border-color: var(--border);
   color: var(--text);
   transition:
     background var(--dur-2) var(--ease),
@@ -556,11 +549,32 @@ html[data-theme="dark"] .filters__select {
   background: none;
   color: var(--primary);
   text-decoration: none;
-  border: 0;
+}
+.btn--text::before {
+  content: "→";
+  margin-right: var(--space-2);
+  display: inline-block;
+  transition: transform 0.2s ease;
 }
 .btn--text:hover,
 .btn--text:focus-visible {
   text-decoration: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .btn--text:hover::before {
+    transform: translateX(3px);
+  }
+}
+/* btn sizes: dense actions and the most prominent form action */
+.btn--sm {
+  min-height: 2.25rem;
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--fs-1);
+}
+.btn--lg {
+  min-height: 3rem;
+  padding: var(--space-2) var(--space-5);
+  font-size: var(--fs-3);
 }
 
 /* Project notice */
@@ -677,9 +691,6 @@ html[data-theme="dark"] .filters__select {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
-}
-.sw-update-banner__actions .btn {
-  min-height: 2.75rem;
 }
 
 /* Lightbox */

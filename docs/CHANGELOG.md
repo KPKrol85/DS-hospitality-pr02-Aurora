@@ -36,6 +36,7 @@ All significant changes to this project are documented in this file.
 - Optimized variable font loading with selective preload hints for Manrope and Inter, and updated the Service Worker to refresh cached pages.
 - Standardized native control typography across the site and updated the Service Worker cache to `aurora-1.14`.
 - Aligned responsive image `sizes` with the actual layout across tour cards, galleries, tour details, about and contact views, and updated the Service Worker cache to `aurora-1.15`.
+- Standardized the shared button variant and size contract across the site and updated the Service Worker cache to `aurora-1.16`.
 
 ### Fixed
 
