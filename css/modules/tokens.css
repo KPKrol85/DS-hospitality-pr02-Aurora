@@ -44,14 +44,13 @@
   --gradient-primary: linear-gradient(135deg, var(--primary), var(--primary-alt));
   /* border colors */
   --border: rgba(15, 109, 140, 0.15);
-  --border-focus: color-mix(in srgb, var(--text) 18%, transparent);
   /* Shadows */
   --shadow-sm: 0 10px 25px rgba(6, 17, 35, 0.1);
   --shadow-md: 0 18px 40px rgba(6, 17, 35, 0.12);
   --shadow-lg: 0 25px 60px rgba(6, 17, 35, 0.16);
   --shadow-hover-md: 0 22px 50px rgba(6, 17, 35, 0.18);
   --shadow-hover-lg: 0 26px 60px rgba(6, 17, 35, 0.24);
-  --shadow-focus: 0 6px 18px rgba(6, 17, 35, 0.12);
+  --shadow-xs: 0 6px 18px rgba(6, 17, 35, 0.12);
   /* Radius */
   --radius-min: 4px;
   --radius-sm: 8px;
@@ -76,9 +75,14 @@
   --container: min(var(--container-max), 100% - (var(--container-pad) * 2));
   --header-h: 64px;
   --header-h-compact: 54px;
-  /* Focus ring */
-  --focus-ring: 0 0 0 3px color-mix(in oklab, var(--primary) 35%, transparent);
+  /* Focus: the global :focus-visible outline in base.css is the indicator of every keyboard-focused
+     element. Bordered form controls use one ring variant instead (components.css, Form): the outline
+     turns transparent, the border takes --focus-color and --focus-ring surrounds it. The colour follows
+     the theme through --primary; the geometry is the same in both themes. */
+  --focus-color: var(--primary);
+  --focus-width: 2px;
   --focus-offset: 2px;
+  --focus-ring: 0 0 0 3px color-mix(in oklab, var(--focus-color) 35%, transparent);
   /* Motion */
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --dur-1: 150ms;

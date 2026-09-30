@@ -1,7 +1,7 @@
 {
-  "version": "aurora-1.16",
+  "version": "aurora-1.17",
   "sha256": {
-    "dist/css/style.min.css": "a4f884152663058a719c99cab74349b33bcbc52f1d7c969141ac6c57139de4af",
+    "dist/css/style.min.css": "019d73d2b4f8b87164e5816f898b23fcfb0ff91bd4d81e3c958e787edeafc500",
     "dist/js/script.min.js": "f163802d3c89c7bd5d4dc1c965d7858fb301f900198e4e929dd6efd3e2bc6381"
   }
 }

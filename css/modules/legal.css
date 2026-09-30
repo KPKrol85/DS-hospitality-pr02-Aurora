@@ -141,13 +141,9 @@
     background-color 180ms ease,
     transform 180ms ease;
 }
+/* The link rests at opacity 0.2, which would fade the focus outline too. */
 .legal__back-link:focus-visible {
-  color: var(--primary);
-  background: var(--bg-soft);
   opacity: 1;
-  transform: translateY(-1px);
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
 }
 .legal__meta {
   margin: var(--space-6) 0 var(--space-2);
@@ -195,10 +191,6 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   -webkit-overflow-scrolling: touch;
-}
-.legal__table-wrap:focus-visible {
-  outline: 2px solid var(--primary);
-  outline-offset: var(--focus-offset);
 }
 .legal__table {
   width: 100%;

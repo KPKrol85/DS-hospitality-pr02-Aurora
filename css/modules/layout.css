@@ -68,8 +68,7 @@
   transition: color 0.45s cubic-bezier(0.25, 0.1, 0.25, 1);
   font-weight: 500;
 }
-.logo:hover .logo__text,
-.logo:focus-visible .logo__text {
+.logo:hover .logo__text {
   color: #0cc0df;
 }
 .nav__toggle {
@@ -89,8 +88,7 @@
   transition:
     color 200ms ease,
     background-color 200ms ease,
-    transform 0.12s ease,
-    box-shadow 0.18s ease;
+    transform 0.12s ease;
 }
 /* Set by initNav() once its handlers are attached; html.js alone does not prove that. */
 .nav__toggle:not([data-nav-ready]) {
@@ -98,12 +96,6 @@
 }
 .nav__toggle:active {
   transform: scale(0.97);
-}
-.nav__toggle:focus {
-  outline: none;
-}
-.nav__toggle:focus-visible {
-  box-shadow: 0 0 0 2px var(--primary);
 }
 .nav__toggle-icon {
   width: 24px;
@@ -171,8 +163,7 @@
     color 0.2s ease,
     transform 0.16s ease;
 }
-.nav a:hover,
-.nav a:focus-visible {
+.nav a:hover {
   color: var(--primary);
   box-shadow: var(--shadow-sm);
   text-decoration: none;
@@ -202,15 +193,6 @@
 }
 .theme-toggle:active {
   transform: scale(0.95);
-}
-.theme-toggle:focus {
-  outline: none;
-}
-.theme-toggle:focus:not(:focus-visible) {
-  box-shadow: none;
-}
-.theme-toggle:focus-visible {
-  box-shadow: 0 0 0 2px var(--primary);
 }
 .theme-toggle__icon {
   width: 20px;
@@ -322,9 +304,6 @@
   color: inherit;
   transition: color 0.25s ease;
 }
-.site-footer__brand-link:focus-visible {
-  color: var(--primary-alt);
-}
 .site-footer__description {
   max-width: 42ch;
   margin: 0;
@@ -405,11 +384,6 @@
     color var(--dur-2) var(--ease),
     text-shadow var(--dur-2) var(--ease);
 }
-.site-footer__contact-link:focus-visible {
-  outline: 2px solid rgba(111, 209, 255, 0.55);
-  outline-offset: 2px;
-  border-radius: var(--radius-lg);
-}
 .site-footer__row--social {
   position: relative;
   width: 100%;
@@ -460,13 +434,9 @@
   flex-shrink: 0;
   color: inherit;
 }
+/* Opacity fades the focus outline too, so a focused link is fully opaque. */
 .site-footer__row--social .socials a:focus-visible {
-  color: var(--text);
   opacity: 1;
-  transform: translateY(-1px);
-  filter: brightness(1.08);
-  outline: 2px solid rgba(111, 209, 255, 0.55);
-  outline-offset: 2px;
 }
 .site-footer__copy {
   text-align: center;
