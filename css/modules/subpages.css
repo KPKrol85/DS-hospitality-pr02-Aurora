@@ -22,14 +22,11 @@
 }
 .page-hero__title {
   margin: var(--space-8) 0 var(--space-4);
-  font-size: var(--fs-7);
   text-wrap: balance;
 }
 .page-hero__lead {
   margin-bottom: var(--space-6);
   color: var(--muted);
-  line-height: var(--lh-relaxed);
-  font-size: var(--fs-2);
   max-width: 62ch;
   text-wrap: pretty;
 }
@@ -76,12 +73,10 @@
   margin-bottom: var(--space-4);
 }
 .tour-detail__label {
-  font-size: var(--fs-2);
   color: var(--muted);
   margin-bottom: var(--space-1);
 }
 .tour-detail__title {
-  font-size: var(--fs-6);
   margin: var(--space-6) 0;
 }
 .tour-detail__meta {
@@ -108,8 +103,9 @@
 .tour-detail__summary {
   line-height: var(--lh-normal);
 }
+/* The first summary paragraph takes the lead role and the description headings the subsection-title
+   role and the heading divider (base.css); the sanitised markup carries no classes. */
 .tour-detail__summary p:first-of-type {
-  font-size: var(--fs-2);
   max-width: 60ch;
   color: var(--text);
 }
@@ -122,25 +118,12 @@
 }
 .tour-detail__summary li + li {
   margin-top: var(--space-2);
-  font-size: var(--fs-3);
 }
 .tour-detail__content {
   margin-bottom: var(--space-5);
 }
 .tour-detail__content h3 {
   margin: var(--space-5) 0;
-  font-size: var(--fs-5);
-  position: relative;
-}
-.tour-detail__content h3::after {
-  content: "";
-  display: block;
-  width: 40px;
-  height: 1px;
-  margin-top: var(--space-2);
-  background: var(--muted);
-  opacity: 0.4;
-  border-radius: var(--radius-pill);
 }
 .tour-detail__content p {
   margin-bottom: var(--space-2);
@@ -161,7 +144,6 @@
   padding-left: var(--space-4);
   display: flex;
   flex-direction: column;
-  font-size: var(--fs-3);
   gap: var(--space-2);
 }
 .tour-detail__gallery {
@@ -170,7 +152,6 @@
 }
 .tour-detail__gallery h2 {
   margin: var(--space-5) 0;
-  font-size: var(--fs-5);
 }
 .tour-gallery {
   display: grid;
@@ -370,7 +351,6 @@
 .contact-grid__inner h2 {
   margin: var(--space-5) 0;
   text-align: center;
-  font-size: var(--fs-5);
 }
 .contact-details {
   font-style: normal;
@@ -455,26 +435,9 @@
 }
 .about-section__title {
   margin: 0 0 var(--space-4);
-  font-family: var(--font-heading);
-  font-size: var(--fs-5);
-  font-weight: var(--fw-semibold);
-  letter-spacing: var(--ls-tight);
   color: var(--text);
-  position: relative;
-}
-.about-section__title::after {
-  content: "";
-  display: block;
-  width: 44px;
-  height: 1px;
-  border-radius: var(--radius-pill);
-  margin-top: var(--space-2);
-  background: var(--muted);
-  opacity: 0.2;
 }
 .about-story__lead {
-  font-size: var(--fs-2);
-  line-height: var(--lh-relaxed);
   color: var(--text);
   font-weight: var(--fw-medium);
   max-width: 68ch;
@@ -482,8 +445,6 @@
 }
 .about-story__text {
   margin-top: var(--space-5);
-  font-size: var(--fs-2);
-  font-weight: var(--fw-regular);
   max-width: 68ch;
 }
 .about-values {
@@ -507,7 +468,6 @@
 }
 .about-values p {
   margin: 0;
-  font-size: var(--fs-2);
   color: var(--muted);
   line-height: var(--lh-normal);
 }
@@ -534,8 +494,6 @@
   border-radius: 0;
 }
 .about-highlight__title {
-  font-size: var(--fs-5);
-  font-weight: var(--fw-semibold);
   margin: var(--space-5) 0;
 }
 .about-highlight ul {
@@ -567,7 +525,6 @@
   border-left: 2px solid var(--border);
 }
 .timeline h3 {
-  font-size: var(--fs-5);
   letter-spacing: var(--ls-wide);
 }
 .timeline p {
@@ -632,14 +589,12 @@
 }
 .utility-page__title {
   margin: 0 0 var(--space-4);
-  font-size: var(--fs-6);
 }
 .utility-page__text {
   max-width: 56ch;
   margin: 0 auto;
   color: var(--muted);
   line-height: var(--lh-relaxed);
-  font-size: var(--fs-3);
 }
 .utility-page__actions {
   display: flex;

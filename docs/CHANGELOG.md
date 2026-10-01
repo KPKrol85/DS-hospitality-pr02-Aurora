@@ -38,6 +38,7 @@ All significant changes to this project are documented in this file.
 - Aligned responsive image `sizes` with the actual layout across tour cards, galleries, tour details, about and contact views, and updated the Service Worker cache to `aurora-1.15`.
 - Standardized the shared button variant and size contract across the site and updated the Service Worker cache to `aurora-1.16`.
 - Consolidated keyboard focus styling into a shared, theme-aware token system and updated the Service Worker cache to `aurora-1.17`.
+- Introduced shared typographic roles for page titles, section headings, leads and body text, unified heading dividers across the site, and updated the Service Worker cache to `aurora-1.18`.
 
 ### Fixed
 

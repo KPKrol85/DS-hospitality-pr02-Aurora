@@ -25,22 +25,8 @@
 .feature-card__title {
   margin: 0;
   font-size: var(--fs-3);
-  position: relative;
-  padding-bottom: var(--space-2);
-}
-.feature-card__title::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 32px;
-  height: 1px;
-  opacity: 0.8;
-  background: color-mix(in srgb, var(--primary) 25%, transparent);
-  border-radius: var(--radius-lg);
 }
 .feature-card__text {
-  font-size: var(--fs-2);
   letter-spacing: var(--ls-wide);
   color: var(--muted);
 }
@@ -96,7 +82,6 @@
 }
 .tour-card__text {
   min-height: 4.5em;
-  font-size: var(--fs-2);
   color: var(--muted);
   font-weight: var(--fw-medium);
   letter-spacing: var(--ls-wide);

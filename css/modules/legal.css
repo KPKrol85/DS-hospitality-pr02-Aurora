@@ -27,14 +27,10 @@
 }
 .legal__title {
   margin: var(--space-3) 0;
-  font-size: var(--fs-4);
-  font-weight: var(--fw-semibold);
   text-wrap: balance;
 }
 .legal__lead {
   margin: 0;
-  font-size: var(--fs-2);
-  font-weight: var(--fw-regular);
   max-width: 72ch;
   text-wrap: pretty;
   opacity: 0.9;
@@ -82,25 +78,21 @@
 .legal__block-title {
   flex: 1;
   margin: 0 0 var(--space-2);
-  font-size: var(--fs-4);
-  font-weight: var(--fw-semibold);
   opacity: 0.9;
   text-wrap: balance;
 }
+/* Body text with the relaxed leading of the whole document (.legal) */
 .legal__block p {
-  font-size: var(--fs-2);
   text-wrap: pretty;
   max-width: 76ch;
   margin: var(--space-2) var(--space-1);
   opacity: 0.94;
-  font-weight: var(--fw-regular);
   line-height: var(--lh-relaxed);
 }
 .legal__block ul,
 .legal__block ol {
   margin: var(--space-4) 0;
   padding-left: var(--space-4);
-  font-size: var(--fs-2);
 }
 .legal__block li {
   margin-bottom: var(--space-2);
@@ -171,7 +163,6 @@
   border-left: 3px solid var(--primary);
   border-radius: var(--radius-sm);
   background: color-mix(in srgb, var(--primary) 6%, transparent);
-  font-size: var(--fs-2);
   line-height: var(--lh-relaxed);
 }
 .legal__note p {

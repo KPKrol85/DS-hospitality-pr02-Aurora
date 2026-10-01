@@ -23,6 +23,14 @@
   --lh-snug: 1.3;
   --lh-normal: 1.5;
   --lh-relaxed: 1.7;
+  /* Typographic roles: the step of the scale each role uses, one step apart from page title down to
+     small text. base.css (Typographic roles) applies them. */
+  --type-page-title: var(--fs-7);
+  --type-section-title: var(--fs-6);
+  --type-subsection-title: var(--fs-5);
+  --type-lead: var(--fs-4);
+  --type-body: var(--fs-3);
+  --type-small: var(--fs-2);
   /* Letter spacing */
   --ls-tight: -0.02em;
   --ls-normal: 0;

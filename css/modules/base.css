@@ -16,7 +16,7 @@
 body {
   margin: 0;
   font-family: var(--font-base);
-  font-size: var(--fs-3);
+  font-size: var(--type-body);
   line-height: var(--lh-normal);
   color: var(--text);
   background-color: var(--bg);
@@ -54,23 +54,74 @@ h3 {
   font-family: var(--font-heading);
   line-height: var(--lh-snug);
 }
+/* Without a role class, a heading takes the size of the role that matches its level. Headings that
+   label a component rather than a part of the document, such as card titles, set their own size. */
 h1 {
-  font-size: var(--fs-8);
+  font-size: var(--type-page-title);
 }
 h2 {
-  font-size: var(--fs-7);
+  font-size: var(--type-section-title);
 }
 h3 {
-  font-size: var(--fs-6);
+  font-size: var(--type-subsection-title);
 }
 
 p {
   margin: 0;
-  font-size: var(--fs-3);
+  font-size: var(--type-body);
   line-height: var(--lh-normal);
 }
 p + p {
   margin-top: var(--space-3);
+}
+
+/* Typographic roles
+   Each role is one step of the fluid scale (--type-* in tokens.css), so equivalent text renders
+   alike on every page:
+     page title        --fs-7  bold      the h1 of a page; the home hero keeps --fs-8 below 760px
+     section title     --fs-6  bold      the heading of a page section
+     subsection title  --fs-5  semibold  a heading inside a section or a legal document block
+     lead              --fs-4            the introduction of a page or section
+     body              --fs-3            running text: body and p above, so paragraphs need no class
+     small             --fs-2            compact copy on cards and short labels
+   Pages put the role class next to an element's component class. The component rule may place,
+   colour and space the element, but the properties a role declares belong to the role. Headings
+   keep --font-heading and --lh-snug from the heading rule above. Tour summaries and descriptions
+   are sanitised HTML without classes (js/features/tour-detail.js), so their first paragraph and
+   their headings join the lead and subsection-title roles through descendant selectors. */
+.type-page-title {
+  font-size: var(--type-page-title);
+  font-weight: var(--fw-bold);
+}
+.type-section-title {
+  font-size: var(--type-section-title);
+  font-weight: var(--fw-bold);
+}
+.type-subsection-title,
+.tour-detail__content h3 {
+  font-size: var(--type-subsection-title);
+  font-weight: var(--fw-semibold);
+}
+.type-lead,
+.tour-detail__summary p:first-of-type {
+  font-size: var(--type-lead);
+  line-height: var(--lh-normal);
+}
+.type-small {
+  font-size: var(--type-small);
+}
+
+/* Heading divider: the one short rule drawn under a heading, on every heading that has one */
+.heading-divider::after,
+.tour-detail__content h3::after {
+  content: "";
+  display: block;
+  width: 40px;
+  height: 1px;
+  margin-top: var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--muted);
+  opacity: 0.4;
 }
 
 @media (prefers-reduced-motion: reduce) {

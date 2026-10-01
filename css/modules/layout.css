@@ -10,9 +10,6 @@
 .section__header {
   margin-bottom: var(--space-6);
 }
-.section__title {
-  font-size: var(--fs-6);
-}
 .section--muted {
   background: var(--bg-elev);
 }
@@ -310,25 +307,12 @@
   opacity: 0.9;
 }
 .site-footer__grid h3 {
-  position: relative;
   margin-bottom: var(--space-3);
-  padding-bottom: var(--space-2);
   font-size: var(--fs-2);
   font-weight: var(--fw-semibold);
   text-transform: uppercase;
   letter-spacing: var(--ls-wide);
   opacity: 0.9;
-}
-.site-footer__grid h3::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  transform: translateX(-50%);
-  width: 100%;
-  opacity: 0.2;
-  height: 1px;
-  background: var(--muted);
 }
 .site-footer__grid ul {
   list-style: none;
