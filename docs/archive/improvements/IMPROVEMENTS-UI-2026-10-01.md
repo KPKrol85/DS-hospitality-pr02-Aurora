@@ -4,14 +4,21 @@
 **Project type:** Multi-page static website — 12 hand-written HTML pages, token-based modular CSS (nine modules in `css/modules/`, built with PostCSS), vanilla ES modules bundled with esbuild, JSON-driven tour and gallery views, service worker, Netlify static hosting
 **Analysis mode:** Evidence-based UI improvement review
 **Focus:** Project-wide UI
+**Status:** COMPLETED — all five UI improvements implemented and verified.
+**Completion date:** 2026-10-01
+**Completion summary:** IMP-UI-01 to IMP-UI-05 were implemented and verified, and no open tasks remain in this document. The report was archived on 2026-10-01 as a historical record; its analysis documents the pre-implementation state of 2026-09-28.
 
 ## Improvement overview
 
-The interface rests on a coherent token layer in `css/modules/tokens.css` — type scale, spacing, radii, shadows, layering and light/dark colour values — and on shared surfaces (cards, page hero, utility card, footer) that use it consistently, with reduced-motion handling in place. Every item of the completed development plan and daily audit, archived in `docs/archive/` on 2026-09-28, is closed, and no current plan lists open UI work.
+At the time of the analysis, the interface rested on a coherent token layer in `css/modules/tokens.css` — type scale, spacing, radii, shadows, layering and light/dark colour values — and on shared surfaces (cards, page hero, utility card, footer) that used it consistently, with reduced-motion handling in place. Every item of the completed development plan and daily audit, archived in `docs/archive/` on 2026-09-28, was closed, and no plan then listed open UI work.
 
-The remaining opportunities are the places where presentation still depends on browser defaults or on per-component choices instead of that shared layer: native controls fall back to the browser's fonts, responsive-image `sizes` declarations are either not applied or do not follow the grid, the button component has no size or variant contract, keyboard focus is styled in about a dozen different ways, and heading and lead sizes are chosen per component. Each proposal keeps the existing visual identity, tokens and page architecture and can be implemented as a separate, focused change.
+The analysis identified five opportunities where presentation still depended on browser defaults or on per-component choices instead of that shared layer: native controls fell back to the browser's fonts, responsive-image `sizes` declarations were either not applied or did not follow the grid, the button component had no size or variant contract, keyboard focus was styled in about a dozen different ways, and heading and lead sizes were chosen per component. Each proposal kept the existing visual identity, tokens and page architecture and was scoped as a separate, focused change.
 
-## Proposed improvements
+All five improvements have since been implemented and verified. No open tasks remain in this document.
+
+## Completed improvements
+
+Apart from each **Status** line, every field below records the original analysis of 2026-09-28. **Current state** and **Evidence**, including the measurements and the file and line references, describe the pre-implementation baseline; line references point to the files as they stood on that date. **Proposed improvement**, **Expected value**, **Implementation scope**, **Acceptance criteria**, **Impact** and **Effort** record the original proposal and its estimates.
 
 ### IMP-UI-01 — Make native form controls inherit the site typography
 
@@ -80,11 +87,13 @@ The remaining opportunities are the places where presentation still depends on b
 
 ## Selection summary
 
-- The five proposals were selected because each targets a shared system — control typography, image slot declarations, the button component, focus tokens and typographic roles — rather than a single page, affects several pages, and can be verified through computed styles or image selection in a browser. They are ordered by the breadth of the affected interface relative to effort and risk; the order is not based on measured user outcomes.
-- IMP-UI-03 builds on IMP-UI-01, because button heights depend on the inherited font size and line height. IMP-UI-04 edits the same control and button rules as IMP-UI-01 and IMP-UI-03 and is simplest to implement after them. IMP-UI-02 and IMP-UI-05 are independent of the others and of each other.
-- Every proposal changes files under `css/` or `js/` or pages that the service worker precaches, so shipping any of them follows the workflow in `docs/pipeline-notes.md`: `npm run build` and a raised `VERSION` in `service-worker.js` recorded with `npm run record:sw-bundles`.
+- The five improvements were selected because each targeted a shared system — control typography, image slot declarations, the button component, focus tokens and typographic roles — rather than a single page, affected several pages, and could be verified through computed styles or image selection in a browser. They were ordered by the breadth of the affected interface relative to effort and risk; the order was not based on measured user outcomes.
+- IMP-UI-03 built on IMP-UI-01, because button heights depend on the inherited font size and line height. IMP-UI-04 edited the same control and button rules as IMP-UI-01 and IMP-UI-03 and was simplest to implement after them. IMP-UI-02 and IMP-UI-05 were independent of the others and of each other.
+- Every proposal changed files under `css/` or `js/` or pages that the service worker precaches, so shipping any of them was subject to the workflow in `docs/pipeline-notes.md`: `npm run build` and a raised `VERSION` in `service-worker.js` recorded with `npm run record:sw-bundles`.
 
 ## Analysis limitations
+
+These limitations apply to the original analysis of 2026-09-28 and the evidence recorded in this report, not to the verification of the implemented changes.
 
 - Rendering was inspected in the Chromium-based browser pane of the Claude desktop app on Windows, at DPR 1 and emulated viewports of 375–1280 px, against the unbundled sources served locally. Other browsers and operating systems, high-density screens and the production `dist/` build were not checked; the fallback control font observed (Arial) is platform-specific.
 - Focus treatments were inventoried from the rules of the loaded stylesheets, not observed through keyboard traversal.
