@@ -23,6 +23,8 @@ The five proposals below target these points. Each one keeps the current archite
 
 ### IMP-QUALITY-01 — Protect the keyboard and focus contract of the lightbox and the mobile navigation
 
+- **Status:** COMPLETED — implemented and verified.
+- **Result:** Regression tests now protect the documented lightbox and mobile-navigation keyboard, focus and state contracts.
 - **Affected area:** The shared lightbox on `gallery.html` and `tour.html`, and the mobile navigation drawer on all 12 pages.
 - **Evidence:** `js/features/lightbox.js:28-30`, `lightbox.js:41-78`, `lightbox.js:86-127`; `js/features/nav.js:11-75`; overlay markup `gallery.html:202-236`, `tour.html:326-360`; navigation markup `index.html:130`, `index.html:148`; documented behaviour `README.md:24`, `README.md:27`, `README.md:239`; browser-only verification of the related fixes in `docs/archive/plans/PLAN-2026-09-28.md:89` and `:98`; `tests/gallery.test.js:109-124`.
 - **Current implementation:**

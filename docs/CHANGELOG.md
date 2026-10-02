@@ -72,6 +72,7 @@ All significant changes to this project are documented in this file.
 
 ### Testing
 
+- Added jsdom regression tests for lightbox and mobile-navigation keyboard handling, focus trapping and restoration, scroll locking, filtered image navigation, tour main-image exclusion, and drawer dismissal on link clicks and desktop media-query changes.
 - Added build verification scripts that fail when `css/style.min.css` still contains `@import` or sourcemap references, or when `js/script.min.js` still contains module syntax.
 - Added an asset integrity check that scans HTML references, `srcset` candidates, JSON-LD and social-image URLs, and web manifest entries for missing files and invalid JSON.
 - Added a CSS/JS asset check that enforces production asset references on every page and rejects legacy source paths in the service worker precache list.
