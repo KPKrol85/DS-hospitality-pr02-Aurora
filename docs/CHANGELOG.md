@@ -72,6 +72,7 @@ All significant changes to this project are documented in this file.
 
 ### Testing
 
+- Added Service Worker regression tests that run the production `service-worker.js` against in-memory Cache Storage and a mocked network, covering install precaching, cleanup of previous-version caches on activation, request routing, network-first HTML caching with cached-page and `offline.html` fallbacks, cache-first static asset caching rules, and `SKIP_WAITING` update activation.
 - Added jsdom regression tests for lightbox and mobile-navigation keyboard handling, focus trapping and restoration, scroll locking, filtered image navigation, tour main-image exclusion, and drawer dismissal on link clicks and desktop media-query changes.
 - Added build verification scripts that fail when `css/style.min.css` still contains `@import` or sourcemap references, or when `js/script.min.js` still contains module syntax.
 - Added an asset integrity check that scans HTML references, `srcset` candidates, JSON-LD and social-image URLs, and web manifest entries for missing files and invalid JSON.

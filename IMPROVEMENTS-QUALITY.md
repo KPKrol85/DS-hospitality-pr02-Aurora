@@ -52,6 +52,8 @@ The five proposals below target these points. Each one keeps the current archite
 
 ### IMP-QUALITY-02 — Add regression tests for the service worker caching strategies
 
+- **Status:** COMPLETED — implemented and verified.
+- **Result:** Regression tests now protect the Service Worker install, cache lifecycle, request routing, offline fallback and update-activation behaviour.
 - **Affected area:** `service-worker.js`, which provides the offline fallback, cache cleanup and update activation of the production package.
 - **Evidence:** `service-worker.js:10-33` (install, activate, `SKIP_WAITING`), `service-worker.js:35-53` (request routing), `service-worker.js:55-84` (`cacheFirst`, `networkFirst`); `js/script.js:124-150` (registration only in the production bundle, unregistration in development); `scripts/check-css-assets.js:112-192` (static check of the precache list only); `README.md:210`, `README.md:264-268`.
 - **Current implementation:**
