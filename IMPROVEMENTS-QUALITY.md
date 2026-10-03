@@ -83,6 +83,8 @@ The five proposals below target these points. Each one keeps the current archite
 
 ### IMP-QUALITY-03 — Protect initializer isolation and the reveal-ready contract
 
+- **Status:** COMPLETED — implemented and verified.
+- **Result:** Regression tests now protect initializer failure isolation and the reveal fail-safe contract.
 - **Affected area:** Page initialization in `js/script.js` and the reveal animation gate, which together decide whether page content stays visible when part of the JavaScript fails.
 - **Evidence:** `js/script.js:16-55`; `js/features/reveal.js:1-39`; `css/modules/utilities.css:97-116`; manual verification of PH3-04 in `docs/archive/plans/PLAN-2026-09-28.md:109-113`.
 - **Current implementation:**
