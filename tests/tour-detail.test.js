@@ -28,6 +28,30 @@ function sizesOf(picture) {
   return Array.from(picture.querySelectorAll("source, img")).map((element) => element.getAttribute("sizes"));
 }
 
+// Element names and attribute names of a rendered subtree, without the attribute values.
+function structureOf(element) {
+  return {
+    tag: element.localName,
+    attributes: element.getAttributeNames().sort(),
+    children: Array.from(element.children, structureOf),
+  };
+}
+
+const sourceStructure = { tag: "source", attributes: ["sizes", "srcset", "type"], children: [] };
+const pictureStructure = {
+  tag: "picture",
+  attributes: ["class"],
+  children: [
+    sourceStructure,
+    sourceStructure,
+    {
+      tag: "img",
+      attributes: ["alt", "data-caption", "data-lightbox-src", "height", "loading", "sizes", "src", "srcset", "width"],
+      children: [],
+    },
+  ],
+};
+
 async function renderTour(pathAndQuery, catalogue = tours) {
   setUrl(pathAndQuery);
   const fetchMock = stubFetchJson(catalogue);
@@ -165,5 +189,34 @@ describe("initTourDetail", () => {
     // Disallowed elements are replaced by their text content.
     expect(field("content").innerHTML).toBe('<h3>Plan</h3><ol class="tour-itinerary"><li>Dzień 1</li></ol>alert(3)Link');
     expect(field("content").querySelector("script, img, a, iframe")).toBeNull();
+  });
+
+  it("renders image alt texts and captions with HTML-special characters as literal values", async () => {
+    const alt = `Taras "Riad" <img src=x onerror="alert(1)"> & 'Atlas' >`;
+    const caption = `Kolacja "pod gwiazdami" </picture><button aria-label='x'>& więcej</button> >`;
+    const [first] = tours[0].images;
+    const tour = { ...structuredClone(tours[0]), images: [{ ...first, alt, caption }] };
+    const path = `assets/img/tours/${first.base}`;
+
+    await renderTour(`/tour.html?id=${tour.id}`, [tour]);
+
+    const mainImage = field("main-image");
+    const thumbnails = Array.from(field("gallery").children);
+    expect(Array.from(mainImage.children, structureOf)).toEqual([pictureStructure]);
+    expect(thumbnails.map(structureOf)).toEqual([
+      { tag: "button", attributes: ["aria-label", "class", "data-lightbox-trigger", "type"], children: [pictureStructure] },
+    ]);
+    expect(thumbnails[0].getAttribute("aria-label")).toBe(`Otwórz zdjęcie: ${alt}`);
+
+    [mainImage, thumbnails[0]].forEach((context) => {
+      const img = context.querySelector("img");
+
+      expect(context.textContent.trim()).toBe("");
+      expect(img.alt).toBe(alt);
+      expect(img.dataset.caption).toBe(caption);
+      expect(img.getAttribute("src")).toBe(`${path}-1200x780.jpg`);
+      expect(img.getAttribute("loading")).toBe("lazy");
+      expect(img.dataset.lightboxSrc).toBe(`${path}-1600x1040.jpg`);
+    });
   });
 });

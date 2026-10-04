@@ -44,12 +44,12 @@ function fillTourContent(tour) {
   const mainImage = tour.images[0];
   const mainImageContainer = document.querySelector("[data-tour-main-image]");
   if (mainImage && mainImageContainer) {
-    mainImageContainer.innerHTML = createPictureMarkup(mainImage, TOUR_MAIN_IMAGE_SIZES);
+    mainImageContainer.replaceChildren(createPicture(mainImage, TOUR_MAIN_IMAGE_SIZES));
   }
 
   const galleryEl = document.querySelector("[data-tour-gallery]");
   if (galleryEl && tour.images.length > 0) {
-    galleryEl.innerHTML = tour.images.map((img) => createGalleryItemMarkup(img)).join("");
+    galleryEl.replaceChildren(...tour.images.map((img) => createGalleryItem(img)));
   }
 }
 
@@ -82,54 +82,51 @@ function sanitizeTourHtml(html) {
   return template.innerHTML;
 }
 
-// Gallery thumbnails open the lightbox; the main image reuses createPictureMarkup without a button.
-function createGalleryItemMarkup(image) {
-  return `
-    <button type="button" class="tour-gallery__button" data-lightbox-trigger aria-label="${getLightboxTriggerLabel(image.alt, image.caption)}">
-      ${createPictureMarkup(image, TOUR_THUMBNAIL_SIZES)}
-    </button>
-  `;
+// The image markup is built through the DOM, as in gallery.js, so catalogue alt texts, captions,
+// labels and image bases become literal attribute values and are never parsed as markup.
+// Gallery thumbnails open the lightbox; the main image reuses createPicture without a button.
+function createGalleryItem(image) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "tour-gallery__button";
+  button.dataset.lightboxTrigger = "";
+  button.setAttribute("aria-label", getLightboxTriggerLabel(image.alt, image.caption));
+  button.append(createPicture(image, TOUR_THUMBNAIL_SIZES));
+  return button;
 }
 
 // sizes describes the slot of the calling context and applies to every source and the img.
-function createPictureMarkup({ base, alt, caption = "" }, sizes) {
+function createPicture({ base, alt, caption = "" }, sizes) {
   const basePath = `assets/img/tours/${base}`;
 
-  return `
-    <picture class="tour-gallery__item">
-      <source
-        srcset="
-          ${basePath}-400x260.avif 400w,
-          ${basePath}-800x520.avif 800w,
-          ${basePath}-1200x780.avif 1200w,
-          ${basePath}-1600x1040.avif 1600w"
-        sizes="${sizes}"
-        type="image/avif"
-      />
-      <source
-        srcset="
-          ${basePath}-400x260.webp 400w,
-          ${basePath}-800x520.webp 800w,
-          ${basePath}-1200x780.webp 1200w,
-          ${basePath}-1600x1040.webp 1600w"
-        sizes="${sizes}"
-        type="image/webp"
-      />
-      <img
-        src="${basePath}-1200x780.jpg"
-        srcset="
-          ${basePath}-400x260.jpg 400w,
-          ${basePath}-800x520.jpg 800w,
-          ${basePath}-1200x780.jpg 1200w,
-          ${basePath}-1600x1040.jpg 1600w"
-        sizes="${sizes}"
-        width="1200"
-        height="780"
-        alt="${alt}"
-        loading="lazy"
-        data-lightbox-src="${basePath}-1600x1040.jpg"
-data-caption="${caption}"
-      />
-    </picture>
-  `;
+  const picture = document.createElement("picture");
+  picture.className = "tour-gallery__item";
+  picture.append(createSource(basePath, "avif", sizes), createSource(basePath, "webp", sizes), createImage(basePath, alt, caption, sizes));
+  return picture;
+}
+
+function createSource(basePath, format, sizes) {
+  const source = document.createElement("source");
+  source.srcset = createSrcset(basePath, format);
+  source.sizes = sizes;
+  source.type = `image/${format}`;
+  return source;
+}
+
+function createImage(basePath, alt, caption, sizes) {
+  const img = document.createElement("img");
+  img.src = `${basePath}-1200x780.jpg`;
+  img.srcset = createSrcset(basePath, "jpg");
+  img.sizes = sizes;
+  img.width = 1200;
+  img.height = 780;
+  img.alt = alt;
+  img.setAttribute("loading", "lazy");
+  img.dataset.lightboxSrc = `${basePath}-1600x1040.jpg`;
+  img.dataset.caption = caption;
+  return img;
+}
+
+function createSrcset(basePath, format) {
+  return [`${basePath}-400x260.${format} 400w`, `${basePath}-800x520.${format} 800w`, `${basePath}-1200x780.${format} 1200w`, `${basePath}-1600x1040.${format} 1600w`].join(", ");
 }

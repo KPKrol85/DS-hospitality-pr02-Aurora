@@ -53,6 +53,7 @@ All significant changes to this project are documented in this file.
 ### Security
 
 - Added static-hosting security response headers in `_headers`, covering Content-Security-Policy, Strict-Transport-Security, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`, and `Cross-Origin-Opener-Policy`.
+- Built the tour detail images through DOM properties instead of HTML strings, so catalogue image paths, alt texts, captions and thumbnail labels are inserted as literal values and cannot inject markup. Updated the Service Worker cache to `aurora-1.19`.
 
 ### Documentation
 

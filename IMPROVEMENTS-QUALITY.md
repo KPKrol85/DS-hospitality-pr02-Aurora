@@ -140,6 +140,8 @@ The five proposals below target these points. Each one keeps the current archite
 
 ### IMP-QUALITY-05 — Treat catalogue text as text when building tour detail image markup
 
+- **Status:** COMPLETED — implemented and verified.
+- **Result:** The tour detail page now inserts catalogue image paths, alt texts, captions and thumbnail labels as literal DOM values, so they can no longer be interpreted as markup.
 - **Affected area:** The image markup that `js/features/tour-detail.js` builds from `assets/data/tours.json` on `tour.html`.
 - **Evidence:** `js/features/tour-detail.js:44-53` (`innerHTML` assignment), `tour-detail.js:85-92` (`aria-label` interpolation), `tour-detail.js:94-135` (`alt`, `data-caption` and image paths interpolated into an HTML template); DOM-property construction of the same attributes in `js/features/gallery.js:42-87`; `scripts/check-asset-integrity.js:418-427` (image bases are checked for path characters, not for quotes or `<`); `tests/tour-detail.test.js:151-168` (sanitizer test covering only the summary and description); `assets/data/tours.json:152` (a caption containing an apostrophe).
 - **Current implementation:**
