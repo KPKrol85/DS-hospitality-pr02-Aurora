@@ -108,6 +108,8 @@ The five proposals below target these points. Each one keeps the current archite
 
 ### IMP-QUALITY-04 — Extend the tour catalogue check to the home page featured offers
 
+- **Status:** COMPLETED — implemented and verified.
+- **Result:** The tour catalogue check now protects the links, titles and numeric durations of the featured home page offers.
 - **Affected area:** The three featured offer cards on `index.html` and `scripts/check-tour-catalogue.js` (`npm run check:tour-catalogue`, run by `npm run build`).
 - **Evidence:** `index.html:287-321`, `index.html:325-359`, `index.html:363-397` (card titles, durations in the card text, `tours.html#tokio`, `#malediwy`, `#nyc` links); `scripts/check-tour-catalogue.js:198-200`, `check-tour-catalogue.js:278-284`; `scripts/check-asset-integrity.js:55` (fragments are stripped, so link anchors are not validated); earlier home page drift corrected in `docs/archive/plans/PLAN-2026-09-28.md:47` and recorded in `docs/CHANGELOG.md` (Fixed: tour offers stating different names, durations and prices).
 - **Current implementation:**

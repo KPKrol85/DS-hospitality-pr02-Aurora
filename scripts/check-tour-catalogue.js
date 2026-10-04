@@ -7,6 +7,7 @@ const projectRoot = process.cwd();
 const catalogueFile = "assets/data/tours.json";
 const listingFile = "tours.html";
 const contactFile = "contact.html";
+const homeFile = "index.html";
 
 // Contact select options that are not catalogue offers: the empty required-field
 // placeholder and the custom inquiry option.
@@ -41,8 +42,10 @@ function addIssue(location, subject, message) {
   issues.push(`${location} [${subject}] ${message}`);
 }
 
+const entityPattern = /&(#x[0-9a-f]+|#\d+|[a-z]+);/gi;
+
 function decodeEntities(value) {
-  return value.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (entity, body) => {
+  return value.replace(entityPattern, (entity, body) => {
     if (body[0] !== "#") {
       return namedEntities.get(body) ?? entity;
     }
@@ -60,6 +63,14 @@ function collapseWhitespace(value) {
 // Visible text of an HTML fragment: tags removed, entities decoded, whitespace collapsed.
 function toText(html) {
   return collapseWhitespace(decodeEntities(html.replace(/<[^>]*>/g, "")));
+}
+
+// Visible text of an HTML fragment with every character at its source index: tags become
+// spaces and entities their character padded with spaces, so a match in it locates its line.
+function toTextInPlace(html) {
+  return html
+    .replace(/<[^>]*>/g, (tag) => " ".repeat(tag.length))
+    .replace(entityPattern, (entity) => decodeEntities(entity).padEnd(entity.length));
 }
 
 function parseAttributes(tagContent) {
@@ -104,18 +115,40 @@ function parsePriceAmount(priceText) {
   return match ? Number(match[0].replace(/\s/g, "")) : null;
 }
 
-// Catalogue ID that a link opens on the tour detail page, or null for any other link.
-function getDetailLinkId(href) {
+// Numeric durations in the "<days> dni" wording, such as "7 dni". A duration written out in
+// words, such as "Dziewięciodniowy", states no number and is not matched.
+const durationPattern = /(\d+)\s*dni(?!\p{L})/gu;
+
+// URL that a link on a root page opens, or null when the link has no valid href.
+function resolveLink(href) {
   if (!href) return null;
 
-  let url;
   try {
-    url = new URL(href, "https://aurora.invalid/");
+    return new URL(href, "https://aurora.invalid/");
   } catch {
     return null;
   }
+}
 
-  return url.pathname === "/tour.html" ? (url.searchParams.get("id") ?? "") : null;
+// Catalogue ID that a link opens on the tour detail page, or null for any other link.
+function getDetailLinkId(href) {
+  const url = resolveLink(href);
+  return url?.pathname === "/tour.html" ? (url.searchParams.get("id") ?? "") : null;
+}
+
+// Listing card anchor that a link opens on tours.html ("" without a fragment), or null for any
+// other link.
+function getListingAnchor(href) {
+  const url = resolveLink(href);
+  if (url?.pathname !== `/${listingFile}`) return null;
+
+  // The browser also matches the percent-decoded fragment against element IDs.
+  const fragment = url.hash.slice(1);
+  try {
+    return decodeURIComponent(fragment);
+  } catch {
+    return fragment;
+  }
 }
 
 function loadCatalogue() {
@@ -194,6 +227,9 @@ function checkListing(tours) {
   const toursById = new Map(tours.map((tour) => [tour.id, tour]));
   const catalogueIds = tours.map((tour) => tour.id).join(", ");
   const listedCards = new Map();
+  // The anchors of the valid listing cards with their catalogue records, which the
+  // featured offers in index.html are resolved through.
+  const listingAnchors = new Map();
 
   // Each article.tour-card is one offer. Its id attribute is a page anchor linked
   // from index.html; the catalogue ID comes from the card's tour detail link.
@@ -224,6 +260,10 @@ function checkListing(tours) {
     }
 
     listedCards.set(tourId, card);
+    // A repeated ID keeps its first valid card, as the browser opens the first element with an ID.
+    if (card.attributes.id && !listingAnchors.has(card.attributes.id)) {
+      listingAnchors.set(card.attributes.id, tour);
+    }
     checkCard(card, tour, `${tourId}, ${anchor}`, locate);
   }
 
@@ -232,6 +272,8 @@ function checkListing(tours) {
       addIssue(listingFile, tour.id, `no listing card links to tour.html?id=${tour.id} ("${tour.name}")`);
     }
   }
+
+  return listingAnchors;
 }
 
 function checkContactSelect(tours) {
@@ -275,12 +317,71 @@ function checkContactSelect(tours) {
   }
 }
 
+function checkFeaturedCard(card, tour, subject, locate) {
+  const title = findElements(card.inner, "h[1-6]", card.innerIndex).find((element) => hasClass(element, "tour-card__title"));
+  const name = title && toText(title.inner);
+
+  if (name !== tour.name) {
+    addIssue(locate((title || card).index), subject, `name is ${title ? `"${name}"` : "missing"}, expected "${tour.name}" (from name)`);
+  }
+
+  // Every numeric duration in the visible card text must state the catalogue days.
+  for (const match of toTextInPlace(card.inner).matchAll(durationPattern)) {
+    if (Number(match[1]) !== tour.days) {
+      addIssue(locate(card.innerIndex + match.index), subject, `visible duration is "${collapseWhitespace(match[0])}", expected "${tour.days} dni" (from days)`);
+    }
+  }
+}
+
+// Returns the number of featured offer cards.
+function checkFeaturedOffers(listingAnchors) {
+  const html = blankComments(readProjectFile(homeFile));
+  const locate = (index) => `${homeFile}:${getLineNumber(html, index)}`;
+  const validAnchors = [...listingAnchors.keys()].map((anchor) => `#${anchor}`).join(", ") || "none";
+
+  // Each article.tour-card is a featured offer. It links to the offer's listing card
+  // (tours.html#<anchor>), whose tour detail link names the catalogue record.
+  const cards = findElements(html, "article").filter((element) => hasClass(element, "tour-card"));
+
+  if (cards.length === 0) {
+    addIssue(homeFile, "featured offers", "no featured offer card (article.tour-card) found");
+  }
+
+  for (const card of cards) {
+    const listingLinks = findElements(card.inner, "a", card.innerIndex).filter((link) => getListingAnchor(link.attributes.href) !== null);
+    const anchors = [...new Set(listingLinks.map((link) => getListingAnchor(link.attributes.href)))];
+
+    if (anchors.length !== 1) {
+      const targets = anchors.map((anchor) => `${listingFile}#${anchor}`).join(", ");
+      const problem = anchors.length === 0 ? `has no link to its listing card (${listingFile}#<anchor>)` : `has links to different listing cards (${targets})`;
+      addIssue(locate(card.index), "featured card", problem);
+      continue;
+    }
+
+    const [anchor] = anchors;
+    const target = anchor ? `${listingFile}#${anchor}` : listingFile;
+    const tour = listingAnchors.get(anchor);
+
+    if (!anchor) {
+      addIssue(locate(listingLinks[0].index), `featured card -> ${target}`, `link has no anchor; expected ${listingFile}#<anchor> of the offer's listing card`);
+    } else if (!tour) {
+      addIssue(locate(listingLinks[0].index), `featured card -> ${target}`, `anchor #${anchor} matches no valid listing card in ${listingFile}; valid listing anchors: ${validAnchors}`);
+    } else {
+      checkFeaturedCard(card, tour, `${tour.id}, featured card -> ${target}`, locate);
+    }
+  }
+
+  return cards.length;
+}
+
 function main() {
   const tours = loadCatalogue();
+  let featuredOffers = 0;
 
   if (issues.length === 0) {
-    checkListing(tours);
+    const listingAnchors = checkListing(tours);
     checkContactSelect(tours);
+    featuredOffers = checkFeaturedOffers(listingAnchors);
   }
 
   if (issues.length > 0) {
@@ -291,7 +392,10 @@ function main() {
     process.exit(1);
   }
 
-  console.log(`Tour catalogue check passed (${tours.length} offers in ${catalogueFile} match the ${listingFile} listing cards and the ${contactFile} tour select).`);
+  console.log(
+    `Tour catalogue check passed (${tours.length} offers in ${catalogueFile} match the ${listingFile} listing cards, the ${contactFile} tour select, ` +
+      `and the ${featuredOffers} featured ${featuredOffers === 1 ? "offer" : "offers"} in ${homeFile}).`
+  );
 }
 
 main();

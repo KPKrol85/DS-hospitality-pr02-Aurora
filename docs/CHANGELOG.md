@@ -72,6 +72,7 @@ All significant changes to this project are documented in this file.
 
 ### Testing
 
+- Extended the tour catalogue check to the featured offer cards on `index.html`, which must link to a valid `tours.html` listing card and match its catalogue offer in title and numeric `<N> dni` durations, and added regression tests that run the checker against a temporary site.
 - Added regression tests for initializer failure isolation, gallery initialization ordering after rejection, and the reveal fail-safe and reveal-ready contracts.
 - Added Service Worker regression tests that run the production `service-worker.js` against in-memory Cache Storage and a mocked network, covering install precaching, cleanup of previous-version caches on activation, request routing, network-first HTML caching with cached-page and `offline.html` fallbacks, cache-first static asset caching rules, and `SKIP_WAITING` update activation.
 - Added jsdom regression tests for lightbox and mobile-navigation keyboard handling, focus trapping and restoration, scroll locking, filtered image navigation, tour main-image exclusion, and drawer dismissal on link clicks and desktop media-query changes.

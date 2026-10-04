@@ -176,7 +176,7 @@ A change to `_headers` alone leaves the pages and bundles unchanged, so `check:s
 | `npm run check:assets:dist` | The same scan for `dist/`, including `dist/css/style.min.css` and the data in `dist/assets/data/`; references must resolve to files inside `dist/` |
 | `npm run check:csp` | Every inline script of the root pages matches a SHA-256 hash in `script-src` of `_headers`, and every approved hash is used; no `'unsafe-inline'`, nonce, overriding `script-src-elem` or `script-src-attr`, inline event handler, `javascript:` URL, or script file from another origin |
 | `npm run check:csp:dist` | The same for the pages in `dist/` against `dist/_headers`, whose Content-Security-Policy must equal the one in `_headers` |
-| `npm run check:tour-catalogue` | `tours.html` listing cards and the `contact.html` tour select match `assets/data/tours.json` |
+| `npm run check:tour-catalogue` | `tours.html` listing cards, the `contact.html` tour select, and the `index.html` featured offer cards match `assets/data/tours.json`; a featured card's `tours.html#<anchor>` link must match a valid listing card, whose offer supplies the expected title and the days for every numeric `<N> dni` duration (a duration written out in words, such as `Dziewięciodniowy`, is not parsed) |
 | `npm run check:sw-bundles` | `VERSION` in `dist/service-worker.js` and the SHA-256 of `dist/css/style.min.css` and `dist/js/script.min.js` match `service-worker-bundles.json` |
 
 ## Deployment
