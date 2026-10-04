@@ -16,8 +16,8 @@ const siteLabel = checkDist ? 'dist/' : 'the project root';
 const siteOrigin = 'https://aurora.invalid';
 
 // Views that build image paths in the browser from JSON data read from the checked root.
-// The paths below mirror js/features/gallery.js and js/features/tour-detail.js;
-// tests/asset-integrity.test.js compares them with the paths those modules render.
+// The paths below mirror js/features/catalogue-picture.js, which builds the pictures of both
+// views; tests/asset-integrity.test.js compares them with the paths the views render.
 const tourImageDirectory = 'assets/img/tours/';
 const responsiveImageSizes = ['400x260', '800x520', '1200x780', '1600x1040'];
 
@@ -415,7 +415,7 @@ function describeJsonValue(value) {
   return typeof value === 'object' ? 'an object' : `${typeof value} ${JSON.stringify(value)}`;
 }
 
-// The modules append "-<size>.<format>" to assets/img/tours/<base> and list the results in
+// The picture builder appends "-<size>.<format>" to assets/img/tours/<base> and lists the results in
 // srcset attributes, so a base must be a relative path below that directory without
 // whitespace, commas, a query, a fragment or dot segments.
 function isUsableImageBase(base) {
@@ -431,7 +431,7 @@ function describeUnusableBase(base) {
   return `unusable image base ${value} (expected a relative path below ${tourImageDirectory}, such as "<folder>/<name>")`;
 }
 
-// URLs and attributes of the <picture> that both modules build from an image base.
+// URLs and attributes of the <picture> that catalogue-picture.js builds from an image base.
 function getPictureReferences(base) {
   const basePath = `${tourImageDirectory}${base}`;
   const references = [];

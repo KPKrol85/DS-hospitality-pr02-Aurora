@@ -1,3 +1,4 @@
+import { createCataloguePicture } from "./catalogue-picture.js";
 import { getLightboxTriggerLabel } from "./lightbox.js";
 
 // Rendered widths inside the .tour-detail article (css/modules/subpages.css): the .container is
@@ -82,8 +83,6 @@ function sanitizeTourHtml(html) {
   return template.innerHTML;
 }
 
-// The image markup is built through the DOM, as in gallery.js, so catalogue alt texts, captions,
-// labels and image bases become literal attribute values and are never parsed as markup.
 // Gallery thumbnails open the lightbox; the main image reuses createPicture without a button.
 function createGalleryItem(image) {
   const button = document.createElement("button");
@@ -95,38 +94,10 @@ function createGalleryItem(image) {
   return button;
 }
 
-// sizes describes the slot of the calling context and applies to every source and the img.
-function createPicture({ base, alt, caption = "" }, sizes) {
-  const basePath = `assets/img/tours/${base}`;
-
-  const picture = document.createElement("picture");
+// sizes is the slot of the calling context. Without a lightboxSrc, the lightbox opens the image
+// derived from the base.
+function createPicture(image, sizes) {
+  const picture = createCataloguePicture(image, { sizes });
   picture.className = "tour-gallery__item";
-  picture.append(createSource(basePath, "avif", sizes), createSource(basePath, "webp", sizes), createImage(basePath, alt, caption, sizes));
   return picture;
-}
-
-function createSource(basePath, format, sizes) {
-  const source = document.createElement("source");
-  source.srcset = createSrcset(basePath, format);
-  source.sizes = sizes;
-  source.type = `image/${format}`;
-  return source;
-}
-
-function createImage(basePath, alt, caption, sizes) {
-  const img = document.createElement("img");
-  img.src = `${basePath}-1200x780.jpg`;
-  img.srcset = createSrcset(basePath, "jpg");
-  img.sizes = sizes;
-  img.width = 1200;
-  img.height = 780;
-  img.alt = alt;
-  img.setAttribute("loading", "lazy");
-  img.dataset.lightboxSrc = `${basePath}-1600x1040.jpg`;
-  img.dataset.caption = caption;
-  return img;
-}
-
-function createSrcset(basePath, format) {
-  return [`${basePath}-400x260.${format} 400w`, `${basePath}-800x520.${format} 800w`, `${basePath}-1200x780.${format} 1200w`, `${basePath}-1600x1040.${format} 1600w`].join(", ");
 }

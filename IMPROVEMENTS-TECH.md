@@ -28,6 +28,8 @@ Each proposal below gives one of these contracts a single owner. Behaviour stays
 
 ### IMP-TECH-01 — Build catalogue image pictures through one shared module
 
+- **Status:** COMPLETED — implemented and verified.
+- **Result:** `gallery.js` and `tour-detail.js` now build their catalogue pictures through the shared runtime builder in `js/features/catalogue-picture.js`, while each keeps its own wrappers, classes, `sizes` values and lightbox behaviour.
 - **Affected area:** Runtime `<picture>` rendering for catalogue images in `js/features/gallery.js` (`gallery.html`) and `js/features/tour-detail.js` (`tour.html`).
 - **Evidence:**
   - Runtime builders: `js/features/gallery.js:64-93` and `js/features/tour-detail.js:98-132`.
