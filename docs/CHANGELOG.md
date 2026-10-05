@@ -40,6 +40,7 @@ All significant changes to this project are documented in this file.
 - Consolidated keyboard focus styling into a shared, theme-aware token system and updated the Service Worker cache to `aurora-1.17`.
 - Introduced shared typographic roles for page titles, section headings, leads and body text, unified heading dividers across the site, and updated the Service Worker cache to `aurora-1.18`.
 - Consolidated the responsive catalogue image `<picture>` markup of the gallery and tour detail views into one shared runtime module, and updated the Service Worker cache to `aurora-1.20`.
+- Derived the contact form's phone, date and participant-count validation messages from the native field constraints instead of restating the rules in JavaScript, so an end date before today is also reported while no start date is chosen, and updated the Service Worker cache to `aurora-1.21`.
 
 ### Fixed
 

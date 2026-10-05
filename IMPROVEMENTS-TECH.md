@@ -63,6 +63,8 @@ Each proposal below gives one of these contracts a single owner. Behaviour stays
 
 ### IMP-TECH-02 — Derive contact form validation from the native constraints
 
+- **Status:** COMPLETED — implemented and verified.
+- **Result:** Contact form validation now derives the phone, date and participant rules from the native field constraints (the `contact.html` attributes and the runtime date minimums) instead of restating them in JavaScript, and `form.js` only selects the custom message for the reported validity state.
 - **Affected area:** Contact form validation in `js/features/form.js` and the constraint attributes of `contact.html`.
 - **Evidence:**
   - Runtime `min` values: `js/features/form.js:16-31`.

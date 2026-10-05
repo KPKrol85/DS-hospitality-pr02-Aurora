@@ -154,6 +154,16 @@ describe("date constraints", () => {
     expect(errorFor("date-end")).toBe("");
     expect(control("date-end").hasAttribute("aria-invalid")).toBe(false);
   });
+
+  it("rejects an end date before today while no start date is chosen", () => {
+    expect(control("date-start").value).toBe("");
+
+    blurWith("date-end", "2026-06-14");
+
+    expect(control("date-end").min).toBe(TODAY);
+    expect(errorFor("date-end")).toBe(START_ERROR);
+    expect(control("date-end").getAttribute("aria-invalid")).toBe("true");
+  });
 });
 
 describe("field validation on blur", () => {
@@ -238,6 +248,22 @@ describe("field validation on blur", () => {
 
     expect(errorFor("people")).toBe(PEOPLE_ERROR);
     expect(control("people").getAttribute("aria-invalid")).toBe("true");
+  });
+
+  it("takes the participant range and its message from the field's min and max", () => {
+    // contact.html owns the limits, so changing max must change both the accepted range and
+    // the stated range without an edit to form.js.
+    const people = control("people");
+    expect(people.max).toBe("12");
+    people.max = "15";
+
+    blurWith("people", "13");
+    expect(errorFor("people")).toBe("");
+    expect(people.hasAttribute("aria-invalid")).toBe(false);
+
+    blurWith("people", "16");
+    expect(errorFor("people")).toBe("Liczba osób musi mieścić się w zakresie od 1 do 15.");
+    expect(people.getAttribute("aria-invalid")).toBe("true");
   });
 });
 

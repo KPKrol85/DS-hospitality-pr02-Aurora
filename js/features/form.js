@@ -17,17 +17,11 @@ export function initForm() {
     dateStart.min = today;
   }
 
-  if (dateEnd instanceof HTMLInputElement) {
-    const minForEnd = dateStart instanceof HTMLInputElement && dateStart.value ? dateStart.value : today;
-    dateEnd.min = minForEnd;
-  }
+  syncEndDateMin(dateStart, dateEnd, today);
 
   if (dateStart instanceof HTMLInputElement) {
     dateStart.addEventListener('change', () => {
-      if (dateEnd instanceof HTMLInputElement) {
-        const minDate = dateStart.value || today;
-        dateEnd.min = minDate;
-      }
+      syncEndDateMin(dateStart, dateEnd, today);
     });
   }
 
@@ -78,6 +72,14 @@ function validateField(field, form, today) {
   errorEl.textContent = '';
   field.removeAttribute('aria-invalid');
 
+  // The constraints in contact.html and the runtime date minimums define what is valid; this
+  // function only picks the message for the native validity state. A start date set without a
+  // change event would leave the end-date minimum stale, so it is synchronized first.
+  const dateStart = form.querySelector('#date-start');
+  if (field.id === 'date-end') {
+    syncEndDateMin(dateStart, field, today);
+  }
+
   let message = '';
 
   if (field.validity.valueMissing || (field instanceof HTMLInputElement && field.type === 'checkbox' && !field.checked)) {
@@ -92,30 +94,24 @@ function validateField(field, form, today) {
     message = `Wprowadź co najmniej ${field.minLength} znaki.`;
   }
 
-  if (!message && field.id === 'phone' && field.value) {
-    if (field.validity.patternMismatch || field.value.replace(/[\s-]/g, '').length < 7) {
-      message = 'Podaj numer telefonu: cyfry, opcjonalnie znak + na początku, spacje i myślniki (min. 7 znaków, nie licząc spacji i myślników).';
-    }
+  if (!message && field.id === 'phone' && field.value && field.validity.patternMismatch) {
+    message = 'Podaj numer telefonu: cyfry, opcjonalnie znak + na początku, spacje i myślniki (min. 7 znaków, nie licząc spacji i myślników).';
   }
 
-  if (!message && field.id === 'date-start' && field.value) {
-    if (field.value < today) {
-      message = 'Podaj datę nie wcześniejszą niż dzisiaj.';
-    }
+  if (!message && field.id === 'date-start' && field.validity.rangeUnderflow) {
+    message = 'Podaj datę nie wcześniejszą niż dzisiaj.';
   }
 
-  if (!message && field.id === 'date-end' && field.value) {
-    const start = form.querySelector('#date-start');
-    if (start instanceof HTMLInputElement && start.value && field.value < start.value) {
-      message = 'Data zakończenia nie może być wcześniejsza niż data rozpoczęcia.';
-    }
+  // The end-date minimum is the start date once one is chosen, and today until then.
+  if (!message && field.id === 'date-end' && field.validity.rangeUnderflow) {
+    message =
+      dateStart instanceof HTMLInputElement && dateStart.value
+        ? 'Data zakończenia nie może być wcześniejsza niż data rozpoczęcia.'
+        : 'Podaj datę nie wcześniejszą niż dzisiaj.';
   }
 
-  if (!message && field.id === 'people' && field.value) {
-    const value = Number(field.value);
-    if (!Number.isNaN(value) && (value < 1 || value > 12)) {
-      message = 'Liczba osób musi mieścić się w zakresie od 1 do 12.';
-    }
+  if (!message && field.id === 'people' && (field.validity.rangeUnderflow || field.validity.rangeOverflow)) {
+    message = `Liczba osób musi mieścić się w zakresie od ${field.min} do ${field.max}.`;
   }
 
   if (message) {
@@ -125,6 +121,13 @@ function validateField(field, form, today) {
   }
 
   return true;
+}
+
+// The end date may not precede the chosen start date, or today while no start date is chosen.
+function syncEndDateMin(dateStart, dateEnd, today) {
+  if (dateEnd instanceof HTMLInputElement) {
+    dateEnd.min = (dateStart instanceof HTMLInputElement && dateStart.value) || today;
+  }
 }
 
 function getErrorElement(field, form) {
