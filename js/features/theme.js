@@ -15,6 +15,7 @@ export function initThemeToggle() {
   const inlineTheme = document.documentElement.getAttribute("data-theme") || "light";
   const initial = USER_THEMES.includes(stored) ? stored : inlineTheme;
   applyTheme(initial);
+  removeBootstrapStyles();
 
   toggle.addEventListener("click", () => {
     const current = document.documentElement.getAttribute("data-theme") || inlineTheme || "light";
@@ -27,13 +28,18 @@ export function initThemeToggle() {
   });
 
   function applyTheme(value) {
-    const background = value === "dark" ? "#05060a" : "#f8f7f2";
     document.documentElement.setAttribute("data-theme", value);
-    document.documentElement.style.backgroundColor = background;
-    document.documentElement.style.colorScheme = value;
+  }
+
+  // The inline bootstrap paints the first frame with inline theme styles, before the stylesheet
+  // applies. Once data-theme is set, the design tokens own the background and colour scheme, so
+  // only these properties are removed and any other inline style stays.
+  function removeBootstrapStyles() {
+    document.documentElement.style.removeProperty("background-color");
+    document.documentElement.style.removeProperty("color-scheme");
 
     if (document.body) {
-      document.body.style.backgroundColor = background;
+      document.body.style.removeProperty("background-color");
     }
   }
 

@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { JSDOM } from "jsdom";
+import postcss from "postcss";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { initThemeToggle } from "../js/features/theme.js";
 import { mountFromPage } from "./helpers.js";
@@ -8,6 +9,8 @@ import { mountFromPage } from "./helpers.js";
 // Every maintained page applies the theme with an inline bootstrap in its head, which has to run
 // while the page is parsed, before the stylesheet, so that the first paint uses the theme.
 // _headers approves one hash per textual variant of the bootstrap, and each test runs every variant.
+// After initialization the theme tokens of the stylesheet own the presentation: the toggle only
+// sets data-theme and removes the bootstrap's inline first-paint styles.
 const projectRoot = resolve(import.meta.dirname, "..");
 const pages = readdirSync(projectRoot)
   .filter((entry) => entry.endsWith(".html"))
@@ -36,6 +39,26 @@ function bootstrapVariants() {
     }
   }
   return Array.from(variants, ([text, page]) => ({ text, page }));
+}
+
+// The merged declarations of the top-level rules with exactly the given selector in a CSS module.
+function ruleDeclarations(module, selector) {
+  const declarations = {};
+  const css = readFileSync(resolve(projectRoot, "css/modules", module), "utf8");
+  postcss.parse(css, { from: module }).walkRules((rule) => {
+    if (rule.parent.type !== "root" || rule.selector !== selector) return;
+    rule.walkDecls((decl) => {
+      declarations[decl.prop] = decl.value;
+    });
+  });
+  return declarations;
+}
+
+// A color as an inline style serializes it, such as rgb(248, 247, 242) for #f8f7f2.
+function serializedColor(value) {
+  const probe = document.createElement("div");
+  probe.style.backgroundColor = value;
+  return probe.style.backgroundColor;
 }
 
 // A matchMedia stand-in that reports the given system color scheme.
@@ -128,6 +151,23 @@ describe("theme bootstrap", () => {
     }
   });
 
+  it("paints the first frame with the theme tokens that own the presentation after initialization", () => {
+    const rootTokens = ruleDeclarations("tokens.css", ":root");
+    const themeTokens = {
+      light: ruleDeclarations("tokens.css", '[data-theme="light"]'),
+      dark: ruleDeclarations("tokens.css", '[data-theme="dark"]'),
+    };
+
+    expect(rootTokens["background-color"]).toBe("var(--bg)");
+    expect(ruleDeclarations("base.css", "body")["background-color"]).toBe("var(--bg)");
+    for (const theme of ["light", "dark"]) {
+      expect(themeTokens[theme]["color-scheme"], theme).toBe(theme);
+      // The handover from the bootstrap's inline styles to the tokens keeps the background.
+      const bg = themeTokens[theme]["--bg"] ?? rootTokens["--bg"];
+      expect(serializedColor(bg), theme).toBe(BACKGROUNDS[theme]);
+    }
+  });
+
   describe("followed by the theme toggle", () => {
     afterEach(() => {
       const root = document.documentElement;
@@ -137,23 +177,31 @@ describe("theme bootstrap", () => {
       document.body.removeAttribute("style");
     });
 
-    // Runs a bootstrap in the test document, then initializes the toggle copied from its page.
-    function bootstrapWithToggle({ text, page }) {
-      document.documentElement.removeAttribute("data-theme");
-      document.documentElement.removeAttribute("style");
+    // Runs a bootstrap in the test document, checks the first-paint styles it leaves inline, runs
+    // `beforeInit`, then initializes the toggle copied from its page.
+    function bootstrapWithToggle({ text, page }, beforeInit = () => {}) {
+      const root = document.documentElement;
+      root.removeAttribute("data-theme");
+      root.removeAttribute("style");
+      document.body.removeAttribute("style");
       document.body.replaceChildren();
       new Function(text)();
+      const theme = root.getAttribute("data-theme");
+      expect(root.style.backgroundColor, page).toBe(BACKGROUNDS[theme]);
+      expect(root.style.colorScheme, page).toBe(theme);
+      beforeInit();
       mountFromPage(page, "[data-theme-toggle]");
       initThemeToggle();
       return document.querySelector("[data-theme-toggle]");
     }
 
+    // Returns the active theme, which the stylesheet presents without inline theme styles.
     function currentTheme() {
       const root = document.documentElement;
-      const theme = root.getAttribute("data-theme");
-      expect(root.style.backgroundColor).toBe(BACKGROUNDS[theme]);
-      expect(document.body.style.backgroundColor).toBe(BACKGROUNDS[theme]);
-      return theme;
+      expect(root.style.getPropertyValue("background-color")).toBe("");
+      expect(root.style.getPropertyValue("color-scheme")).toBe("");
+      expect(document.body.style.getPropertyValue("background-color")).toBe("");
+      return root.getAttribute("data-theme");
     }
 
     it("switches and stores the theme that the bootstrap applied", () => {
@@ -190,6 +238,29 @@ describe("theme bootstrap", () => {
 
         toggle.click();
         expect(currentTheme(), variant.page).toBe("light");
+      }
+    });
+
+    it("removes only the theme properties from the inline styles", () => {
+      vi.stubGlobal("matchMedia", systemPreference("light"));
+
+      for (const variant of bootstrapVariants()) {
+        localStorage.clear();
+        // An inline body background is removed too, while other inline styles, such as the scroll
+        // lock of the open navigation or lightbox, stay.
+        const toggle = bootstrapWithToggle(variant, () => {
+          document.documentElement.style.overflow = "hidden";
+          document.body.style.backgroundColor = BACKGROUNDS.light;
+          document.body.style.overflow = "hidden";
+        });
+        expect(currentTheme(), variant.page).toBe("light");
+        expect(document.documentElement.style.overflow, variant.page).toBe("hidden");
+        expect(document.body.style.overflow, variant.page).toBe("hidden");
+
+        toggle.click();
+        expect(currentTheme(), variant.page).toBe("dark");
+        expect(document.documentElement.style.overflow, variant.page).toBe("hidden");
+        expect(document.body.style.overflow, variant.page).toBe("hidden");
       }
     });
   });

@@ -99,6 +99,8 @@ Each proposal below gives one of these contracts a single owner. Behaviour stays
 
 ### IMP-TECH-03 — Let the design tokens own the theme presentation after page load
 
+- **Status:** COMPLETED — implemented and verified.
+- **Result:** The CSS design tokens now own the post-load theme presentation (the root background from `--bg` and each theme's `color-scheme` in `tokens.css`), while `theme.js` only controls the theme state and clears the bootstrap-only inline styles.
 - **Affected area:** Runtime theme application in `js/features/theme.js` and the theme layer of `css/modules/tokens.css` and `css/modules/base.css`.
 - **Evidence:**
   - Theme toggle: `js/features/theme.js:15-17` and `js/features/theme.js:29-38`.
