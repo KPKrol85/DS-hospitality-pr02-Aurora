@@ -1,38 +1,17 @@
 const fs = require('fs');
 const path = require('path');
+const { maintainedPages, assetReferences } = require('./site-build-contract');
 
 const projectRoot = process.cwd();
 const distRoot = path.join(projectRoot, 'dist');
 
-// Standard:
+// Standard (scripts/site-build-contract.js declares the pages and both tag pairs):
 // - maintained pages load the canonical sources: css/style.css and js/script.js (ES module)
 // - npm run build publishes copies of them to dist/ that load the generated bundles
 //   dist/css/style.min.css and dist/js/script.min.js
 // - minified bundles are generated only in dist/, never in the source directories
-const sourceAssets = [
-  { file: 'css/style.css', tag: '<link rel="stylesheet" href="css/style.css" />' },
-  { file: 'js/script.js', tag: '<script type="module" src="js/script.js"></script>' },
-];
-
-const productionAssets = [
-  { file: 'css/style.min.css', tag: '<link rel="stylesheet" href="css/style.min.css" />' },
-  { file: 'js/script.min.js', tag: '<script src="js/script.min.js"></script>' },
-];
-
-const htmlPages = [
-  '404.html',
-  'index.html',
-  'about.html',
-  'contact.html',
-  'tours.html',
-  'tour.html',
-  'offline.html',
-  'dziekuje.html',
-  'cookies.html',
-  'regulamin.html',
-  'polityka-prywatnosci.html',
-  'gallery.html',
-];
+const sourceAssets = assetReferences.map(({ source }) => source);
+const productionAssets = assetReferences.map(({ production }) => production);
 
 const issues = [];
 
@@ -69,7 +48,7 @@ function checkSources() {
     }
   }
 
-  for (const page of htmlPages) {
+  for (const page of maintainedPages) {
     const htmlPath = path.join(projectRoot, page);
     if (!fs.existsSync(htmlPath)) {
       issues.push(`Missing maintained page: ${page}`);
@@ -98,7 +77,7 @@ function checkProduction() {
     }
   }
 
-  for (const page of htmlPages) {
+  for (const page of maintainedPages) {
     const htmlPath = path.join(distRoot, page);
     if (!fs.existsSync(htmlPath)) {
       issues.push(`Missing generated page: dist/${page}`);
@@ -211,8 +190,8 @@ function main() {
   }
 
   console.log(
-    `CSS/JS asset check passed: ${htmlPages.length} maintained pages load css/style.css and js/script.js, ` +
-      `${htmlPages.length} dist/ pages load css/style.min.css and js/script.min.js, ` +
+    `CSS/JS asset check passed: ${maintainedPages.length} maintained pages load css/style.css and js/script.js, ` +
+      `${maintainedPages.length} dist/ pages load css/style.min.css and js/script.min.js, ` +
       `dist/service-worker.js precaches ${precacheCount} files present in dist/`
   );
 }

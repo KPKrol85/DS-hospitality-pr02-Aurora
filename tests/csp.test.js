@@ -1,6 +1,7 @@
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { copyFileSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { createRequire } from "node:module";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
@@ -15,10 +16,7 @@ const pages = readdirSync(projectRoot)
   .sort();
 
 // The two source references that build:stage rewrites in the dist/ copies of the pages.
-const productionReferences = [
-  ['<link rel="stylesheet" href="css/style.css" />', '<link rel="stylesheet" href="css/style.min.css" />'],
-  ['<script type="module" src="js/script.js"></script>', '<script src="js/script.min.js"></script>'],
-];
+const { assetReferences } = createRequire(import.meta.filename)("../scripts/site-build-contract.js");
 
 let siteRoot;
 
@@ -31,7 +29,7 @@ function createSite() {
     writeFileSync(join(root, page), html);
     writeFileSync(
       join(root, "dist", page),
-      productionReferences.reduce((copy, [source, production]) => copy.replace(source, production), html)
+      assetReferences.reduce((copy, { source, production }) => copy.replace(source.tag, production.tag), html)
     );
   }
   copyFileSync(join(projectRoot, "_headers"), join(root, "_headers"));

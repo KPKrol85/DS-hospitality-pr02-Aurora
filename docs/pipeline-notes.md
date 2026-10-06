@@ -7,7 +7,8 @@
 
 | Role | Path | Tracked | Notes |
 |---|---|---|---|
-| Maintained pages | 12 root `*.html` files | yes | Load the canonical sources; never modified by the build |
+| Maintained pages | 12 root `*.html` files | yes | Load the canonical sources; never modified by the build; declared in `scripts/site-build-contract.js` |
+| Build contract | `scripts/site-build-contract.js` | yes | Declares the maintained page inventory (`maintainedPages`) and the two source-to-production entry tag pairs (`assetReferences`); read by `build:stage` and `check:css-assets`, and for the tag pairs by `tests/csp.test.js` |
 | CSS source | `css/style.css` and `css/modules/` | yes | Loaded directly by the maintained pages |
 | JS source | `js/script.js` and `js/features/` | yes | Loaded directly as ES modules by the maintained pages |
 | Service worker | `service-worker.js` | yes | Copied unchanged to `dist/`; registered only by the production bundle |
@@ -36,6 +37,7 @@ Their copies in `dist/` (production):
 <script src="js/script.min.js"></script>
 ```
 
+- `assetReferences` in `scripts/site-build-contract.js` is the only declaration of these two tag pairs. `scripts/build-dist.js` applies it and `scripts/check-css-assets.js` verifies both sides against it.
 - `scripts/build-dist.js` replaces each exact source tag once in each page copy. It fails when a page contains a source tag zero or several times, or still mentions `css/style.css` or `js/script.js` after the rewrite.
 - Development needs an HTTP server rooted at the project directory; module scripts and `fetch()` do not work over `file://`. The browser resolves the `@import` rules of `css/style.css` and the module imports of `js/script.js` natively.
 - `css/modules/fonts.css` references `../../assets/fonts/*.woff2` and `css/modules/subpages.css` references `../../assets/img/about/mapa.svg`. In development they resolve from `/css/modules/` to `/assets/…`. `postcss-import` inlines them into `/css/style.min.css` unchanged, where URL resolution stops the extra `../` at the site root, so production resolves to the same `/assets/…` files. Like the root-relative Service Worker paths, this requires deployment at the domain root.
@@ -64,12 +66,13 @@ Their copies in `dist/` (production):
 `npm run build` runs:
 
 1. `clean` — `scripts/clean-dist.js` removes `dist/`.
-2. `build:stage` — `scripts/build-dist.js` requires an empty `dist/`, writes the rewritten page copies, and copies `assets/` without `assets/img-src/`, `service-worker.js`, `site.webmanifest`, `robots.txt`, `sitemap.xml`, and `_headers`. A missing file fails the build.
+2. `build:stage` — `scripts/build-dist.js` requires an empty `dist/` and root `*.html` files that match `maintainedPages` exactly, writes the rewritten copies of the declared pages, and copies `assets/` without `assets/img-src/`, `service-worker.js`, `site.webmanifest`, `robots.txt`, `sitemap.xml`, and `_headers`. A missing file fails the build.
 3. `build:css` — generates `dist/css/style.min.css`, then runs `verify:css`.
 4. `build:js` — generates `dist/js/script.min.js`, then runs `verify:js`.
 5. `check:css-assets`, `check:assets`, `check:assets:dist`, `check:csp`, `check:csp:dist`, `check:tour-catalogue` — verify the sources and the finished package (see [Content Security Policy for inline scripts](#content-security-policy-for-inline-scripts)).
 6. `check:sw-bundles` — compares both generated bundles and the `VERSION` of `dist/service-worker.js` with `service-worker-bundles.json` (see [Service Worker cache version](#service-worker-cache-version)).
 
+- The page inventory is explicit: before writing anything to `dist/`, `build:stage` compares the root `*.html` files with `maintainedPages` and fails on a declared page that is missing and on a root page that is not declared. A new page is therefore published, and verified by `check:css-assets`, only after it is added to `scripts/site-build-contract.js`. `check:csp` and `check:assets` still discover the root pages by directory scan.
 - `npm run dist` is a backward-compatible alias that runs `npm run build` once.
 - `watch:css` and `watch:js` regenerate only `dist/css/style.min.css` and `dist/js/script.min.js`; source development needs no rebuilds.
 - `build:images` stays outside the build chain.
@@ -171,7 +174,7 @@ A change to `_headers` alone leaves the pages and bundles unchanged, so `check:s
 |---|---|
 | `npm run verify:css` | `dist/css/style.min.css` exists and contains no `@import` directive or sourcemap reference |
 | `npm run verify:js` | `dist/js/script.min.js` exists, contains no `import`/`export` syntax, and has the production flag substituted |
-| `npm run check:css-assets` | Maintained pages load the sources and no minified file; no minified bundle in the source tree; `dist/` pages load the bundles and no source entry point; `dist/css/` and `dist/js/` hold only the bundles; the Service Worker precache includes both bundles, contains no legacy source paths, and resolves to files in `dist/`; the bundle registers the staged worker |
+| `npm run check:css-assets` | For the pages and tag pairs declared in `scripts/site-build-contract.js`: maintained pages load the sources and no minified file; no minified bundle in the source tree; `dist/` pages load the bundles and no source entry point; `dist/css/` and `dist/js/` hold only the bundles; the Service Worker precache includes both bundles, contains no legacy source paths, and resolves to files in `dist/`; the bundle registers the staged worker |
 | `npm run check:assets` | Root pages: `href`, `src`, `srcset`, `og:image`, `twitter:image`, JSON-LD URLs, and `site.webmanifest` entries; local `url()` and `@import` references of the linked stylesheets; the image variants and lightbox images that `gallery.js` and `tour-detail.js` build from `assets/data/` |
 | `npm run check:assets:dist` | The same scan for `dist/`, including `dist/css/style.min.css` and the data in `dist/assets/data/`; references must resolve to files inside `dist/` |
 | `npm run check:csp` | Every inline script of the root pages matches a SHA-256 hash in `script-src` of `_headers`, and every approved hash is used; no `'unsafe-inline'`, nonce, overriding `script-src-elem` or `script-src-attr`, inline event handler, `javascript:` URL, or script file from another origin |

@@ -173,6 +173,8 @@ Each proposal below gives one of these contracts a single owner. Behaviour stays
 
 ### IMP-TECH-05 — Declare the published page set and the asset-tag rewrite once for the build stage and its check
 
+- **Status:** COMPLETED — implemented and verified.
+- **Result:** `scripts/site-build-contract.js` now declares the 12 maintained pages (`maintainedPages`) and the two source-to-production entry tag pairs (`assetReferences`) once: `build:stage` publishes only the declared pages and fails before writing `dist/` when a declared page is missing or a root page is undeclared, `check:css-assets` verifies the same pages and derives its source and production assets from the same pairs, and `tests/csp.test.js` stages its `dist/` fixtures from the pairs while keeping its own page discovery; the `dist/` output is unchanged, so no `VERSION` update was needed.
 - **Affected area:** The page inventory and the source-to-production tag contract used by `scripts/build-dist.js` (`build:stage`) and `scripts/check-css-assets.js` (`check:css-assets`).
 - **Evidence:**
   - Build stage: `scripts/build-dist.js:21-35`, `scripts/build-dist.js:69-75`, `scripts/build-dist.js:78-96` and `scripts/build-dist.js:103`.

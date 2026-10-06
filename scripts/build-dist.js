@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const { maintainedPages, assetReferences } = require("./site-build-contract");
 
 const projectRoot = process.cwd();
 const distRoot = path.join(projectRoot, "dist");
@@ -18,21 +19,8 @@ const requiredFiles = [
 // holds the raster sources that build:images turns into assets/img/.
 const excludedPaths = ["assets/img-src"];
 
-// The maintained pages load the canonical sources. Only their published copies are
-// rewritten to load the generated bundles.
-const assetReferences = [
-  {
-    source: '<link rel="stylesheet" href="css/style.css" />',
-    production: '<link rel="stylesheet" href="css/style.min.css" />',
-  },
-  {
-    source: '<script type="module" src="js/script.js"></script>',
-    production: '<script src="js/script.min.js"></script>',
-  },
-];
-
 // Development entry points that no published page may reference.
-const sourceEntryPoints = ["css/style.css", "js/script.js"];
+const sourceEntryPoints = assetReferences.map(({ source }) => source.file);
 
 function fail(message) {
   console.error(message);
@@ -73,17 +61,36 @@ function getHtmlFiles() {
     .sort();
 }
 
+// The root pages must be exactly the declared maintained pages: a deleted page fails the
+// build, and a new page is published only once it is declared, which also makes
+// check:css-assets verify it. Runs before anything is written to dist/.
+function checkPageInventory() {
+  const rootPages = getHtmlFiles();
+  const missingPages = maintainedPages.filter((page) => !rootPages.includes(page));
+  const undeclaredPages = rootPages.filter((page) => !maintainedPages.includes(page));
+
+  if (missingPages.length > 0 || undeclaredPages.length > 0) {
+    fail(
+      [
+        "Root HTML pages do not match maintainedPages in scripts/site-build-contract.js:",
+        ...missingPages.map((page) => `- ${page} is declared but missing; restore it or remove it from maintainedPages`),
+        ...undeclaredPages.map((page) => `- ${page} is not declared; add it to maintainedPages to publish it`),
+      ].join("\n")
+    );
+  }
+}
+
 // Each page must contain every source reference exactly once, so a page whose tags
 // changed fails the build instead of shipping a reference the rewrite skipped.
 function toProductionHtml(htmlFile) {
   let html = fs.readFileSync(path.join(projectRoot, htmlFile), "utf8");
 
   for (const { source, production } of assetReferences) {
-    const parts = html.split(source);
+    const parts = html.split(source.tag);
     if (parts.length !== 2) {
-      fail(`${htmlFile}: expected exactly one ${source}, found ${parts.length - 1}`);
+      fail(`${htmlFile}: expected exactly one ${source.tag}, found ${parts.length - 1}`);
     }
-    html = parts.join(production);
+    html = parts.join(production.tag);
   }
 
   for (const entryPoint of sourceEntryPoints) {
@@ -100,7 +107,8 @@ function main() {
     fail("dist/ is not empty. Run npm run clean first; npm run build does this before staging.");
   }
 
-  const productionPages = getHtmlFiles().map((htmlFile) => [htmlFile, toProductionHtml(htmlFile)]);
+  checkPageInventory();
+  const productionPages = maintainedPages.map((htmlFile) => [htmlFile, toProductionHtml(htmlFile)]);
   const includedFiles = [];
 
   requiredFiles.forEach(ensureFileExists);
