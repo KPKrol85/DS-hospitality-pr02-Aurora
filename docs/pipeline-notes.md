@@ -98,7 +98,7 @@ dist/
 
 ## Service Worker
 
-- Production: esbuild replaces `__AURORA_PRODUCTION__` with `true`, so the check in `js/script.js` folds and only the registration branch remains in `dist/js/script.min.js`: `navigator.serviceWorker.register("/service-worker.js")` after `load`, the update banner for a waiting worker, the `SKIP_WAITING` message, and the reload on `controllerchange`.
+- Production: esbuild replaces `__AURORA_PRODUCTION__` with `true`, so the check in `initPwaLifecycle()` of `js/features/service-worker-lifecycle.js`, which `js/script.js` calls at module evaluation, folds and only the registration branch remains in `dist/js/script.min.js`: `navigator.serviceWorker.register("/service-worker.js")` after `load`, the update banner for a waiting worker, the `SKIP_WAITING` message, and the reload on `controllerchange`.
 - The worker precaches `/`, `/index.html`, `/css/style.min.css`, `/js/script.min.js`, `/site.webmanifest`, and `/offline.html`, all of which exist in `dist/`. `offline.html` remains the offline fallback for HTML requests.
 - Development: the unbundled sources leave the flag undeclared, so the maintained pages never register the worker, whose precache would fail on the absent bundles. They unregister any worker already registered on the origin, so an earlier production preview at the same address cannot keep serving the sources cache-first.
 - `VERSION` names both caches, and activation deletes the caches of every other version. The build ties it to the generated bundles, as described in the next section.

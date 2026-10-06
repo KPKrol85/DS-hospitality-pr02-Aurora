@@ -136,6 +136,8 @@ Each proposal below gives one of these contracts a single owner. Behaviour stays
 
 ### IMP-TECH-04 — Move Service Worker registration and the update notice out of the entry module
 
+- **Status:** COMPLETED — implemented and verified.
+- **Result:** `js/features/service-worker-lifecycle.js` now owns the Service Worker lifecycle (registration after `load`, the update notice, `SKIP_WAITING`, the single reload on `controllerchange` and development unregistration) through `initPwaLifecycle()`, which has no side effects on import, while `js/script.js` only calls it at module evaluation and the production and development behaviour is unchanged.
 - **Affected area:** The JavaScript entry module `js/script.js` and the Service Worker lifecycle it currently contains.
 - **Evidence:**
   - Entry module: `js/script.js:1-40`, `js/script.js:42-62` and `js/script.js:64-151`.
