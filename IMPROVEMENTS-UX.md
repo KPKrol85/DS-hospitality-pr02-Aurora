@@ -1,0 +1,87 @@
+# Aurora — UX Improvements
+
+**Analysis date:** 2026-10-07
+**Project type:** Multi-page static website — 12 maintained root HTML pages, modular CSS, vanilla ES modules bundled with esbuild, JSON-driven tour detail and gallery views, production Service Worker, Netlify static hosting with Netlify form handling
+**Analysis mode:** Evidence-based UX improvement review
+**Focus:** Project-wide UX
+
+## Improvement overview
+
+Aurora Travel supports one main journey: discovering an offer (home page featured offers, the filterable listing in `tours.html`, the detail view in `tour.html`, the gallery) and sending an enquiry through the contact form, followed by the `dziekuje.html` confirmation. Earlier cycles, archived in `docs/archive/`, closed the interaction defects of the 2026-09-22 audit (filtered lightbox navigation, thumbnail buttons, no-JavaScript states, reveal isolation) and the UI, quality and technical improvement reports. No active plan or audit is open, and no UX report has been produced before.
+
+The interaction mechanics are in good shape: keyboard and focus handling in the navigation and lightbox, live result counting on the listing, per-field validation messages with `aria-invalid`, and a working `?tour=` prefill on the contact form. The remaining opportunities lie in the transitions between steps and in the states the interface does not yet describe: a filter combination that matches nothing, the absence of an enquiry action on the detail page, loading and failure states of the JSON-driven views that are presented as "offer not found" or as an empty page, validation errors that stay visible after the input has been corrected, and featured-offer links that land with the offer title hidden under the sticky header.
+
+## Proposed improvements
+
+### IMP-UX-01 — Give the tour listing an empty-result state with a way back to all offers
+
+- **Affected journey:** Filtering and sorting offers on `tours.html`.
+- **Evidence:** `tours.html:183-221` (filter form, results counter), `tours.html:227` (offer list); `js/features/tours-filters.js:12-33`; `tests/tours-filters.test.js:70` (zero-result case). Browser check at 375 px and 1280 px: selecting "City break" with "Europa" leaves 0 visible cards, an empty list area and no reset control; 14 of the 30 type and region combinations match no offer.
+- **Current experience:** When no offer matches, every card is hidden and the counter announces "Dopasowane oferty: 0". The list area below is simply empty, nothing explains that the filters caused it, and the only way back is to change both selects to "Wszystkie" and "Dowolny" manually. With six offers spread over four types and five regions, almost half of the possible combinations end in this state.
+- **Proposed improvement:** When the filtered set is empty, show a short message in place of the list that names the situation (no offer matches the selected type and region) together with one control that restores both filters to their default values and shows every offer again.
+- **Expected user value:** A visitor who narrows the selection too far understands why the page is empty and can return to the full offer with one action instead of reconstructing the default filter state, which keeps the browsing journey going.
+- **Implementation scope:** `tours.html` (message and reset control placed outside `[data-tours-list]`, so the card structure checked by `scripts/check-tour-catalogue.js` is unchanged), `js/features/tours-filters.js`, the related styles in the existing filters/components module, and `tests/tours-filters.test.js`. Keep the current filter and sort semantics, the `role="status"` counter and its static value of 6, the chosen sort order after a reset, and the no-JavaScript state in which every card stays visible and the message stays hidden. Pages under the Service Worker cache require the documented `VERSION` workflow when shipped.
+- **Acceptance criteria:** With any type and region combination that matches no offer, a visible message explains that no offer matches the selected filters and a reset control is available next to it; activating the control sets type to "Wszystkie" and region to "Dowolny", shows all six cards in the current sort order, hides the message and updates the counter to 6; the message is not shown while at least one card is visible or when JavaScript is unavailable; the control is reachable and operable by keyboard; `npm test` passes with the empty-state case covered.
+- **Impact:** High
+- **Effort:** Small
+
+### IMP-UX-02 — Let visitors send an enquiry for the offer they are viewing on the detail page
+
+- **Affected journey:** Moving from the tour detail view (`tour.html?id=…`) to the contact form.
+- **Evidence:** `tour.html:159-187` (detail article: header, hero, content, gallery — no enquiry action); `js/features/tour-detail.js:87-106` (`fillTourContent`); existing prefill contract in the `tours.html` card actions (`contact.html?tour=<catalogue id>`, e.g. `tours.html:272`) and `js/features/form.js:300-309` (`prefillFromQuery`); option values in `contact.html:288-297`. Browser check: after `tour.html?id=malediwy` loads, the only links inside `<main>` are the breadcrumb links to `index.html` and `tours.html`.
+- **Current experience:** The detail page is where the full programme, price and gallery are presented, but it offers no enquiry action. A visitor who decides to ask about the offer must go back to the listing to use its "Zapytaj o ofertę" button or open "Kontakt" from the header and select the same offer again in the required "Wybrana wycieczka" field. The listing cards already link to `contact.html?tour=<id>`, and the form already preselects that offer.
+- **Proposed improvement:** Add one enquiry action to the detail view that, once an offer is loaded, links to `contact.html?tour=<id>` for that offer, reusing the existing prefill contract.
+- **Expected user value:** The decision point and the enquiry are connected directly: the visitor reaches the form from the page where they read the details, with the correct offer already selected, so the main conversion path has one step and one manual selection fewer.
+- **Implementation scope:** `tour.html` (action markup with a plain `contact.html` fallback), `js/features/tour-detail.js` (set the offer-specific link only after a catalogue match), shared button classes from the existing button contract, and `tests/tour-detail.test.js`. Keep `form.js` prefill logic, the contact select values, the catalogue check and the not-found fallback content unchanged; when no offer is loaded the action must not point to a specific offer. Shipping follows the Service Worker `VERSION` workflow.
+- **Acceptance criteria:** On `tour.html?id=<id>` for each of the six catalogue offers, an enquiry action is visible in the detail view and opens `contact.html?tour=<id>` with that offer preselected in "Wybrana wycieczka"; on `tour.html` without an id, with an unknown id, or without JavaScript, the action is absent or links to `contact.html` without a `tour` parameter; the action is keyboard reachable and has a descriptive accessible name; `npm test` passes with the link covered.
+- **Impact:** High
+- **Effort:** Small
+
+### IMP-UX-03 — Distinguish loading and unavailable data from "offer not found" in the JSON-driven views
+
+- **Affected journey:** Opening a tour detail page and the gallery, both rendered from `assets/data/*.json`.
+- **Evidence:** `tour.html:146-187` (static fallback: "Nie znaleziono lub nie wybrano oferty"); `js/features/tour-detail.js:63-85` (no state change while loading; failed fetch only logged); `gallery.html:180-197` (filters and empty `[data-gallery]` grid); `js/features/gallery.js:10-31` (failure clears the grid); `js/features/gallery-filters.js:64-71` (filters are not initialized without figures); `service-worker.js` `isStaticAsset()` (JSON requests are neither precached nor cache-first). Browser checks: with `tours.json` delayed by 2.5 s, `tour.html?id=malediwy` shows "Nie znaleziono lub nie wybrano oferty" and "Nie udało się wyświetlić szczegółów oferty…" until the data arrives; with the request aborted, that text remains for an existing offer; with `gallery-data.json` aborted, the gallery shows seven filter buttons over an empty grid with no message.
+- **Current experience:** The detail page's no-JavaScript and not-found text doubles as its loading state, so on a slow connection a valid offer is first announced as missing, and a network failure is presented as "the offer may no longer exist". The gallery has no loading or failure feedback at all: if the data cannot be loaded, the visitor sees filter buttons that do nothing above an empty area. Because the JSON files are not served from the Service Worker cache, an offline revisit of a cached detail or gallery page reaches these states (source-derived; not observed offline).
+- **Proposed improvement:** Give both views three explicit states — loading, loaded, and data unavailable — with short Polish messages; keep "offer not found" only for a missing or unknown `id`, and for unavailable data offer a retry of the current page and the existing link to the offer list (detail) or a clear message with inactive filters hidden or disabled (gallery).
+- **Expected user value:** Visitors are no longer told that a valid offer does not exist, understand whether to wait, retry or choose another offer, and do not meet gallery controls that cannot work.
+- **Implementation scope:** `js/features/tour-detail.js`, `js/features/gallery.js` (and `gallery-filters.js` only for the filter visibility), the state markup in `tour.html` and `gallery.html`, related styles, and `tests/tour-detail.test.js` and `tests/gallery.test.js`. Keep the sanitizer, the picture builder, lightbox behaviour, the not-found content for a missing id, and the no-JavaScript output. Do not change Service Worker caching of the JSON files as part of this item; that is a separate PWA decision. Shipping follows the Service Worker `VERSION` workflow.
+- **Acceptance criteria:** While `tours.json` is pending, `tour.html?id=<valid id>` shows a loading message and no "not found" text; a failed or non-OK `tours.json` response shows a "data unavailable" message with a retry action that reloads the current URL and a link to `tours.html`, and no "not found" text; an unknown `id` and a missing `id` still show the existing not-found content; while `gallery-data.json` is pending the grid shows a loading message, and on failure it shows an unavailable message and no operable filter buttons; status changes are exposed to assistive technology without announcing the full gallery content; `npm test` passes with these states covered.
+- **Impact:** Medium
+- **Effort:** Medium
+
+### IMP-UX-04 — Clear a field's validation error as soon as the input becomes valid
+
+- **Affected journey:** Correcting mistakes in the contact form (`contact.html`).
+- **Evidence:** `contact.html:256-332` (form and per-field `.form__error` regions); `js/features/form.js:182-209` (validation runs only on `blur` and `submit`), `js/features/form.js:222-278` (`validateField`). Browser check: after "jan@" is entered in the e-mail field and the field is left, the error "Podaj poprawny adres e-mail w formacie nazwa@domena." appears; while the address is then completed to a valid value, the message and `aria-invalid="true"` remain until the field loses focus again.
+- **Current experience:** Errors appear when a field is left or the form is submitted, which is appropriate. Once an error is shown, however, the field keeps its error text and invalid state while the visitor fixes it, so the form keeps reporting a problem that no longer exists until the visitor moves on. The same applies after a failed submission, where the first invalid field receives focus and is corrected in place.
+- **Proposed improvement:** For a field that is currently marked invalid, re-check it while the visitor edits it and remove the message and `aria-invalid` as soon as the value satisfies its constraints; keep first-time validation on blur and submit so untouched fields are not flagged while typing.
+- **Expected user value:** Visitors get immediate confirmation that a correction worked, which shortens recovery from errors in the site's only enquiry path and avoids conflicting signals between the corrected value and the error text.
+- **Implementation scope:** `js/features/form.js` and `tests/form.test.js`. Keep the native constraints in `contact.html`, the existing messages, the blur and submit validation, the focus on the first invalid field after submission, the date-minimum synchronization, the `?tour=` prefill, and the Netlify submission attributes. Shipping follows the Service Worker `VERSION` workflow.
+- **Acceptance criteria:** For each field that shows an error (including the select, date, number and consent checkbox), changing its value to a valid one removes the error text and `aria-invalid` without leaving the field; editing a field that has no error never adds an error before blur or submit; an invalid value still produces the existing message on blur and on submit; `npm test` passes with the correction case covered.
+- **Impact:** Medium
+- **Effort:** Small
+
+### IMP-UX-05 — Land featured-offer links from the home page with the offer fully visible
+
+- **Affected journey:** "Poznaj szczegóły" on the home page featured offers, leading to the matching card on `tours.html`.
+- **Evidence:** `index.html:321`, `index.html:359`, `index.html:397` (`tours.html#tokio`, `#malediwy`, `#nyc`); `css/modules/layout.css:19-36` (sticky `.site-header`); `css/modules/tokens.css:89-90` (`--header-h`, `--header-h-compact`); no `scroll-margin` or `scroll-padding` rule in `css/`; `css/modules/utilities.css:100-110` (reveal offset). Browser check after following `tours.html#malediwy` from the home page: at 1280 px the header ends at 59 px while the card top is at −56 px and its title at −35 px to −13 px, so the title is hidden under the header; at 375 px the card top is at −41 px, under the 59 px header.
+- **Current experience:** The featured-offer links deliberately point to the matching listing card, a link contract protected by `npm run check:tour-catalogue`. The browser scrolls the card to the very top of the viewport, where the sticky header covers it; on desktop the offer title is not visible at all, so the visitor arrives without a clear sign of which offer they followed.
+- **Proposed improvement:** Make the listing cards' anchor targets stop below the sticky header, so a deep link shows the whole top of the chosen card including its title.
+- **Expected user value:** The visitor immediately recognizes the offer they selected on the home page and can continue with its actions without scrolling back up to find it.
+- **Implementation scope:** The canonical stylesheet only (a scroll offset derived from the existing header height tokens, applied to the listing anchor targets or the document scroll padding). Keep the `tours.html#<id>` link contract and its catalogue check, the filters, the reveal animation and reduced-motion behaviour. Shipping follows the Service Worker `VERSION` workflow.
+- **Acceptance criteria:** After following each of the three "Poznaj szczegóły" links at 375 px and 1280 px viewports, the target card's top edge and title are fully visible below the sticky header once scrolling has settled; in-page navigation and the skip link continue to work; `npm run check:tour-catalogue` still passes.
+- **Impact:** Medium
+- **Effort:** Small
+
+## Selection summary
+
+- The five items cover each step of the main journey — arriving at an offer (IMP-UX-05), narrowing the listing (IMP-UX-01), reading the details (IMP-UX-03), moving to the enquiry (IMP-UX-02) and recovering from form errors (IMP-UX-04). They are ordered by their relevance to that journey relative to effort; the order is not based on measured user outcomes.
+- All five can be implemented independently. IMP-UX-02 and IMP-UX-03 both edit `tour.html` and `js/features/tour-detail.js`; implementing IMP-UX-03 first lets the enquiry action of IMP-UX-02 follow the loaded state, but either order works.
+- Four items are Small and one is Medium, which suits a focused development backlog. Each changes pages, CSS or JavaScript delivered through the production bundle, so shipping is subject to the `VERSION` and `service-worker-bundles.json` workflow in `docs/pipeline-notes.md`.
+- Visible constraint hints in the contact form (the 1–12 participant range and the phone format are currently stated only after an error or in a `title`) and a position indicator in the lightbox were considered and not selected, as the five items above have a more direct effect on completing the journey.
+
+## Analysis limitations
+
+- Runtime checks were run in headless Chromium against the unbundled sources served locally at 375 px and 1280 px; the production `dist/` build, other browsers, real devices, assistive technology and the deployed site were not checked.
+- Loading and failure states were simulated by delaying or aborting the JSON requests; offline behaviour through the Service Worker was derived from `service-worker.js` and not observed.
+- No usability testing or analytics were available; expected user value is reasoned from the implemented interactions, not measured.
