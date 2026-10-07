@@ -9,7 +9,18 @@ const TOUR_MAIN_IMAGE_SIZES = "(min-width: 1280px) 520px, (min-width: 900px) 43v
 // give three columns from about 700px, two from about 480px and one below.
 const TOUR_THUMBNAIL_SIZES = "(min-width: 1280px) 375px, (min-width: 700px) 31vw, (min-width: 480px) 46vw, calc(92vw - 48px)";
 
-export function initTourDetail() {
+const TOUR_STATE_MESSAGES = {
+  loading: "Ładowanie szczegółów oferty…",
+  unavailable: "Nie udało się wczytać szczegółów oferty. Sprawdź połączenie z internetem i spróbuj ponownie.",
+};
+// Replaces the static "Brak wybranej oferty" while the offer is loading or its data is unavailable.
+const TOUR_PENDING_BREADCRUMB = "Szczegóły oferty";
+
+// Without a usable id the static article stays as it is. With one, the page moves through
+// loading to loaded, to the static not-found content for an id missing from a loaded catalogue,
+// or to unavailable when the catalogue cannot be loaded or used. reload retries by reloading the
+// current document; tests pass their own, as jsdom cannot reload.
+export function initTourDetail({ reload = () => window.location.reload() } = {}) {
   const params = new URLSearchParams(window.location.search);
   const rawTourId = params.get("id");
   const tourId = rawTourId ? rawTourId.trim() : "";
@@ -18,19 +29,62 @@ export function initTourDetail() {
     return;
   }
 
-  fetch("assets/data/tours.json")
-    .then((res) => res.json())
+  const setState = createTourStateView(reload);
+  setState("loading");
+
+  return fetch("assets/data/tours.json")
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
+      return res.json();
+    })
     .then((tours) => {
-      const tour = tours.find((t) => t.id === tourId);
+      if (!Array.isArray(tours)) {
+        throw new TypeError("tours.json is not an array");
+      }
+
+      const tour = tours.find((t) => t?.id === tourId);
       if (!tour) {
+        setState("not-found");
         return;
       }
 
       fillTourContent(tour);
+      setState("loaded");
     })
     .catch((err) => {
       console.error("Błąd ładowania danych wycieczki", err);
+      setState("unavailable");
     });
+}
+
+// Shows one of the states loading, loaded, not-found and unavailable. The article holds the
+// loaded offer or the static not-found content; the state panel holds the other two, with its
+// message in a polite status region and its actions outside it.
+function createTourStateView(reload) {
+  const article = document.querySelector("[data-tour-container]");
+  const panel = document.querySelector("[data-tour-state]");
+  const status = document.querySelector("[data-tour-status]");
+  const actions = document.querySelector("[data-tour-state-actions]");
+  const retryButton = document.querySelector("[data-tour-retry]");
+  const breadcrumb = document.querySelector("[data-tour-breadcrumb-current]");
+  const staticBreadcrumb = breadcrumb?.textContent;
+
+  retryButton?.addEventListener("click", () => reload());
+
+  return (state) => {
+    const isPending = state === "loading" || state === "unavailable";
+
+    if (article) article.hidden = isPending;
+    if (panel) panel.hidden = !isPending;
+    if (status) status.textContent = TOUR_STATE_MESSAGES[state] || "";
+    if (actions) actions.hidden = state !== "unavailable";
+
+    if (breadcrumb && state !== "loaded") {
+      breadcrumb.textContent = isPending ? TOUR_PENDING_BREADCRUMB : staticBreadcrumb;
+    }
+  };
 }
 
 function fillTourContent(tour) {

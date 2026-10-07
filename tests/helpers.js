@@ -32,15 +32,49 @@ export function setUrl(pathAndQuery) {
   window.history.replaceState(null, "", pathAndQuery);
 }
 
-// Answers every fetch with a fresh copy of the given JSON body.
-export function stubFetchJson(body, status = 200) {
-  const fetchMock = vi.fn(async () => ({
+function jsonResponse(body, status) {
+  return {
     ok: status >= 200 && status < 300,
     status,
     json: async () => structuredClone(body),
+  };
+}
+
+// Answers every fetch with a fresh copy of the given JSON body.
+export function stubFetchJson(body, status = 200) {
+  const fetchMock = vi.fn(async () => jsonResponse(body, status));
+  vi.stubGlobal("fetch", fetchMock);
+  return fetchMock;
+}
+
+// Answers every fetch with a successful response whose body is not valid JSON.
+export function stubFetchMalformedJson() {
+  const fetchMock = vi.fn(async () => ({
+    ok: true,
+    status: 200,
+    json: async () => {
+      throw new SyntaxError("Unexpected token '<', \"<!doctype \"... is not valid JSON");
+    },
   }));
   vi.stubGlobal("fetch", fetchMock);
   return fetchMock;
+}
+
+// Keeps every fetch pending until the test settles it, so the page can be inspected before the
+// response arrives.
+export function stubFetchDeferred() {
+  let settle;
+  const response = new Promise((resolve, reject) => {
+    settle = { resolve, reject };
+  });
+  const fetchMock = vi.fn(() => response);
+  vi.stubGlobal("fetch", fetchMock);
+
+  return {
+    fetchMock,
+    respondJson: (body, status = 200) => settle.resolve(jsonResponse(body, status)),
+    fail: (error = new TypeError("Failed to fetch")) => settle.reject(error),
+  };
 }
 
 // Fails every fetch the way a network error does.

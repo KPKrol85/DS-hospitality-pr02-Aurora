@@ -7,9 +7,19 @@ const GALLERY_DATA_URL = "assets/data/gallery-data.json";
 // two from 560px, one below. Every <source> and the <img> share this value.
 const GALLERY_IMAGE_SIZES = "(min-width: 1280px) 390px, (min-width: 1024px) 31vw, (min-width: 560px) 46vw, 92vw";
 
+const GALLERY_STATE_MESSAGES = {
+  loading: "Ładowanie galerii…",
+  unavailable: "Nie udało się wczytać galerii. Sprawdź połączenie z internetem i odśwież stronę.",
+};
+
+// The gallery moves from loading to loaded, or to unavailable when the data cannot be loaded or
+// holds no records. The filters stay hidden until figures exist for them to filter.
 export async function initGallery() {
   const gallery = document.querySelector("[data-gallery]");
   if (!gallery) return;
+
+  const setState = createGalleryStateView(gallery);
+  setState("loading");
 
   try {
     const response = await fetch(GALLERY_DATA_URL);
@@ -19,15 +29,33 @@ export async function initGallery() {
 
     const items = await response.json();
     if (!Array.isArray(items) || !items.length) {
-      gallery.replaceChildren();
-      return;
+      throw new TypeError("gallery-data.json has no records");
     }
 
     renderGallery(gallery, items);
+    setState("loaded");
   } catch (error) {
     console.error("Błąd ładowania galerii", error);
     gallery.replaceChildren();
+    setState("unavailable");
   }
+}
+
+// The state message sits in a polite status region of its own, so rendering the figures into
+// the grid is not announced as one large change.
+function createGalleryStateView(gallery) {
+  const panel = document.querySelector("[data-gallery-state]");
+  const status = document.querySelector("[data-gallery-status]");
+  const filters = document.querySelector("[data-gallery-filters]");
+
+  return (state) => {
+    const isLoaded = state === "loaded";
+
+    gallery.hidden = !isLoaded;
+    if (panel) panel.hidden = isLoaded;
+    if (status) status.textContent = GALLERY_STATE_MESSAGES[state] || "";
+    if (filters) filters.hidden = !isLoaded;
+  };
 }
 
 function renderGallery(gallery, items) {

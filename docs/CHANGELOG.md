@@ -23,6 +23,7 @@ All significant changes to this project are documented in this file.
 - Added 88 automated regression tests with Vitest and jsdom for tour filtering, gallery rendering, tour details and contact form validation, replacing the placeholder `npm test` command.
 - Added an empty-result state to the tour listing: when the type and region filters match no offer, a message replaces the empty list together with a button that restores both filters, shows every offer in the chosen sort order and returns focus to the type filter. Updated the Service Worker cache to `aurora-1.24`.
 - Added an enquiry action to the tour detail view: the "Zapytaj o ofertę" button links to the contact form with the viewed offer preselected once the offer is loaded from the catalogue, and to the plain contact form otherwise. Updated the Service Worker cache to `aurora-1.25`.
+- Added loading and unavailable-data states to the tour detail view and the gallery: a valid offer is no longer shown as "not found" while its data loads or when the request fails, the detail view offers a retry of the current page and a link to the offer list, and the gallery hides its filters until images are available; state messages are announced through a dedicated polite status region instead of the whole gallery grid. Updated the Service Worker cache to `aurora-1.26`.
 
 ### Changed
 

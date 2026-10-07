@@ -1,9 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { initGallery } from "../js/features/gallery.js";
 import { initGalleryFilters } from "../js/features/gallery-filters.js";
-import { mountFromPage, readJson, stubFetchError, stubFetchJson } from "./helpers.js";
+import { mountFromPage, readJson, stubFetchDeferred, stubFetchError, stubFetchJson, stubFetchMalformedJson } from "./helpers.js";
 
 const galleryData = readJson("assets/data/gallery-data.json");
+
+const loadingMessage = "Ładowanie galerii…";
+const unavailableMessage = "Nie udało się wczytać galerii. Sprawdź połączenie z internetem i odśwież stronę.";
 
 function galleryEl() {
   return document.querySelector("[data-gallery]");
@@ -11,6 +14,24 @@ function galleryEl() {
 
 function figures() {
   return Array.from(galleryEl().querySelectorAll(":scope > figure"));
+}
+
+function filtersSection() {
+  return document.querySelector("[data-gallery-filters]");
+}
+
+function statePanel() {
+  return document.querySelector("[data-gallery-state]");
+}
+
+function statusEl() {
+  return document.querySelector("[data-gallery-status]");
+}
+
+// jsdom applies no stylesheet, so visibility follows the hidden attribute of the element and its
+// ancestors, as the global [hidden] rule does in the browser.
+function isShown(element) {
+  return element.closest("[hidden]") === null;
 }
 
 function filterButtons() {
@@ -39,7 +60,7 @@ async function renderGallery(items) {
 }
 
 beforeEach(() => {
-  mountFromPage("gallery.html", ".gallery-filters", "[data-gallery]");
+  mountFromPage("gallery.html", ".gallery-filters", "[data-gallery-state]", "[data-gallery]");
 });
 
 describe("initGallery", () => {
@@ -138,33 +159,87 @@ describe("initGallery", () => {
     expect(withoutText.querySelector("figcaption").textContent).toBe("");
   });
 
-  it.each([
-    ["an empty array", []],
-    ["a non-array value", {}],
-  ])("leaves the gallery empty for %s", async (_label, data) => {
-    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
-    stubFetchJson(data);
+  it("shows a loading state with the filters hidden until the data arrives", async () => {
+    const request = stubFetchDeferred();
 
-    await initGallery();
+    const pending = initGallery();
+
+    expect(request.fetchMock).toHaveBeenCalledWith("assets/data/gallery-data.json");
+    expect(isShown(statePanel())).toBe(true);
+    expect(statusEl().textContent).toBe(loadingMessage);
+    expect(isShown(filtersSection())).toBe(false);
+    expect(filterButtons().every((button) => !isShown(button))).toBe(true);
+    expect(galleryEl().children).toHaveLength(0);
+    expect(document.activeElement).toBe(document.body);
+
+    request.respondJson(galleryData);
+    await pending;
     initGalleryFilters();
 
-    expect(galleryEl().children).toHaveLength(0);
-    expect(consoleError).not.toHaveBeenCalled();
-    // The filters stay in their static markup state.
-    expect(filterButtons().some((button) => button.hasAttribute("aria-pressed"))).toBe(false);
+    expect(figures()).toHaveLength(galleryData.length);
+    expect(isShown(galleryEl())).toBe(true);
+    expect(isShown(statePanel())).toBe(false);
+    expect(statusEl().textContent).toBe("");
+    expect(isShown(filtersSection())).toBe(true);
+    expect(pressedFilters()).toEqual(["all"]);
+
+    filterButton("tokio").click();
+    expect(visibleFigures().every((figure) => figure.dataset.country === "tokio")).toBe(true);
   });
 
   it.each([
-    ["an HTTP error", () => stubFetchJson(galleryData, 500), "HTTP 500"],
     ["a network failure", () => stubFetchError(), "Failed to fetch"],
-  ])("empties the gallery and reports %s without rejecting", async (_label, stub, message) => {
+    ["an HTTP 500 response", () => stubFetchJson(galleryData, 500), "HTTP 500"],
+    ["an HTTP 404 response", () => stubFetchJson(galleryData, 404), "HTTP 404"],
+    ["a response that is not JSON", () => stubFetchMalformedJson(), "is not valid JSON"],
+    ["a non-array value", () => stubFetchJson({ items: galleryData }), "gallery-data.json has no records"],
+    ["a null value", () => stubFetchJson(null), "gallery-data.json has no records"],
+    ["an empty array", () => stubFetchJson([]), "gallery-data.json has no records"],
+  ])("shows the unavailable state and keeps the filters hidden after %s", async (_label, stub, message) => {
     const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
     stub();
 
     await expect(initGallery()).resolves.toBeUndefined();
+    initGalleryFilters();
 
     expect(galleryEl().children).toHaveLength(0);
-    expect(consoleError).toHaveBeenCalledWith("Błąd ładowania galerii", expect.objectContaining({ message }));
+    expect(isShown(statePanel())).toBe(true);
+    expect(statusEl().textContent).toBe(unavailableMessage);
+    expect(isShown(filtersSection())).toBe(false);
+    // The filters were never initialized, so they keep their static markup state.
+    expect(filterButtons().some((button) => button.hasAttribute("aria-pressed"))).toBe(false);
+    expect(consoleError).toHaveBeenCalledWith("Błąd ładowania galerii", expect.objectContaining({ message: expect.stringContaining(message) }));
+  });
+
+  it("moves from loading to unavailable in the same status region", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    const request = stubFetchDeferred();
+    const status = statusEl();
+
+    const pending = initGallery();
+    expect(isShown(status)).toBe(true);
+    expect(status.textContent).toBe(loadingMessage);
+
+    request.fail();
+    await pending;
+
+    expect(statusEl()).toBe(status);
+    expect(status.textContent).toBe(unavailableMessage);
+  });
+
+  it("announces the state politely in its own region, not the rendered figures", async () => {
+    expect(galleryEl().hasAttribute("aria-live")).toBe(false);
+    expect(statusEl().getAttribute("role")).toBe("status");
+    expect(document.querySelector('[aria-live="assertive"], [role="alert"]')).toBeNull();
+    expect(Array.from(document.querySelectorAll('[role="status"], [aria-live]'))).toEqual([statusEl()]);
+    expect(isShown(statePanel())).toBe(false);
+
+    stubFetchJson(galleryData);
+    await initGallery();
+
+    expect(galleryEl().closest('[role="status"], [aria-live]')).toBeNull();
+    expect(statusEl().children).toHaveLength(0);
+    expect(galleryEl().contains(statusEl())).toBe(false);
   });
 });
 

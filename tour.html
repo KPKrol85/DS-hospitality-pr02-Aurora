@@ -156,6 +156,14 @@
       <!-- Tour detail -->
       <section class="section reveal">
         <div class="container">
+          <!-- data state: loading and unavailable data (JavaScript only) -->
+          <div class="data-state" data-tour-state hidden>
+            <p class="data-state__message" role="status" data-tour-status></p>
+            <div class="data-state__actions" data-tour-state-actions hidden>
+              <button type="button" class="btn" data-tour-retry>Spróbuj ponownie</button>
+              <a href="tours.html" class="btn btn--ghost">Przejdź do listy ofert</a>
+            </div>
+          </div>
           <article class="tour-detail" data-tour-container>
             <!-- tour header -->
             <header class="tour-detail__header">

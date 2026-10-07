@@ -1,11 +1,47 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { initTourDetail } from "../js/features/tour-detail.js";
-import { flushPromises, mountFromPage, readJson, setUrl, srcsetCandidates, stubFetchError, stubFetchJson } from "./helpers.js";
+import {
+  flushPromises,
+  mountFromPage,
+  readJson,
+  setUrl,
+  srcsetCandidates,
+  stubFetchDeferred,
+  stubFetchError,
+  stubFetchJson,
+  stubFetchMalformedJson,
+} from "./helpers.js";
 
 const tours = readJson("assets/data/tours.json");
 
+const loadingMessage = "Ładowanie szczegółów oferty…";
+const unavailableMessage = "Nie udało się wczytać szczegółów oferty. Sprawdź połączenie z internetem i spróbuj ponownie.";
+// Static not-found and no-selection wording of tour.html.
+const notFoundTexts = ["Nie znaleziono lub nie wybrano oferty", "Mogła nie zostać wybrana lub już nie istnieje", "Brak wybranej oferty"];
+
 function field(name) {
   return document.querySelector(`[data-tour-${name}]`);
+}
+
+function statePanel() {
+  return document.querySelector("[data-tour-state]");
+}
+
+function toursLink() {
+  return field("state-actions").querySelector('a[href="tours.html"]');
+}
+
+// jsdom applies no stylesheet, so visibility follows the hidden attribute of the element and its
+// ancestors, as the global [hidden] rule does in the browser.
+function isShown(element) {
+  return element.closest("[hidden]") === null;
+}
+
+// The text of main without its hidden subtrees.
+function shownText() {
+  const copy = document.querySelector("main").cloneNode(true);
+  copy.querySelectorAll("[hidden]").forEach((element) => element.remove());
+  return copy.textContent;
 }
 
 // Parses catalogue markup the way the page does, for comparison with the rendered content.
@@ -173,18 +209,135 @@ describe("initTourDetail", () => {
     expect(field("enquiry").getAttribute("href")).toBe("contact.html");
   });
 
-  it("keeps the placeholder content and reports a failed request", async () => {
-    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
-    const placeholder = document.querySelector("main").innerHTML;
+  it("shows a loading state, and no not-found content, until the catalogue arrives", async () => {
     setUrl("/tour.html?id=maroko");
-    stubFetchError();
+    const request = stubFetchDeferred();
+    const tour = tours.find((entry) => entry.id === "maroko");
 
-    initTourDetail();
-    await flushPromises();
+    const pending = initTourDetail();
+
+    expect(request.fetchMock).toHaveBeenCalledWith("assets/data/tours.json");
+    expect(isShown(statePanel())).toBe(true);
+    expect(isShown(field("status"))).toBe(true);
+    expect(field("status").textContent).toBe(loadingMessage);
+    expect(isShown(field("state-actions"))).toBe(false);
+    expect(isShown(field("container"))).toBe(false);
+    notFoundTexts.forEach((text) => expect(shownText()).not.toContain(text));
+    expect(field("breadcrumb-current").textContent).toBe("Szczegóły oferty");
+    expect(document.activeElement).toBe(document.body);
+
+    request.respondJson(tours);
+    await pending;
+
+    expect(isShown(field("container"))).toBe(true);
+    expect(isShown(statePanel())).toBe(false);
+    expect(field("status").textContent).toBe("");
+    expect(field("title").textContent).toBe(tour.name);
+    expect(field("breadcrumb-current").textContent).toBe(tour.name);
+    expect(field("enquiry").getAttribute("href")).toBe("contact.html?tour=maroko");
+    expect(document.activeElement).toBe(document.body);
+  });
+
+  it("returns from loading to the static not-found content for an id missing from the catalogue", async () => {
+    const placeholder = document.querySelector("main").innerHTML;
+    setUrl("/tour.html?id=atlantyda");
+    const request = stubFetchDeferred();
+
+    const pending = initTourDetail();
+    expect(isShown(field("container"))).toBe(false);
+    expect(field("status").textContent).toBe(loadingMessage);
+
+    request.respondJson(tours);
+    await pending;
 
     expect(document.querySelector("main").innerHTML).toBe(placeholder);
-    expect(consoleError).toHaveBeenCalledWith("Błąd ładowania danych wycieczki", expect.any(TypeError));
+    expect(isShown(field("container"))).toBe(true);
+    expect(isShown(statePanel())).toBe(false);
+    expect(field("title").textContent).toBe("Nie znaleziono lub nie wybrano oferty");
+    expect(field("breadcrumb-current").textContent).toBe("Brak wybranej oferty");
+  });
+
+  it.each([
+    ["a network failure", () => stubFetchError(), TypeError],
+    ["an HTTP 500 response", () => stubFetchJson(tours, 500), Error],
+    ["an HTTP 404 response", () => stubFetchJson(tours, 404), Error],
+    ["a response that is not JSON", () => stubFetchMalformedJson(), SyntaxError],
+    ["a catalogue that is not an array", () => stubFetchJson({ tours }), TypeError],
+    ["a null catalogue", () => stubFetchJson(null), TypeError],
+  ])("shows the unavailable state, not the not-found content, after %s", async (_label, stub, errorType) => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    setUrl("/tour.html?id=maroko");
+    stub();
+
+    await initTourDetail();
+
+    expect(isShown(field("container"))).toBe(false);
+    expect(isShown(statePanel())).toBe(true);
+    expect(field("status").textContent).toBe(unavailableMessage);
+    notFoundTexts.forEach((text) => expect(shownText()).not.toContain(text));
+    expect(isShown(field("state-actions"))).toBe(true);
+    expect(isShown(field("retry"))).toBe(true);
+    expect(toursLink().getAttribute("href")).toBe("tours.html");
+    expect(field("breadcrumb-current").textContent).toBe("Szczegóły oferty");
     expect(field("enquiry").getAttribute("href")).toBe("contact.html");
+    expect(consoleError).toHaveBeenCalledWith("Błąd ładowania danych wycieczki", expect.any(errorType));
+    expect(document.activeElement).toBe(document.body);
+  });
+
+  it("moves from loading to unavailable in the same status region", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    setUrl("/tour.html?id=maroko");
+    const request = stubFetchDeferred();
+    const status = field("status");
+
+    const pending = initTourDetail();
+    expect(isShown(status)).toBe(true);
+
+    request.fail();
+    await pending;
+
+    expect(field("status")).toBe(status);
+    expect(status.textContent).toBe(unavailableMessage);
+  });
+
+  it("retries by reloading the current document, fragment included, from a native button", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    setUrl("/tour.html?id=nyc&utm_source=newsletter#galeria");
+    stubFetchError();
+    const reload = vi.fn();
+
+    await initTourDetail({ reload });
+
+    const retry = field("retry");
+    expect(retry.localName).toBe("button");
+    expect(retry.type).toBe("button");
+    expect(retry.classList.contains("btn")).toBe(true);
+    expect(retry.textContent.trim()).toBe("Spróbuj ponownie");
+    expect(reload).not.toHaveBeenCalled();
+
+    retry.click();
+
+    expect(reload).toHaveBeenCalledOnce();
+    // The URL is left as it is; only the reload retries the request.
+    expect(`${window.location.pathname}${window.location.search}${window.location.hash}`).toBe("/tour.html?id=nyc&utm_source=newsletter#galeria");
+    expect(toursLink().localName).toBe("a");
+    expect(toursLink().classList.contains("btn")).toBe(true);
+  });
+
+  it("announces only the state message, politely, and never the tour content", async () => {
+    const status = field("status");
+
+    expect(status.getAttribute("role")).toBe("status");
+    expect(document.querySelector('[aria-live="assertive"], [role="alert"]')).toBeNull();
+    expect(Array.from(document.querySelectorAll('[role="status"], [aria-live]'))).toEqual([status]);
+    expect(isShown(statePanel())).toBe(false);
+
+    await renderTour("/tour.html?id=maroko");
+
+    expect(status.children).toHaveLength(0);
+    expect(status.textContent).toBe("");
+    expect(field("container").closest('[role="status"], [aria-live]')).toBeNull();
+    expect(field("state-actions").closest('[role="status"], [aria-live]')).toBeNull();
   });
 
   it("strips disallowed elements and attributes from the catalogue markup", async () => {

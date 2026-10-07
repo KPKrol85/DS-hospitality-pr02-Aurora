@@ -239,7 +239,7 @@ Zaimplementowane mechanizmy:
 - pułapka fokusu, obsługa klawisza `Escape` i powrót fokusu w nawigacji mobilnej oraz w lightboxie,
 - zakładki z nawigacją strzałkami i zarządzaniem atrybutem `tabindex`, akordeon oparty na `aria-expanded`,
 - komunikaty walidacji formularza w obszarach `aria-live="polite"` powiązanych przez `aria-describedby`, wraz z `aria-invalid` na polach,
-- licznik dopasowanych ofert oraz kontener galerii ogłaszane jako obszary `aria-live`,
+- licznik dopasowanych ofert ogłaszany jako obszar `aria-live` oraz stany ładowania i niedostępnych danych widoku wycieczki i galerii ogłaszane w osobnych obszarach `role="status"` (bez ogłaszania całej zawartości galerii),
 - przyciski filtrów galerii z `aria-pressed`,
 - widoczne style `:focus-visible`,
 - obsługa `prefers-reduced-motion: reduce` w `css/modules/base.css` i `css/modules/layout.css`.
@@ -546,7 +546,7 @@ Implemented mechanisms:
 - focus trapping, `Escape` handling, and focus return in the mobile navigation and the lightbox,
 - tabs with arrow-key navigation and `tabindex` management, and an accordion driven by `aria-expanded`,
 - form validation messages in `aria-live="polite"` regions associated through `aria-describedby`, together with `aria-invalid` on the fields,
-- the matched-offer counter and the gallery container announced as `aria-live` regions,
+- the matched-offer counter announced as an `aria-live` region, and the loading and unavailable-data states of the tour detail view and the gallery announced in dedicated `role="status"` regions (without announcing the whole gallery content),
 - gallery filter buttons carrying `aria-pressed`,
 - visible `:focus-visible` styles,
 - `prefers-reduced-motion: reduce` handling in `css/modules/base.css` and `css/modules/layout.css`.

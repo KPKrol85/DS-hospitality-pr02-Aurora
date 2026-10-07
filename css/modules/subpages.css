@@ -59,7 +59,9 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
-.tours-empty {
+/* .data-state: loading and unavailable-data panel of the JSON-driven views (tour.html, gallery.html) */
+.tours-empty,
+.data-state {
   display: grid;
   justify-items: center;
   gap: var(--space-4);
@@ -69,6 +71,12 @@
   background: var(--bg-elev);
   box-shadow: var(--shadow-sm);
   text-align: center;
+}
+.data-state__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
 }
 
 /* Subpage: Tour */
