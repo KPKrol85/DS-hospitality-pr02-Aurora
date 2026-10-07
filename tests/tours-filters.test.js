@@ -24,8 +24,24 @@ function resultCount() {
   return document.querySelector("[data-results-count]").textContent;
 }
 
+function list() {
+  return document.querySelector("[data-tours-list]");
+}
+
+function emptyState() {
+  return document.querySelector("[data-tours-empty]");
+}
+
+function resetButton() {
+  return document.querySelector("[data-tours-empty] [data-tours-reset]");
+}
+
+function filterSelect(name) {
+  return document.querySelector(`[data-filters] select[name="${name}"]`);
+}
+
 function choose(name, value) {
-  const select = document.querySelector(`[data-filters] select[name="${name}"]`);
+  const select = filterSelect(name);
   select.value = value;
   expect(select.value, `tours.html has no ${name} option "${value}"`).toBe(value);
   select.dispatchEvent(new Event("change", { bubbles: true }));
@@ -33,7 +49,7 @@ function choose(name, value) {
 
 describe("initToursFilters", () => {
   beforeEach(() => {
-    mountFromPage("tours.html", "[data-filters]", "[data-tours-list]");
+    mountFromPage("tours.html", "[data-filters]", "[data-tours-list]", "[data-tours-empty]");
     initToursFilters();
   });
 
@@ -41,6 +57,8 @@ describe("initToursFilters", () => {
     expect(visibleIds()).toEqual(PRICE_ASC);
     expect(cards().every((card) => !card.hidden)).toBe(true);
     expect(resultCount()).toBe("6");
+    expect(list().hidden).toBe(false);
+    expect(emptyState().hidden).toBe(true);
   });
 
   it("filters by tour type", () => {
@@ -67,13 +85,27 @@ describe("initToursFilters", () => {
     expect(resultCount()).toBe("1");
   });
 
-  it("hides every card and reports zero when no offer matches", () => {
+  it("hides every card, reports zero and shows the empty state in place of the list when no offer matches", () => {
     choose("type", "city");
     choose("region", "europa");
 
     expect(visibleIds()).toEqual([]);
     expect(cards().every((card) => card.hidden)).toBe(true);
     expect(resultCount()).toBe("0");
+    expect(list().hidden).toBe(true);
+    expect(emptyState().hidden).toBe(false);
+  });
+
+  it("hides the empty state again as soon as an offer matches", () => {
+    choose("type", "city");
+    choose("region", "europa");
+
+    choose("region", "azja");
+
+    expect(visibleIds()).toEqual(["tokio"]);
+    expect(resultCount()).toBe("1");
+    expect(list().hidden).toBe(false);
+    expect(emptyState().hidden).toBe(true);
   });
 
   it("restores every offer when both filters return to all", () => {
@@ -85,6 +117,43 @@ describe("initToursFilters", () => {
 
     expect(visibleIds()).toEqual(PRICE_ASC);
     expect(resultCount()).toBe("6");
+    expect(list().hidden).toBe(false);
+    expect(emptyState().hidden).toBe(true);
+  });
+
+  it.each([
+    ["price-asc", PRICE_ASC],
+    ["price-desc", PRICE_DESC],
+    ["days-asc", DAYS_ASC],
+    ["days-desc", DAYS_DESC],
+  ])("resets type and region from the empty state and keeps the %s order", (sort, expected) => {
+    choose("type", "city");
+    choose("region", "europa");
+    // Chosen while no card is shown, so the reset itself has to apply the order.
+    choose("sort", sort);
+
+    resetButton().click();
+
+    expect(filterSelect("type").value).toBe("all");
+    expect(filterSelect("region").value).toBe("all");
+    expect(filterSelect("sort").value).toBe(sort);
+    expect(cards().map((card) => card.id)).toEqual(expected);
+    expect(visibleIds()).toEqual(expected);
+    expect(resultCount()).toBe("6");
+    expect(list().hidden).toBe(false);
+    expect(emptyState().hidden).toBe(true);
+  });
+
+  it("moves focus from the hidden reset control to the type filter", () => {
+    choose("type", "city");
+    choose("region", "europa");
+    resetButton().focus();
+    expect(document.activeElement).toBe(resetButton());
+
+    resetButton().click();
+
+    expect(document.activeElement).toBe(filterSelect("type"));
+    expect(emptyState().contains(document.activeElement)).toBe(false);
   });
 
   it.each([
@@ -109,5 +178,24 @@ describe("initToursFilters", () => {
     choose("type", "objazdowe");
     expect(visibleIds()).toEqual(["patagonia", "islandia"]);
     expect(resultCount()).toBe("2");
+  });
+});
+
+describe("tours.html without JavaScript", () => {
+  beforeEach(() => {
+    mountFromPage("tours.html", "main");
+  });
+
+  it("shows every card and keeps the empty state hidden next to the list", () => {
+    expect(cards()).toHaveLength(6);
+    expect(cards().every((card) => !card.hidden)).toBe(true);
+    expect(resultCount()).toBe("6");
+    expect(list().hidden).toBe(false);
+    expect(emptyState().hidden).toBe(true);
+    // Outside [data-tours-list], whose cards the catalogue check reads, but in the same section.
+    expect(list().contains(emptyState())).toBe(false);
+    expect(emptyState().closest("section")).toBe(list().closest("section"));
+    expect(resetButton().localName).toBe("button");
+    expect(resetButton().type).toBe("button");
   });
 });

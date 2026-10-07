@@ -21,6 +21,7 @@ All significant changes to this project are documented in this file.
 - Added responsive image delivery with `avif`, `webp`, and `jpg` variants, self-hosted variable fonts, and lazy loading for images and the embedded map.
 - Added SEO metadata for indexable pages, including canonical URLs, Open Graph and Twitter Card tags, JSON-LD structured data, `robots.txt`, and `sitemap.xml`, with `noindex` applied to the 404, offline, thank-you, and tour detail pages.
 - Added 88 automated regression tests with Vitest and jsdom for tour filtering, gallery rendering, tour details and contact form validation, replacing the placeholder `npm test` command.
+- Added an empty-result state to the tour listing: when the type and region filters match no offer, a message replaces the empty list together with a button that restores both filters, shows every offer in the chosen sort order and returns focus to the type filter. Updated the Service Worker cache to `aurora-1.24`.
 
 ### Changed
 

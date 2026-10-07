@@ -59,6 +59,17 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
+.tours-empty {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-4);
+  padding: var(--space-6) var(--space-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-elev);
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+}
 
 /* Subpage: Tour */
 

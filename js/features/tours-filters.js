@@ -8,6 +8,8 @@ export function initToursFilters() {
   const sortSelect = form.querySelector("[data-sort]");
   const resultLabel = form.querySelector("[data-results-count]");
   const cards = Array.from(list.querySelectorAll("[data-type]"));
+  const emptyState = document.querySelector("[data-tours-empty]");
+  const resetButton = emptyState?.querySelector("[data-tours-reset]");
 
   const update = () => {
     const typeValue = typeSelect?.value || "all";
@@ -27,14 +29,31 @@ export function initToursFilters() {
     const sorted = sortCards(filtered, sortValue);
     sorted.forEach((card) => list.appendChild(card));
 
+    // An empty list keeps its minimum height, so it gives way to the empty state.
+    const hasResults = filtered.length > 0;
+    list.hidden = !hasResults;
+    if (emptyState) {
+      emptyState.hidden = hasResults;
+    }
+
     if (resultLabel) {
       resultLabel.textContent = filtered.length.toString();
     }
   };
 
+  // Restores both filters but keeps the chosen sort order. The control hides itself, so focus
+  // moves to the first filter instead of staying on a hidden element.
+  const resetFilters = () => {
+    if (typeSelect) typeSelect.value = "all";
+    if (regionSelect) regionSelect.value = "all";
+    update();
+    typeSelect?.focus();
+  };
+
   typeSelect?.addEventListener("change", update);
   regionSelect?.addEventListener("change", update);
   sortSelect?.addEventListener("change", update);
+  resetButton?.addEventListener("click", resetFilters);
 
   update();
 }

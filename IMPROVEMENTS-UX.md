@@ -15,6 +15,8 @@ The interaction mechanics are in good shape: keyboard and focus handling in the 
 
 ### IMP-UX-01 — Give the tour listing an empty-result state with a way back to all offers
 
+- **Status:** COMPLETED — implemented and verified.
+- **Result:** When the type and region filters match no offer, the tour listing now shows a message in place of the empty list with a "Pokaż wszystkie oferty" button that restores both filters, shows all six offers in the chosen sort order and moves focus to the type filter; without JavaScript every offer stays visible and the message stays hidden.
 - **Affected journey:** Filtering and sorting offers on `tours.html`.
 - **Evidence:** `tours.html:183-221` (filter form, results counter), `tours.html:227` (offer list); `js/features/tours-filters.js:12-33`; `tests/tours-filters.test.js:70` (zero-result case). Browser check at 375 px and 1280 px: selecting "City break" with "Europa" leaves 0 visible cards, an empty list area and no reset control; 14 of the 30 type and region combinations match no offer.
 - **Current experience:** When no offer matches, every card is hidden and the counter announces "Dopasowane oferty: 0". The list area below is simply empty, nothing explains that the filters caused it, and the only way back is to change both selects to "Wszystkie" and "Dowolny" manually. With six offers spread over four types and five regions, almost half of the possible combinations end in this state.
