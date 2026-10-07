@@ -22,6 +22,7 @@ All significant changes to this project are documented in this file.
 - Added SEO metadata for indexable pages, including canonical URLs, Open Graph and Twitter Card tags, JSON-LD structured data, `robots.txt`, and `sitemap.xml`, with `noindex` applied to the 404, offline, thank-you, and tour detail pages.
 - Added 88 automated regression tests with Vitest and jsdom for tour filtering, gallery rendering, tour details and contact form validation, replacing the placeholder `npm test` command.
 - Added an empty-result state to the tour listing: when the type and region filters match no offer, a message replaces the empty list together with a button that restores both filters, shows every offer in the chosen sort order and returns focus to the type filter. Updated the Service Worker cache to `aurora-1.24`.
+- Added an enquiry action to the tour detail view: the "Zapytaj o ofertę" button links to the contact form with the viewed offer preselected once the offer is loaded from the catalogue, and to the plain contact form otherwise. Updated the Service Worker cache to `aurora-1.25`.
 
 ### Changed
 

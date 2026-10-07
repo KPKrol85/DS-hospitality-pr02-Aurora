@@ -65,6 +65,16 @@ describe("initTourDetail", () => {
     mountFromPage("tour.html", "main");
   });
 
+  it("ships the enquiry action as a plain link to the contact form", () => {
+    const link = field("enquiry");
+
+    expect(link.localName).toBe("a");
+    expect(link.getAttribute("href")).toBe("contact.html");
+    expect(link.classList.contains("btn")).toBe(true);
+    expect(link.textContent.trim()).toBe("Zapytaj o ofertę");
+    expect(document.querySelectorAll("[data-tour-enquiry]")).toHaveLength(1);
+  });
+
   it.each(tours.map((tour) => [tour.id, tour]))("renders %s from tours.json", async (id, tour) => {
     const fetchMock = await renderTour(`/tour.html?id=${id}`);
 
@@ -78,12 +88,14 @@ describe("initTourDetail", () => {
     expect(field("summary").innerHTML).toBe(parsed(tour.shortSummary));
     expect(field("content").textContent.trim()).not.toBe("");
     expect(field("content").innerHTML).toBe(parsed(tour.longDescription));
+    expect(field("enquiry").getAttribute("href")).toBe(`contact.html?tour=${tour.id}`);
   });
 
   it("ignores whitespace around the id", async () => {
     await renderTour("/tour.html?id=%20patagonia%20");
 
     expect(field("title").textContent).toBe("Patagonia Signature Expedition");
+    expect(field("enquiry").getAttribute("href")).toBe("contact.html?tour=patagonia");
   });
 
   it("renders the first catalogue image as the main picture", async () => {
@@ -147,6 +159,7 @@ describe("initTourDetail", () => {
     expect(fetchMock).not.toHaveBeenCalled();
     expect(document.querySelector("main").innerHTML).toBe(placeholder);
     expect(field("title").textContent).toBe("Nie znaleziono lub nie wybrano oferty");
+    expect(field("enquiry").getAttribute("href")).toBe("contact.html");
   });
 
   it("keeps the placeholder content for an id missing from the catalogue", async () => {
@@ -157,6 +170,7 @@ describe("initTourDetail", () => {
     expect(fetchMock).toHaveBeenCalledOnce();
     expect(document.querySelector("main").innerHTML).toBe(placeholder);
     expect(field("gallery").children).toHaveLength(0);
+    expect(field("enquiry").getAttribute("href")).toBe("contact.html");
   });
 
   it("keeps the placeholder content and reports a failed request", async () => {
@@ -170,6 +184,7 @@ describe("initTourDetail", () => {
 
     expect(document.querySelector("main").innerHTML).toBe(placeholder);
     expect(consoleError).toHaveBeenCalledWith("Błąd ładowania danych wycieczki", expect.any(TypeError));
+    expect(field("enquiry").getAttribute("href")).toBe("contact.html");
   });
 
   it("strips disallowed elements and attributes from the catalogue markup", async () => {

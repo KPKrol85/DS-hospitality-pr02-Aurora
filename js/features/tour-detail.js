@@ -42,6 +42,13 @@ function fillTourContent(tour) {
   document.querySelector("[data-tour-summary]").innerHTML = sanitizeTourHtml(tour.shortSummary);
   document.querySelector("[data-tour-content]").innerHTML = sanitizeTourHtml(tour.longDescription);
 
+  // The static href is a plain contact.html; only a matched catalogue offer selects itself in the
+  // form's tour field (form.js prefillFromQuery).
+  const enquiryLink = document.querySelector("[data-tour-enquiry]");
+  if (enquiryLink) {
+    enquiryLink.href = `contact.html?${new URLSearchParams({ tour: tour.id })}`;
+  }
+
   const mainImage = tour.images[0];
   const mainImageContainer = document.querySelector("[data-tour-main-image]");
   if (mainImage && mainImageContainer) {

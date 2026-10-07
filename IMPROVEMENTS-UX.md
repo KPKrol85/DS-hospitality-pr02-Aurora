@@ -29,6 +29,8 @@ The interaction mechanics are in good shape: keyboard and focus handling in the 
 
 ### IMP-UX-02 — Let visitors send an enquiry for the offer they are viewing on the detail page
 
+- **Status:** COMPLETED — implemented and verified.
+- **Result:** The tour detail header now has a "Zapytaj o ofertę" button below the duration and price; once the requested id matches a catalogue offer it links to `contact.html?tour=<catalogue id>`, which opens the contact form with that offer preselected, while without JavaScript, without an id, with an unknown id or after a failed data request it stays a plain link to `contact.html`.
 - **Affected journey:** Moving from the tour detail view (`tour.html?id=…`) to the contact form.
 - **Evidence:** `tour.html:159-187` (detail article: header, hero, content, gallery — no enquiry action); `js/features/tour-detail.js:87-106` (`fillTourContent`); existing prefill contract in the `tours.html` card actions (`contact.html?tour=<catalogue id>`, e.g. `tours.html:272`) and `js/features/form.js:300-309` (`prefillFromQuery`); option values in `contact.html:288-297`. Browser check: after `tour.html?id=malediwy` loads, the only links inside `<main>` are the breadcrumb links to `index.html` and `tours.html`.
 - **Current experience:** The detail page is where the full programme, price and gallery are presented, but it offers no enquiry action. A visitor who decides to ask about the offer must go back to the listing to use its "Zapytaj o ofertę" button or open "Kontakt" from the header and select the same offer again in the required "Wybrana wycieczka" field. The listing cards already link to `contact.html?tour=<id>`, and the form already preselects that offer.
