@@ -47,6 +47,13 @@
 .tour-card--detailed .tour-card__actions {
   align-self: end;
 }
+/* Featured offers on the home page link to these cards (tours.html#<id>). Until the page has loaded,
+   the browser may place the card while it still carries part of its 40px reveal offset
+   (utilities.css) and before the sticky header turns compact, so the card can settle up to 56px
+   higher than the margin. The clearance keeps it below the compact header in that case. */
+.tour-card--detailed {
+  scroll-margin-top: calc(var(--header-h) + var(--space-8));
+}
 @media (min-width: 760px) {
   .tours-grid,
   .offers-grid {

@@ -57,6 +57,7 @@ All significant changes to this project are documented in this file.
 - Improved gallery and tour thumbnail accessibility with native buttons, descriptive Polish labels, visible keyboard focus, and reliable lightbox activation via click, Enter, and Space. Preserved responsive images, filtered navigation, and focus restoration. Updated the Service Worker cache to `aurora-1.8`.
 - Fixed the static tours counter and mobile navigation fallback when JavaScript is unavailable. The page now displays the correct initial offer count, keeps the mobile drawer collapsed until activated, and preserves desktop navigation without scripting. Updated the Service Worker cache to `aurora-1.9`.
 - Fixed reveal visibility when JavaScript fails by isolating feature initializers and enabling animations only after successful reveal setup. Preserved gallery animations and reduced-motion behaviour. Updated the Service Worker cache to `aurora-1.10`.
+- Fixed the home page featured-offer links landing on `tours.html` with the chosen offer card and its title hidden under the sticky header: the listing cards now stop below the header through a `scroll-margin-top` derived from the header height token. Updated the Service Worker cache to `aurora-1.28`.
 
 ### Security
 
