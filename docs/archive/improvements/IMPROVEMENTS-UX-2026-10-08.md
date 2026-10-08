@@ -4,14 +4,20 @@
 **Project type:** Multi-page static website — 12 maintained root HTML pages, modular CSS, vanilla ES modules bundled with esbuild, JSON-driven tour detail and gallery views, production Service Worker, Netlify static hosting with Netlify form handling
 **Analysis mode:** Evidence-based UX improvement review
 **Focus:** Project-wide UX
+**Status:** COMPLETED — all five selected UX improvements (IMP-UX-01 to IMP-UX-05) were implemented and verified.
+**Completion date:** 2026-10-08
 
 ## Improvement overview
 
-Aurora Travel supports one main journey: discovering an offer (home page featured offers, the filterable listing in `tours.html`, the detail view in `tour.html`, the gallery) and sending an enquiry through the contact form, followed by the `dziekuje.html` confirmation. Earlier cycles, archived in `docs/archive/`, closed the interaction defects of the 2026-09-22 audit (filtered lightbox navigation, thumbnail buttons, no-JavaScript states, reveal isolation) and the UI, quality and technical improvement reports. No active plan or audit is open, and no UX report has been produced before.
+At the time of the analysis, Aurora Travel supported one main journey: discovering an offer (home page featured offers, the filterable listing in `tours.html`, the detail view in `tour.html`, the gallery) and sending an enquiry through the contact form, followed by the `dziekuje.html` confirmation. Earlier cycles, archived in `docs/archive/`, had closed the interaction defects of the 2026-09-22 audit (filtered lightbox navigation, thumbnail buttons, no-JavaScript states, reveal isolation) and the UI, quality and technical improvement reports. No plan or audit was open, and no UX report had been produced before.
 
-The interaction mechanics are in good shape: keyboard and focus handling in the navigation and lightbox, live result counting on the listing, per-field validation messages with `aria-invalid`, and a working `?tour=` prefill on the contact form. The remaining opportunities lie in the transitions between steps and in the states the interface does not yet describe: a filter combination that matches nothing, the absence of an enquiry action on the detail page, loading and failure states of the JSON-driven views that are presented as "offer not found" or as an empty page, validation errors that stay visible after the input has been corrected, and featured-offer links that land with the offer title hidden under the sticky header.
+The interaction mechanics were in good shape: keyboard and focus handling in the navigation and lightbox, live result counting on the listing, per-field validation messages with `aria-invalid`, and a working `?tour=` prefill on the contact form. The remaining opportunities lay in the transitions between steps and in the states the interface did not yet describe: a filter combination that matched nothing, the absence of an enquiry action on the detail page, loading and failure states of the JSON-driven views that were presented as "offer not found" or as an empty page, validation errors that stayed visible after the input had been corrected, and featured-offer links that landed with the offer title hidden under the sticky header.
 
-## Proposed improvements
+The five improvements below addressed these points. All five selected improvements were completed (5 of 5), each implemented and verified as a separate change on 2026-10-07 or 2026-10-08. The tour listing now explains an empty filter result and restores all offers with one control, the tour detail view links to the contact form with the viewed offer preselected, the tour detail view and the gallery distinguish loading and unavailable data from a missing offer, a contact form error clears as soon as the value is corrected, and the home page featured-offer links land with the offer card and its title below the sticky header. No open tasks remain in this document.
+
+## Completed improvements
+
+Each record keeps the original analysis of 2026-10-07 together with its outcome. **Status** and **Result** describe the completed state. **Evidence** and **Current experience** describe the state at the time of the analysis, before implementation; "current" refers to 2026-10-07, and line references point to the files as they stood on that date. **Proposed improvement**, **Expected user value**, **Implementation scope** and **Acceptance criteria** record the original proposal and the criteria set for verifying it. **Impact** and **Effort** are the original estimates.
 
 ### IMP-UX-01 — Give the tour listing an empty-result state with a way back to all offers
 
@@ -85,13 +91,16 @@ The interaction mechanics are in good shape: keyboard and focus handling in the 
 
 ## Selection summary
 
-- The five items cover each step of the main journey — arriving at an offer (IMP-UX-05), narrowing the listing (IMP-UX-01), reading the details (IMP-UX-03), moving to the enquiry (IMP-UX-02) and recovering from form errors (IMP-UX-04). They are ordered by their relevance to that journey relative to effort; the order is not based on measured user outcomes.
-- All five can be implemented independently. IMP-UX-02 and IMP-UX-03 both edit `tour.html` and `js/features/tour-detail.js`; implementing IMP-UX-03 first lets the enquiry action of IMP-UX-02 follow the loaded state, but either order works.
-- Four items are Small and one is Medium, which suits a focused development backlog. Each changes pages, CSS or JavaScript delivered through the production bundle, so shipping is subject to the `VERSION` and `service-worker-bundles.json` workflow in `docs/pipeline-notes.md`.
-- Visible constraint hints in the contact form (the 1–12 participant range and the phone format are currently stated only after an error or in a `title`) and a position indicator in the lightbox were considered and not selected, as the five items above have a more direct effect on completing the journey.
+- The five items covered each step of the main journey — arriving at an offer (IMP-UX-05), narrowing the listing (IMP-UX-01), reading the details (IMP-UX-03), moving to the enquiry (IMP-UX-02) and recovering from form errors (IMP-UX-04). They were ordered by their relevance to that journey relative to effort; the order was not based on measured user outcomes.
+- The analysis judged all five independently implementable. IMP-UX-02 and IMP-UX-03 both edited `tour.html` and `js/features/tour-detail.js`; the analysis noted that implementing IMP-UX-03 first would let the enquiry action follow the loaded state, but that either order would work. The items were implemented as separate changes in numbered order, so IMP-UX-02 preceded IMP-UX-03.
+- Four items were estimated as Small and one (IMP-UX-03) as Medium. Each changed pages, CSS or JavaScript delivered through the production bundle, so each followed the `VERSION` and `service-worker-bundles.json` workflow in `docs/pipeline-notes.md` with its own cache version update, advancing the Service Worker cache from `aurora-1.23` through `aurora-1.24`, `aurora-1.25`, `aurora-1.26` and `aurora-1.27` to `aurora-1.28`.
+- Visible constraint hints in the contact form (the 1–12 participant range and the phone format were, at the time of the analysis, stated only after an error or in a `title`) and a position indicator in the lightbox were considered and not selected, as the five items above had a more direct effect on completing the journey. They are recorded as historical context, not as open tasks of this report.
+- **Outcome:** All five selected items were completed within their scopes and verified, as their **Status** and **Result** record.
 
-## Analysis limitations
+## Original analysis limitations (2026-10-07)
+
+These limitations apply to the original analysis of 2026-10-07 and the evidence recorded above, not to the completed improvements. Each improvement was verified separately when it was implemented, as its **Status** and **Result** record.
 
 - Runtime checks were run in headless Chromium against the unbundled sources served locally at 375 px and 1280 px; the production `dist/` build, other browsers, real devices, assistive technology and the deployed site were not checked.
 - Loading and failure states were simulated by delaying or aborting the JSON requests; offline behaviour through the Service Worker was derived from `service-worker.js` and not observed.
-- No usability testing or analytics were available; expected user value is reasoned from the implemented interactions, not measured.
+- No usability testing or analytics were available; the expected user value of each item was reasoned from the interactions as they existed at the time of the analysis, not measured, and this report records no measured user outcome.
