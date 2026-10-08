@@ -29,12 +29,35 @@ export function initForm() {
     'blur',
     event => {
       const target = event.target;
-      if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target instanceof HTMLSelectElement) {
+      if (isFormField(target)) {
         validateField(target, form, today);
       }
     },
     true
   );
+
+  const revalidateIfFlagged = field => {
+    if (field?.getAttribute('aria-invalid') === 'true') {
+      validateField(field, form, today);
+    }
+  };
+
+  // A field that already shows an error is checked again while it is edited, so the error clears
+  // as soon as the value meets its constraints; a field without an error waits for blur or submit.
+  // The end-date constraint follows the start date, so editing the start date rechecks a flagged
+  // end date as well.
+  const revalidateEditedField = event => {
+    const target = event.target;
+    if (!isFormField(target)) return;
+
+    revalidateIfFlagged(target);
+    if (target === dateStart) {
+      revalidateIfFlagged(dateEnd);
+    }
+  };
+
+  form.addEventListener('input', revalidateEditedField);
+  form.addEventListener('change', revalidateEditedField);
 
   form.addEventListener('submit', event => {
     clearErrors(form);
@@ -55,6 +78,10 @@ export function initForm() {
   });
 }
 
+function isFormField(target) {
+  return target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target instanceof HTMLSelectElement;
+}
+
 function clearErrors(form) {
   form.querySelectorAll('.form__error').forEach(error => {
     error.textContent = '';
@@ -68,9 +95,6 @@ function clearErrors(form) {
 function validateField(field, form, today) {
   const errorEl = getErrorElement(field, form);
   if (!errorEl) return true;
-
-  errorEl.textContent = '';
-  field.removeAttribute('aria-invalid');
 
   // The constraints in contact.html and the runtime date minimums define what is valid; this
   // function only picks the message for the native validity state. A start date set without a
@@ -114,19 +138,30 @@ function validateField(field, form, today) {
     message = `Liczba osób musi mieścić się w zakresie od ${field.min} do ${field.max}.`;
   }
 
-  if (message) {
+  // An unchanged message is not written again, so a field that stays invalid while it is edited
+  // does not make its live region announce the same error on every keystroke.
+  if (errorEl.textContent !== message) {
     errorEl.textContent = message;
+  }
+
+  if (message) {
     field.setAttribute('aria-invalid', 'true');
     return false;
   }
 
+  field.removeAttribute('aria-invalid');
   return true;
 }
 
 // The end date may not precede the chosen start date, or today while no start date is chosen.
+// The minimum is written only when it changes: rewriting it while the end date is being typed
+// rebuilds the browser's date editor and drops the partly entered date.
 function syncEndDateMin(dateStart, dateEnd, today) {
   if (dateEnd instanceof HTMLInputElement) {
-    dateEnd.min = (dateStart instanceof HTMLInputElement && dateStart.value) || today;
+    const min = (dateStart instanceof HTMLInputElement && dateStart.value) || today;
+    if (dateEnd.min !== min) {
+      dateEnd.min = min;
+    }
   }
 }
 

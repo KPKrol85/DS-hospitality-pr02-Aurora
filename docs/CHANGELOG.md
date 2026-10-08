@@ -46,6 +46,7 @@ All significant changes to this project are documented in this file.
 - Derived the contact form's phone, date and participant-count validation messages from the native field constraints instead of restating the rules in JavaScript, so an end date before today is also reported while no start date is chosen, and updated the Service Worker cache to `aurora-1.21`.
 - Moved the post-load light/dark presentation to the design tokens: the stylesheet derives the root background from `--bg` and sets each theme's `color-scheme`, while the theme toggle no longer restates the theme colours and only switches and stores the theme and removes the head bootstrap's first-paint inline styles. Updated the Service Worker cache to `aurora-1.22`.
 - Moved the Service Worker lifecycle and update notice out of the JavaScript entry module into a dedicated lifecycle feature module, which the entry module now starts while production registration, update activation and reload, and development unregistration stay unchanged. Updated the Service Worker cache to `aurora-1.23`.
+- Changed the contact form to clear a field's validation message and `aria-invalid` state as soon as the corrected value satisfies its constraints, without waiting for the field to lose focus, while fields without an error are still validated only on blur and submit. Updated the Service Worker cache to `aurora-1.27`.
 
 ### Fixed
 
