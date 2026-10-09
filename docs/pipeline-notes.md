@@ -170,19 +170,11 @@ A change to `_headers` alone leaves the pages and bundles unchanged, so `check:s
 
 ## Verification
 
-| Command | Scope |
-|---|---|
-| `npm run verify:css` | `dist/css/style.min.css` exists and contains no `@import` directive or sourcemap reference |
-| `npm run verify:js` | `dist/js/script.min.js` exists, contains no `import`/`export` syntax, and has the production flag substituted |
-| `npm run check:css-assets` | For the pages and tag pairs declared in `scripts/site-build-contract.js`: maintained pages load the sources and no minified file; no minified bundle in the source tree; `dist/` pages load the bundles and no source entry point; `dist/css/` and `dist/js/` hold only the bundles; the Service Worker precache includes both bundles, contains no legacy source paths, and resolves to files in `dist/`; the bundle registers the staged worker |
-| `npm run check:assets` | Root pages: `href`, `src`, `srcset`, `og:image`, `twitter:image`, JSON-LD URLs, and `site.webmanifest` entries; local `url()` and `@import` references of the linked stylesheets; the image variants and lightbox images that `gallery.js` and `tour-detail.js` build from `assets/data/` |
-| `npm run check:assets:dist` | The same scan for `dist/`, including `dist/css/style.min.css` and the data in `dist/assets/data/`; references must resolve to files inside `dist/` |
-| `npm run check:csp` | Every inline script of the root pages matches a SHA-256 hash in `script-src` of `_headers`, and every approved hash is used; no `'unsafe-inline'`, nonce, overriding `script-src-elem` or `script-src-attr`, inline event handler, `javascript:` URL, or script file from another origin |
-| `npm run check:csp:dist` | The same for the pages in `dist/` against `dist/_headers`, whose Content-Security-Policy must equal the one in `_headers` |
-| `npm run check:tour-catalogue` | `tours.html` listing cards, the `contact.html` tour select, and the `index.html` featured offer cards match `assets/data/tours.json`; a featured card's `tours.html#<anchor>` link must match a valid listing card, whose offer supplies the expected title and the days for every numeric `<N> dni` duration (a duration written out in words, such as `Dziewięciodniowy`, is not parsed) |
-| `npm run check:sw-bundles` | `VERSION` in `dist/service-worker.js` and the SHA-256 of `dist/css/style.min.css` and `dist/js/script.min.js` match `service-worker-bundles.json` |
+`npm run build` runs the verification steps listed in [Build workflow](#build-workflow), and the first failing step stops it. What each `verify:*` and `check:*` command checks, and when to run it on its own, is documented per command in [settings.md](settings.md#packagejson-scripts). The contracts they enforce are specified above in [Source ownership](#source-ownership), [Asset references](#asset-references), [Files included in dist](#files-included-in-dist), [Service Worker cache version](#service-worker-cache-version), and [Content Security Policy for inline scripts](#content-security-policy-for-inline-scripts).
+
+- The verify and check scripts load only Node.js built-in modules and project files, so they need no installed dependencies, and they never modify files. `scripts/check-sw-bundles.js` writes `service-worker-bundles.json` only in its `--record` mode, run as `npm run record:sw-bundles`.
 
 ## Deployment
 
-- Hosting is Netlify with manual deployment. After a successful `npm run build`, publish the `dist/` directory as the site root. The repository contains no `netlify.toml` and no CI configuration.
-- Do not publish the repository root: its pages load the unminified sources and do not register the Service Worker.
+- Hosting is Netlify with manual deployment: `dist/` is the complete site root and the only directory to publish. The repository contains no `netlify.toml` and no CI configuration.
+- The deployment procedure, including the pre-deployment check whose `dist/` is published, is documented in [settings.md](settings.md#deployment).

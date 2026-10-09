@@ -69,6 +69,7 @@ All significant changes to this project are documented in this file.
 - Added bilingual Polish and English project documentation in `README.md` covering features, technology stack, project structure, build, deployment, and maintenance ownership.
 - Added `settings.md` and `pipeline-notes.md` documenting every npm script, the recommended development workflow, and the canonical source versus generated-output ownership rules.
 - Corrected README documentation links and aligned the Polish and English project structure trees with the actual repository layout.
+- Assigned each workflow fact one owning document: `docs/settings.md` for the commands and the development, verification, and deployment workflow, and `docs/pipeline-notes.md` for the build, packaging, CSP, and Service Worker cache-version contracts, with the Polish and English README sections summarizing and linking to them. Corrected stale README statements about the published `dist/` contents, the Service Worker version, the license file and metadata, and the project trees, and removed a point-in-time build result.
 
 ### Build and Tooling
 
