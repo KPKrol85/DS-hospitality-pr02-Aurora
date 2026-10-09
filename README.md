@@ -49,7 +49,7 @@ Jest to adres kanoniczny zadeklarowany w znacznikach `canonical`, w `sitemap.xml
 **Walidacja**
 
 - Własne skrypty Node w katalogu `scripts/`
-- Vitest ze środowiskiem jsdom (testy regresji widoków opartych na danych w katalogu `tests/`)
+- Vitest ze środowiskiem jsdom (testy regresji w katalogu `tests/`)
 
 **Hosting statyczny**
 
@@ -84,7 +84,7 @@ Projekt nie posiada zależności runtime; wszystkie pakiety są zadeklarowane ja
 │  ├─ features/              # moduły funkcjonalne init*
 │  └─ script.js              # punkt wejścia JS
 ├─ scripts/                  # skrypty build, pakowania i walidacji
-├─ tests/                    # testy regresji Vitest (jsdom) widoków opartych na danych
+├─ tests/                    # testy regresji Vitest (jsdom)
 ├─ dist/                     # paczka produkcyjna generowana przez npm run build (wykluczona z Git)
 ├─ docs/
 │  ├─ CHANGELOG.md
@@ -160,6 +160,7 @@ Podgląd wersji produkcyjnej wymaga uruchomienia `npm run build` i serwera HTTP 
 - `npm run images:bootstrap` — jednorazowo kopiuje istniejące pliki rastrowe z `assets/img/` do `assets/img-src/`.
 - `npm run build:images` — generuje `assets/img/` z `assets/img-src/`; celowo pozostaje poza domyślnym łańcuchem `build`.
 - `npm test` — jednorazowo, bez trybu obserwowania, uruchamia testy regresji Vitest z katalogu `tests/` w środowisku jsdom; nie wchodzi w skład `npm run build`.
+- `npm run predeploy:check` — kontrola przed wdrożeniem: uruchamia pełny `npm test`, a tylko gdy wszystkie testy przejdą — `npm run build`. Niepowodzenie testu kończy ją niezerowym kodem wyjścia, zanim `dist/` zostanie wyczyszczony i zbudowany ponownie.
 
 Szczegółowy opis każdego skryptu i rekomendowany przebieg pracy zawiera [settings.md](docs/settings.md).
 
@@ -205,9 +206,10 @@ Wykonanie `npm run build` wymaga zainstalowanych zależności.
 
 ```bash
 npm test
+npm run predeploy:check
 ```
 
-`npm test` uruchamia testy regresji (Vitest, środowisko jsdom) widoków opartych na danych: filtrowania i sortowania ofert (`tours-filters.js`), renderowania i filtrowania galerii (`gallery.js`, `gallery-filters.js`), strony szczegółów wycieczki wraz z sanityzacją HTML (`tour-detail.js`) oraz walidacji formularza kontaktowego i wyboru oferty z parametru `?tour=` (`form.js`). Uruchamiają też `scripts/check-asset-integrity.js` na małych stronach tworzonych w katalogu tymczasowym, aby potwierdzić wykrywanie brakujących obrazów, fontów i plików `dist/`, oraz `scripts/check-csp.js` na kopiach stron i `_headers`, aby potwierdzić wykrywanie zmienionych lub nowych skryptów inline i nieaktualnej polityki. Sprawdzają też wskazówki preload fontów: wybór stron (Manrope na każdej, Inter tylko na `index.html`), ścieżki zgodne z regułami `@font-face`, atrybuty, brak duplikatów, położenie między bootstrapem motywu a arkuszem stylów oraz ich kopie w stronach, które `scripts/build-dist.js` przygotowuje w katalogu tymczasowym. Każdy wariant bootstrapu motywu jest wykonywany podczas parsowania swojej strony w jsdom — z zapisanym motywem, preferencją systemową i niedostępnym `localStorage` — a następnie sprawdzane jest przełączanie motywu. Testy importują rzeczywiste moduły z `js/features/`, znaczniki wczytują z utrzymywanych stron HTML, a dane — z `assets/data/*.json`. `fetch` jest mockowany, a bieżąca data ustalona, więc pakiet nie wykonuje żądań sieciowych i nie zależy od dnia ani strefy czasowej. Testy nie są częścią `npm run build` i nie trafiają do `dist/`; należy je uruchomić po zmianie tych modułów, ich stron lub danych. W projekcie nie ma testów przeglądarkowych.
+`npm test` uruchamia wszystkie testy regresji (Vitest, środowisko jsdom) z katalogu `tests/`. Obejmują widoki oparte na danych: filtrowanie i sortowanie ofert (`tours-filters.js`), renderowanie i filtrowanie galerii (`gallery.js`, `gallery-filters.js`), stronę szczegółów wycieczki wraz z sanityzacją HTML (`tour-detail.js`) oraz walidację formularza kontaktowego i wybór oferty z parametru `?tour=` (`form.js`). Obejmują też obsługę klawiatury i fokusu w lightboxie i nawigacji mobilnej, izolację inicjalizatorów stron i zabezpieczenie animacji `reveal`, produkcyjny `service-worker.js` (instalację, aktywację, kierowanie żądań, pamięć podręczną, strony zastępcze offline i aktywację aktualizacji) oraz kontrakty CSS odczytywane z `css/modules/` i stron: przyciski, fokus klawiatury, typografię kontrolek formularzy, role typograficzne i atrybuty `sizes` obrazów responsywnych. Uruchamiają też `scripts/check-asset-integrity.js` na małych stronach tworzonych w katalogu tymczasowym, aby potwierdzić wykrywanie brakujących obrazów, fontów i plików `dist/`, `scripts/check-csp.js` na kopiach stron i `_headers`, aby potwierdzić wykrywanie zmienionych lub nowych skryptów inline i nieaktualnej polityki, `scripts/check-tour-catalogue.js` na tymczasowej stronie oraz `scripts/build-dist.js` na kopiach plików z katalogu głównego, aby potwierdzić, że publikuje dokładnie strony zadeklarowane w `scripts/site-build-contract.js`. Sprawdzają też wskazówki preload fontów: wybór stron (Manrope na każdej, Inter tylko na `index.html`), ścieżki zgodne z regułami `@font-face`, atrybuty, brak duplikatów, położenie między bootstrapem motywu a arkuszem stylów oraz ich kopie w stronach, które `scripts/build-dist.js` przygotowuje w katalogu tymczasowym. Każdy wariant bootstrapu motywu jest wykonywany podczas parsowania swojej strony w jsdom — z zapisanym motywem, preferencją systemową i niedostępnym `localStorage` — a następnie sprawdzane jest przełączanie motywu. Testy importują rzeczywiste moduły z `js/features/`, znaczniki wczytują z utrzymywanych stron HTML, a dane — z `assets/data/*.json`. `fetch` jest mockowany, a bieżąca data ustalona, więc pakiet nie wykonuje żądań sieciowych i nie zależy od dnia ani strefy czasowej. Testy nie są częścią `npm run build` ani `npm run dist` i nie trafiają do `dist/`. Podczas pracy można uruchamiać cały pakiet albo wybrane pliki, np. `npm test -- tests/form.test.js`. Przed każdym wdrożeniem, niezależnie od zakresu zmian, należy uruchomić `npm run predeploy:check`: wykonuje pełny `npm test`, a dopiero po jego powodzeniu `npm run build`, więc niepowodzenie testu przerywa kontrolę przed rozpoczęciem buildu. W projekcie nie ma testów przeglądarkowych.
 
 Integralność źródeł i paczki produkcyjnej sprawdzają skrypty Node uruchamiane w ramach `npm run build`:
 
@@ -228,7 +230,7 @@ Repozytorium zawiera konfigurację hostingu statycznego, ale nie zawiera konfigu
 - `404.html` — utrzymywana strona błędu. Netlify serwuje plik `404.html` z katalogu głównego publikacji ze statusem HTTP 404 dla każdej ścieżki, której nie odpowiada żaden plik. Repozytorium nie zawiera pliku `_redirects` ani reguł przepisywania ścieżek, więc istniejące strony są serwowane bezpośrednio z odpowiadających im plików HTML, a `npm run build` kopiuje `404.html` do katalogu głównego `dist/`.
 - `_headers` — Content-Security-Policy (m.in. `default-src 'self'`, `script-src 'self'` ze skrótami SHA-256 trzech wariantów bootstrapu motywu zamiast `'unsafe-inline'`, `object-src 'none'`, `frame-src https://www.google.com` dla osadzonej mapy), Strict-Transport-Security, `X-Content-Type-Options`, `X-Frame-Options: DENY`, Referrer-Policy, Permissions-Policy i Cross-Origin-Opener-Policy.
 - Formularz w `contact.html` używa `method="POST"`, `action="dziekuje.html"`, `data-netlify="true"`, `netlify-honeypot="bot-field"` oraz ukrytego pola `form-name` — jest to sposób obsługi formularzy właściwy dla Netlify.
-- Wdrożenie jest ręczne: katalog `dist/` wygenerowany przez `npm run build` publikuje się w Netlify jako katalog główny publikacji. Katalogu głównego repozytorium nie należy publikować — jego strony ładują niezminifikowane źródła i nie rejestrują Service Workera.
+- Wdrożenie jest ręczne: katalog `dist/` wygenerowany przez zakończone powodzeniem `npm run predeploy:check` publikuje się w Netlify jako katalog główny publikacji. Katalogu głównego repozytorium nie należy publikować — jego strony ładują niezminifikowane źródła i nie rejestrują Service Workera.
 
 ### Dostępność
 
@@ -356,7 +358,7 @@ This is the canonical origin declared in the `canonical` tags, in `sitemap.xml`,
 **Validation**
 
 - Custom Node scripts in `scripts/`
-- Vitest with a jsdom environment (regression tests for the data-driven views in `tests/`)
+- Vitest with a jsdom environment (regression tests in `tests/`)
 
 **Static hosting**
 
@@ -391,7 +393,7 @@ The project has no runtime dependencies; every package is declared under `devDep
 │  ├─ features/              # init* feature modules
 │  └─ script.js              # JS entry point
 ├─ scripts/                  # build, packaging, and validation scripts
-├─ tests/                    # Vitest (jsdom) regression tests for the data-driven views
+├─ tests/                    # Vitest (jsdom) regression tests
 ├─ dist/                     # production package generated by npm run build (excluded from Git)
 ├─ docs/
 │  ├─ CHANGELOG.md
@@ -467,6 +469,7 @@ Previewing the production build requires `npm run build` and an HTTP server root
 - `npm run images:bootstrap` — performs a one-time copy of existing raster files from `assets/img/` into `assets/img-src/`.
 - `npm run build:images` — generates `assets/img/` from `assets/img-src/`; deliberately kept outside the default `build` chain.
 - `npm test` — runs the Vitest regression suite in `tests/` once, without watch mode, in a jsdom environment; it is not part of `npm run build`.
+- `npm run predeploy:check` — the pre-deployment check: runs the complete `npm test` and, only when every test passes, `npm run build`. A failing test ends it with a non-zero exit code before `dist/` is cleaned and rebuilt.
 
 A per-script breakdown and the recommended workflow are documented in [settings.md](docs/settings.md).
 
@@ -512,9 +515,10 @@ Running `npm run build` requires installed dependencies.
 
 ```bash
 npm test
+npm run predeploy:check
 ```
 
-`npm test` runs the regression suite (Vitest, jsdom environment) for the data-driven views: tour filtering and sorting (`tours-filters.js`), gallery rendering and filtering (`gallery.js`, `gallery-filters.js`), the tour detail page including its HTML sanitization (`tour-detail.js`), and contact form validation and offer selection from the `?tour=` parameter (`form.js`). It also runs `scripts/check-asset-integrity.js` against small sites written to a temporary directory to confirm that missing images, fonts, and `dist/` files are reported, and `scripts/check-csp.js` against copies of the pages and `_headers` to confirm that changed or new inline scripts and a stale policy are reported. It also checks the font preload hints: the page selection (Manrope on every page, Inter only on `index.html`), paths that match the `@font-face` rules, the attributes, no duplicates, their position between the theme bootstrap and the stylesheet, and their copies in the pages that `scripts/build-dist.js` stages in a temporary directory. Each variant of the theme bootstrap runs while jsdom parses its page — with a stored theme, the system preference, and unavailable `localStorage` — followed by a check of theme switching. The tests import the actual modules from `js/features/`, load their markup from the maintained HTML pages and their data from `assets/data/*.json`. `fetch` is mocked and the current date is fixed, so the suite makes no network requests and does not depend on the day or time zone. The tests are not part of `npm run build` and do not reach `dist/`; run them after changing those modules, their pages, or the data. The project has no browser tests.
+`npm test` runs the complete regression suite (Vitest, jsdom environment) in `tests/`. It covers the data-driven views: tour filtering and sorting (`tours-filters.js`), gallery rendering and filtering (`gallery.js`, `gallery-filters.js`), the tour detail page including its HTML sanitization (`tour-detail.js`), and contact form validation and offer selection from the `?tour=` parameter (`form.js`). It also covers keyboard and focus handling in the lightbox and the mobile navigation, page initializer isolation and the `reveal` fail-safe, the production `service-worker.js` (install, activation, request routing, caching, offline fallback pages, and update activation), and the CSS contracts read from `css/modules/` and the pages: buttons, keyboard focus, form control typography, typographic roles, and responsive image `sizes`. It also runs `scripts/check-asset-integrity.js` against small sites written to a temporary directory to confirm that missing images, fonts, and `dist/` files are reported, `scripts/check-csp.js` against copies of the pages and `_headers` to confirm that changed or new inline scripts and a stale policy are reported, `scripts/check-tour-catalogue.js` against a temporary site, and `scripts/build-dist.js` against copies of the root files to confirm that it publishes exactly the pages declared in `scripts/site-build-contract.js`. It also checks the font preload hints: the page selection (Manrope on every page, Inter only on `index.html`), paths that match the `@font-face` rules, the attributes, no duplicates, their position between the theme bootstrap and the stylesheet, and their copies in the pages that `scripts/build-dist.js` stages in a temporary directory. Each variant of the theme bootstrap runs while jsdom parses its page — with a stored theme, the system preference, and unavailable `localStorage` — followed by a check of theme switching. The tests import the actual modules from `js/features/`, load their markup from the maintained HTML pages and their data from `assets/data/*.json`. `fetch` is mocked and the current date is fixed, so the suite makes no network requests and does not depend on the day or time zone. The tests are not part of `npm run build` or `npm run dist` and do not reach `dist/`. During development, run the whole suite or selected files, for example `npm test -- tests/form.test.js`. Before every deployment, whatever changed, run `npm run predeploy:check`: it runs the complete `npm test` and only after it passes `npm run build`, so a failing test stops the check before the build starts. The project has no browser tests.
 
 Source and production package integrity is checked by Node scripts executed as part of `npm run build`:
 
@@ -535,7 +539,7 @@ The repository contains static-hosting configuration but no CI/CD configuration 
 - `404.html` — the maintained error page. Netlify serves `404.html` from the root of the publish directory, with HTTP status 404, for any path that matches no file. The repository contains no `_redirects` file and no rewrite rules, so existing pages are served directly from their HTML files, and `npm run build` copies `404.html` to the root of `dist/`.
 - `_headers` — Content-Security-Policy (including `default-src 'self'`, `script-src 'self'` with the SHA-256 hashes of the three theme bootstrap variants instead of `'unsafe-inline'`, `object-src 'none'`, and `frame-src https://www.google.com` for the embedded map), Strict-Transport-Security, `X-Content-Type-Options`, `X-Frame-Options: DENY`, Referrer-Policy, Permissions-Policy, and Cross-Origin-Opener-Policy.
 - The form in `contact.html` uses `method="POST"`, `action="dziekuje.html"`, `data-netlify="true"`, `netlify-honeypot="bot-field"`, and a hidden `form-name` field — the form-handling convention used by Netlify.
-- Deployment is manual: publish the `dist/` directory produced by `npm run build` to Netlify as the publish root. Do not publish the repository root — its pages load the unminified sources and do not register the Service Worker.
+- Deployment is manual: publish the `dist/` directory produced by a passing `npm run predeploy:check` to Netlify as the publish root. Do not publish the repository root — its pages load the unminified sources and do not register the Service Worker.
 
 ### Accessibility
 

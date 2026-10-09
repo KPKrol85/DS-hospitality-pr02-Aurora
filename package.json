@@ -31,7 +31,8 @@
     "check:sw-bundles": "node scripts/check-sw-bundles.js",
     "record:sw-bundles": "node scripts/check-sw-bundles.js --record",
     "build": "npm run clean && npm run build:stage && npm run build:css && npm run build:js && npm run check:css-assets && npm run check:assets && npm run check:assets:dist && npm run check:csp && npm run check:csp:dist && npm run check:tour-catalogue && npm run check:sw-bundles",
-    "dist": "npm run build"
+    "dist": "npm run build",
+    "predeploy:check": "npm test && npm run build"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.22",
