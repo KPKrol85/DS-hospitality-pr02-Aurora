@@ -7,11 +7,6 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
-  transition:
-    transform 0.22s ease,
-    box-shadow 0.22s ease,
-    border-color 0.22s ease,
-    background 0.22s ease;
 }
 .feature-card svg {
   width: 28px;
@@ -28,13 +23,6 @@
   letter-spacing: var(--ls-wide);
   color: var(--muted);
 }
-@media (hover: hover) and (pointer: fine) {
-  .feature-card:hover,
-  .feature-card:focus-within {
-    transform: translateY(-4px);
-    border-color: var(--border);
-  }
-}
 
 /* Tour Card */
 
@@ -49,9 +37,7 @@
   overflow: visible;
   transition:
     transform var(--dur-2) var(--ease),
-    box-shadow var(--dur-2) var(--ease),
-    border-color var(--dur-2) var(--ease),
-    background var(--dur-2) var(--ease);
+    border-color var(--dur-2) var(--ease);
 }
 .tour-card__media,
 .tour-card picture {
@@ -131,10 +117,13 @@
 @media (hover: hover) and (pointer: fine) {
   .tour-card:hover,
   .tour-card:focus-within {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-hover-md);
-    border-color: var(--border);
-    background: color-mix(in oklab, var(--bg-elev) 88%, #ffffff 2%);
+    border-color: var(--border-hover);
+  }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .tour-card:hover,
+  .tour-card:focus-within {
+    transform: translateY(-2px);
   }
 }
 
@@ -216,7 +205,7 @@
   justify-content: center;
   transition:
     transform var(--dur-2) var(--ease),
-    box-shadow var(--dur-2) var(--ease);
+    border-color var(--dur-2) var(--ease);
 }
 .testimonials__icon svg {
   width: 28px;
@@ -234,10 +223,14 @@
     flex-direction: column;
   }
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
+  .testimonials__icon:hover {
+    border-color: var(--border-hover);
+  }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
   .testimonials__icon:hover {
     transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
   }
 }
 @keyframes testimonial-fade {
@@ -289,12 +282,7 @@
   background-size: 14px;
   transition:
     border-color var(--dur-2) var(--ease),
-    box-shadow var(--dur-2) var(--ease),
     background var(--dur-2) var(--ease);
-}
-.filters__select:hover {
-  border-color: var(--primary);
-  box-shadow: var(--shadow-hover-md);
 }
 html[data-theme="dark"] .filters__select {
   background-image: url("data:image/svg+xml,%3Csvg width='14' height='14' xmlns='http://www.w3.org/2000/svg' fill='%23ffffff'%3E%3Cpath d='M4 5l3 3 3-3' stroke='%23ffffff' stroke-width='2' fill='none'/%3E%3C/svg%3E");
@@ -319,8 +307,7 @@ html[data-theme="dark"] .filters__select {
 }
 @media (hover: hover) and (pointer: fine) {
   .filters__select:hover {
-    border-color: var(--primary);
-    box-shadow: var(--shadow-hover-md);
+    border-color: var(--border-hover);
   }
 }
 
@@ -350,11 +337,7 @@ html[data-theme="dark"] .filters__select {
   background: var(--bg-elev);
   color: var(--text);
   font-size: var(--fs-2);
-  transition:
-    border-color var(--dur-2) var(--ease),
-    box-shadow var(--dur-2) s var(--ease),
-    background-color var(--dur-2) var(--ease),
-    transform var(--dur-1) var(--ease);
+  transition: border-color var(--dur-2) var(--ease);
 }
 .form__field textarea {
   resize: vertical;
@@ -363,11 +346,12 @@ html[data-theme="dark"] .filters__select {
 .form__field input:hover,
 .form__field select:hover,
 .form__field textarea:hover {
-  border-color: color-mix(in oklab, var(--border) 40%, var(--primary) 60%);
+  border-color: var(--border-hover);
 }
 /* Focus ring variant for bordered form controls (see Focus in tokens.css). The outline stays in place
    but transparent, so forced-colors mode, which drops shadows, still paints it. The controls rest
-   without a shadow, so the ring is their only one. The checkbox keeps the global outline. */
+   without a shadow, so the ring is their only one, and it appears at once: the controls transition
+   their edge but not their shadow. The checkbox keeps the global outline. */
 .filters__select:focus-visible,
 .form__field input:not([type="checkbox"]):focus-visible,
 .form__field select:focus-visible,
@@ -492,9 +476,10 @@ html[data-theme="dark"] .filters__select {
     transform var(--dur-2) var(--ease),
     box-shadow var(--dur-2) var(--ease);
 }
-.btn:hover {
-  box-shadow: var(--shadow-hover-md);
-  transform: translateY(-2px);
+/* Default and ghost buttons rise to the raised elevation on hover; the text variant reads as a link
+   and only moves its arrow. */
+.btn:hover:not(.btn--text) {
+  box-shadow: var(--shadow-raised);
 }
 /* btn-ghost */
 .btn--ghost {
@@ -503,15 +488,11 @@ html[data-theme="dark"] .filters__select {
   color: var(--text);
   transition:
     background var(--dur-2) var(--ease),
-    border-color var(--dur-2) var(--ease),
     box-shadow var(--dur-2) var(--ease),
     transform var(--dur-2) var(--ease);
 }
 .btn--ghost:hover {
   background: var(--bg-elev);
-  border-color: var(--border);
-  box-shadow: var(--shadow-sm);
-  transform: translateY(-2px);
 }
 /* btn-text */
 .btn--text {
@@ -529,7 +510,10 @@ html[data-theme="dark"] .filters__select {
 .btn--text:focus-visible {
   text-decoration: none;
 }
-@media (hover: hover) and (pointer: fine) {
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .btn:hover:not(.btn--text) {
+    transform: translateY(-2px);
+  }
   .btn--text:hover::before {
     transform: translateX(3px);
   }

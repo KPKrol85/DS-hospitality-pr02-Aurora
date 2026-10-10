@@ -34,7 +34,7 @@
 .site-header.is-compact {
   padding: var(--space-2) 0;
   border-color: var(--border);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-raised);
 }
 .site-header__inner {
   display: flex;
@@ -157,14 +157,12 @@
   border: 1px solid transparent;
   transition:
     background 0.25s ease,
-    box-shadow 0.25s ease,
-    border-color 0.25s ease,
-    color 0.2s ease,
-    transform 0.16s ease;
+    color 0.2s ease;
 }
+/* The tint, shared with the theme toggle, tells a hovered link from the current page. */
 .nav a:hover {
   color: var(--primary);
-  box-shadow: var(--shadow-sm);
+  background: color-mix(in srgb, var(--text) 8%, transparent);
   text-decoration: none;
 }
 .nav li.is-active > a,
@@ -326,15 +324,12 @@
 }
 .site-footer__grid a {
   color: inherit;
-  transition:
-    color var(--dur-2) var(--ease),
-    text-shadow var(--dur-2) var(--ease);
+  transition: color var(--dur-2) var(--ease);
 }
 .site-footer__row--cols > *:nth-child(2) a.is-active,
 .site-footer__row--cols > *:nth-child(3) a.is-active {
   color: var(--primary);
   font-weight: var(--fw-semibold);
-  text-shadow: var(--shadow-sm);
 }
 .site-footer__address {
   font-style: normal;
@@ -365,9 +360,7 @@
 .site-footer__contact-link {
   color: inherit;
   text-decoration: none;
-  transition:
-    color var(--dur-2) var(--ease),
-    text-shadow var(--dur-2) var(--ease);
+  transition: color var(--dur-2) var(--ease);
 }
 .site-footer__row--social {
   position: relative;
@@ -408,9 +401,7 @@
   opacity: 0.8;
   transition:
     color var(--dur-2) var(--ease),
-    opacity var(--dur-2) var(--ease),
-    transform var(--dur-2) var(--ease),
-    filter var(--dur-2) var(--ease);
+    opacity var(--dur-2) var(--ease);
 }
 .site-footer__row--social .socials a svg {
   width: 1.35rem;
@@ -431,23 +422,14 @@
   opacity: 0.7;
 }
 
+/* Every footer link, the brand and contact links included, turns --primary on hover. */
 @media (hover: hover) and (pointer: fine) {
-  .site-footer__brand-link:hover {
-    color: var(--primary-alt);
-  }
   .site-footer__grid a:hover {
     color: var(--primary);
-    text-shadow: var(--shadow-sm);
-  }
-  .site-footer__contact-link:hover {
-    color: var(--primary-alt);
-    text-shadow: var(--shadow-md);
   }
   .site-footer__row--social .socials a:hover {
-    color: var(--text);
+    color: var(--primary);
     opacity: 1;
-    transform: translateY(-1px);
-    filter: brightness(1.08);
   }
 }
 @media (min-width: 480px) {

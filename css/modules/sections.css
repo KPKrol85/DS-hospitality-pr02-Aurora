@@ -44,11 +44,6 @@
   margin-top: var(--space-2);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  box-shadow: var(--shadow);
-  transform-origin: center;
-  transition:
-    box-shadow 0.45s ease,
-    transform 0.45s ease;
 }
 .hero__media img {
   width: 100%;
@@ -57,7 +52,6 @@
   display: block;
   object-fit: cover;
   transform: scale(1.01);
-  transition: transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 @media (min-width: 480px) {
   .hero__content {
@@ -105,15 +99,6 @@
   }
   .hero__logo {
     display: none;
-  }
-}
-@media (hover: hover) and (pointer: fine) {
-  .hero__media:hover {
-    box-shadow: var(--shadow-hover-lg);
-    transform: translateY(-4px);
-  }
-  .hero__media:hover img {
-    transform: scale(1.03);
   }
 }
 

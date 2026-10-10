@@ -126,9 +126,7 @@
   transform: translateY(-1px);
   transition:
     opacity 180ms ease,
-    color 180ms ease,
-    background-color 180ms ease,
-    transform 180ms ease;
+    color 180ms ease;
 }
 /* The link rests at opacity 0.2, which would fade the focus outline too. */
 .legal__back-link:focus-visible {
@@ -235,8 +233,6 @@
   }
   .legal__back-link:hover {
     color: var(--primary);
-    background: var(--bg-soft);
     opacity: 1;
-    transform: translateY(-1px);
   }
 }
