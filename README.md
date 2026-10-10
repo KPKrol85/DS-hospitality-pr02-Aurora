@@ -116,7 +116,6 @@ Projekt nie posiada zależności runtime; wszystkie pakiety są zadeklarowane ja
 ├─ .gitignore
 ├─ AGENTS.md
 ├─ CLAUDE.md
-├─ IMPROVEMENTS-WORKFLOW.md  # bieżący raport usprawnień workflow
 ├─ LICENSE.md
 ├─ README.md
 ├─ package.json
@@ -390,7 +389,6 @@ The project has no runtime dependencies; every package is declared under `devDep
 ├─ .gitignore
 ├─ AGENTS.md
 ├─ CLAUDE.md
-├─ IMPROVEMENTS-WORKFLOW.md  # current workflow improvements report
 ├─ LICENSE.md
 ├─ README.md
 ├─ package.json

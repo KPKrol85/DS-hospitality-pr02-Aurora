@@ -4,8 +4,13 @@
 **Project type:** Multi-page static website — 12 maintained root HTML pages, modular CSS built with PostCSS, vanilla ES modules bundled with esbuild, production Service Worker, custom Node.js build and check scripts, Vitest/jsdom regression suite, Netlify static hosting with manual deployment of `dist/`
 **Analysis mode:** Evidence-based workflow improvement review
 **Focus:** Project-wide workflow
+**Status:** COMPLETED — all five workflow improvements implemented and verified.
+**Completion date:** 2026-10-10
+**Completion summary:** IMP-WORKFLOW-01 to IMP-WORKFLOW-05 were completed and verified. Items 04 and 05 followed owner-approved scope revisions. No open tasks remain in this report.
 
 ## Improvement overview
+
+This overview and the analysis below describe the original baseline of 2026-10-09. All five improvements were subsequently completed and verified, IMP-WORKFLOW-04 and IMP-WORKFLOW-05 under owner-approved revised scopes, and no open improvement tasks remain in this report.
 
 Aurora's build workflow is explicit and largely self-enforcing. `npm run build` (`package.json:33`) is the single packaging command: it rebuilds `dist/` from an empty directory and ends with fail-fast checks of the sources and the package, including the CSP hash approval (`check:csp`, `check:csp:dist`) and the Service Worker bundle approval record (`check:sw-bundles`). The page inventory and entry tags are declared once in `scripts/site-build-contract.js`, and the approval records `_headers` and `service-worker-bundles.json` are read but never written by the build. Deployment is intentionally manual (`docs/pipeline-notes.md:185-188`), the repository has no CI configuration, and none is proposed. The cache-version workflow needs no change: since the bundle record was introduced (`36ec378`), every commit that changed a precached page also raised `VERSION`.
 
@@ -22,7 +27,7 @@ Confirmed defects observed during the analysis are not presented as improvements
 - the "intentionally tracked" comment in `.gitignore:118` and `.gitignore:123` still lists `LICENSE` and `_redirects`, which were renamed and removed;
 - `docs/settings.md:35` tells a new checkout to run `npm run images:bootstrap` to populate `assets/img-src/`, although that directory is tracked with all 184 raster sources, so the command copies nothing.
 
-## Proposed improvements
+## Completed improvements
 
 ### IMP-WORKFLOW-01 — Make the regression suite an unconditional part of the pre-deployment check
 
@@ -66,6 +71,8 @@ Confirmed defects observed during the analysis are not presented as improvements
 
 ## Selection summary
 
+This summary records the original selection rationale, including the objectives of IMP-WORKFLOW-04 and IMP-WORKFLOW-05 that the owner later revised.
+
 - **Selection basis:** Each proposal targets a step that the repository history shows being repeated or reconstructed by hand: deciding whether the tests apply, synchronizing up to four copies of the workflow documentation, setting up a preview server, choosing an archive shape, and choosing where a changelog entry goes.
 - **Processes strengthened:** pre-deployment verification (01, 03), documentation maintenance (02, 05) and the report lifecycle (04).
 - **Dependencies:** IMP-WORKFLOW-02 reduces the README edits that 01 and 03 require; implemented first, it leaves those two with documentation changes in `docs/settings.md` only. Otherwise all five can be implemented independently and in any order.
@@ -76,7 +83,7 @@ Confirmed defects observed during the analysis are not presented as improvements
   - Extending `check:sw-bundles` to the precached pages: this is a safeguard that belongs to the Quality category, and no bump has been missed since the record existed.
   - A Node.js version declaration: `README.md:129` already documents the requirement, so the value is low.
 
-## Analysis limitations
+## Original analysis limitations (2026-10-09)
 
 - The analysis was static. No project command was run; `npm test` and `npm run build` were not executed, so their current pass state and the suite's run time, which is relevant to IMP-WORKFLOW-01, are unverified. The only commands run were read-only Git inspection and text searches.
 - The global KP_Code README, CHANGELOG and archive standards are not in the repository. If they prescribe README script detail (IMP-WORKFLOW-02) or changelog rules (IMP-WORKFLOW-05), the project-local changes must be reconciled with them.
