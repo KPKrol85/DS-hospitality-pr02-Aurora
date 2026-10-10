@@ -12,9 +12,9 @@ Zgodnie z treścią informacji o projekcie wyświetlanej na stronach, serwis ma 
 
 ### Wersja online
 
-https://hospitality-pr02-aurora.netlify.app/
+https://ds-hospitality-pr02-aurora.netlify.app/
 
-Jest to adres kanoniczny zadeklarowany w znacznikach `canonical`, w `sitemap.xml`, w `robots.txt` oraz w stałej `productionDomain` w `scripts/check-asset-integrity.js`. Adres został sprawdzony podczas przygotowania tej dokumentacji i zwraca stronę główną projektu; repozytorium nie zawiera informacji pozwalającej ustalić, której rewizji odpowiada opublikowana wersja.
+Jest to adres produkcyjny potwierdzony przez właściciela projektu i adres kanoniczny zadeklarowany w znacznikach `canonical`, w `sitemap.xml`, w `robots.txt`, w polu `homepage` w `package.json` oraz w stałej `productionDomain` w `scripts/check-asset-integrity.js`. Repozytorium nie zawiera informacji pozwalającej ustalić, której rewizji odpowiada opublikowana wersja.
 
 ### Kluczowe funkcje
 
@@ -285,9 +285,9 @@ According to the project notice rendered on the pages, the site is a demonstrati
 
 ### Live Version
 
-https://hospitality-pr02-aurora.netlify.app/
+https://ds-hospitality-pr02-aurora.netlify.app/
 
-This is the canonical origin declared in the `canonical` tags, in `sitemap.xml`, in `robots.txt`, and in the `productionDomain` constant in `scripts/check-asset-integrity.js`. The address was checked while preparing this documentation and returns the project home page; the repository contains no information that would identify which revision the published version corresponds to.
+This is the production address confirmed by the project owner and the canonical origin declared in the `canonical` tags, in `sitemap.xml`, in `robots.txt`, in the `homepage` field of `package.json`, and in the `productionDomain` constant in `scripts/check-asset-integrity.js`. The repository contains no information that would identify which revision the published version corresponds to.
 
 ### Key Features
 

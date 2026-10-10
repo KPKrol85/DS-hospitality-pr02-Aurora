@@ -79,6 +79,7 @@ When an implementation task is defined, apply this policy and state `Changelog: 
 - Fixed the static tours counter and mobile navigation fallback when JavaScript is unavailable. The page now displays the correct initial offer count, keeps the mobile drawer collapsed until activated, and preserves desktop navigation without scripting. Updated the Service Worker cache to `aurora-1.9`.
 - Fixed reveal visibility when JavaScript fails by isolating feature initializers and enabling animations only after successful reveal setup. Preserved gallery animations and reduced-motion behaviour. Updated the Service Worker cache to `aurora-1.10`.
 - Fixed the home page featured-offer links landing on `tours.html` with the chosen offer card and its title hidden under the sticky header: the listing cards now stop below the header through a `scroll-margin-top` derived from the header height token. Updated the Service Worker cache to `aurora-1.28`.
+- Fixed production URL references that still pointed to an outdated Netlify origin: the canonical, Open Graph, Twitter Card and JSON-LD URLs of the maintained pages, the service address in the terms of use, `robots.txt`, `sitemap.xml`, the `productionDomain` constant of the asset integrity check and the README now use the owner-confirmed production URL `https://ds-hospitality-pr02-aurora.netlify.app/`, already declared as `homepage` in `package.json`. Updated the Service Worker cache to `aurora-1.29`.
 
 ### Security
 

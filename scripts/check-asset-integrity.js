@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const projectRoot = process.cwd();
-const productionDomain = 'https://hospitality-pr02-aurora.netlify.app';
+const productionDomain = 'https://ds-hospitality-pr02-aurora.netlify.app';
 
 // By default the maintained pages in the project root are checked; with --dist, the
 // production package that npm run build generates in dist/.
