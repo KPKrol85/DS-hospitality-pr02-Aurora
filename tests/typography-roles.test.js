@@ -5,12 +5,14 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { initTourDetail } from "../js/features/tour-detail.js";
 import { flushPromises, mountFromPage, readJson, setUrl, stubFetchJson } from "./helpers.js";
 
-// Headings and running text take one of six typographic roles, each mapped to one step of the fluid
-// scale by a --type-* token in tokens.css. body and p carry the body role; the other roles are
+// Headings and running text take one of eight typographic roles, each mapped to one step of the
+// fluid scale by a --type-* token in tokens.css; place labels and travel facts take one of two voice
+// roles beside that ladder. body and p carry the body role; the other roles are
 // classes defined once in base.css, which the pages put next to an element's component class. The
 // properties a role declares belong to it, so no component rule sets them again on an element that
 // has the role. Tour summaries and descriptions are sanitised HTML without classes, so their lead
-// paragraph and headings join their roles through descendant selectors in the role rules. One rule
+// paragraph, headings and itinerary day numbers join their roles through descendant selectors in
+// the role rules. One rule
 // draws the divider under every heading that has one.
 const projectRoot = resolve(import.meta.dirname, "..");
 const modulesDir = join(projectRoot, "css/modules");
@@ -19,21 +21,24 @@ const pages = readdirSync(projectRoot).filter((entry) => entry.endsWith(".html")
 const tours = readJson("assets/data/tours.json");
 
 // From the largest step to the smallest.
-const roles = ["page-title", "section-title", "subsection-title", "lead", "body", "small"];
-const roleClasses = roles.filter((role) => role !== "body").map((role) => `type-${role}`);
-const headingRoles = ["type-page-title", "type-section-title", "type-subsection-title"];
+const roles = ["display-hero", "display", "page-title", "section-title", "subsection-title", "lead", "body", "small"];
+// The voices of travel information, beside the ladder.
+const voiceRoles = ["place-label", "facts"];
+const roleClasses = [...roles, ...voiceRoles].filter((role) => role !== "body").map((role) => `type-${role}`);
+const headingRoles = ["type-display-hero", "type-display", "type-page-title", "type-section-title", "type-subsection-title"];
+
+// The display tier is reserved for three titles: the home hero, the tour-detail title and the
+// title of the one lead offer of the listing.
+const displayUses = [
+  { page: "index.html", selector: ".hero__content > h1", roleClass: "type-display-hero" },
+  { page: "tour.html", selector: ".tour-detail__title", roleClass: "type-display" },
+  { page: "tours.html", selector: ".tour-card--lead .tour-card__title", roleClass: "type-display" },
+];
 
 // Sanitised tour content cannot carry classes; these selectors give it its roles.
 const tourHeading = ".tour-detail__content h3";
 const tourLead = ".tour-detail__summary p:first-of-type";
-
-// The one context allowed to size an element that has a role: the single-column home hero keeps the
-// larger --fs-8 step for its title (mobile first, it outranks the role class), and from 760px the
-// title returns to its page-title role.
-const heroOverrides = [
-  { media: null, selector: ".hero__content h1", prop: "font-size", value: "var(--fs-8)" },
-  { media: "(min-width: 760px)", selector: ".hero__content h1", prop: "font-size", value: "var(--type-page-title)" },
-];
+const tourDayNumber = ".tour-detail__content .tour-itinerary strong";
 
 function parseModule(name) {
   return postcss.parse(readFileSync(join(modulesDir, name), "utf8"), { from: name });
@@ -53,10 +58,6 @@ function pageDocument(page) {
 
 function isKeyframe(rule) {
   return rule.parent.type === "atrule" && /keyframes$/.test(rule.parent.name);
-}
-
-function mediaOf(rule) {
-  return rule.parent.type === "atrule" && rule.parent.name === "media" ? rule.parent.params : null;
 }
 
 // Every rule of every module, with the module name.
@@ -124,6 +125,26 @@ describe("typographic role contract", () => {
     expect(steps.slice(1).map((step, index) => steps[index] - step)).toEqual(roles.slice(1).map(() => 1));
     // Lead text is never set smaller than the running text it introduces.
     expect(scaleStep("lead")).toBeGreaterThanOrEqual(scaleStep("body"));
+    // Place labels sit below small text; facts keep the size of the running text they stand out from.
+    expect(scaleStep("place-label")).toBeLessThan(scaleStep("small"));
+    expect(scaleStep("facts")).toBe(scaleStep("body"));
+  });
+
+  it("gives display titles tight balanced lines, place labels tracked capitals and facts aligned figures", () => {
+    for (const roleClass of ["type-display-hero", "type-display"]) {
+      const rule = roleRule(roleClass);
+      expect(valueOf(rule, "line-height"), roleClass).toBe("var(--lh-tight)");
+      expect(valueOf(rule, "letter-spacing"), roleClass).toBe("var(--ls-tight)");
+      expect(valueOf(rule, "text-wrap"), roleClass).toBe("balance");
+    }
+    const placeLabel = roleRule("type-place-label");
+    expect(valueOf(placeLabel, "text-transform")).toBe("uppercase");
+    expect(valueOf(placeLabel, "letter-spacing")).toBe("var(--ls-ultra)");
+    const facts = roleRule("type-facts");
+    expect(valueOf(facts, "font-variant-numeric")).toBe("lining-nums tabular-nums");
+    // Both voices are set in the heading family, apart from the Inter running text.
+    expect(valueOf(placeLabel, "font-family")).toBe("var(--font-heading)");
+    expect(valueOf(facts, "font-family")).toBe("var(--font-heading)");
   });
 
   it("defines each role class once, from its role token, and leaves heading weights to the heading roles", () => {
@@ -159,7 +180,11 @@ describe("typographic role contract", () => {
     let legalHeadings = 0;
     for (const page of pages) {
       const document = pageDocument(page);
-      document.querySelectorAll("h1").forEach((element) => expectRole(page, element, "type-page-title"));
+      // Every h1 is a title: the display tier where displayUses reserves it, the page title elsewhere.
+      document.querySelectorAll("h1").forEach((element) => {
+        const display = displayUses.find((use) => use.page === page && element.matches(use.selector));
+        expectRole(page, element, display ? display.roleClass : "type-page-title");
+      });
       document.querySelectorAll(".section__header > h2").forEach((element) => {
         sectionHeaders++;
         expectRole(page, element, "type-section-title");
@@ -187,6 +212,52 @@ describe("typographic role contract", () => {
     expect(scaleStep("section-title")).toBeGreaterThan(scaleStep("subsection-title"));
   });
 
+  it("reserves the display tier for the home hero, the tour-detail title and the one lead offer", () => {
+    const found = [];
+    for (const page of pages) {
+      const document = pageDocument(page);
+      document.querySelectorAll(".type-display-hero, .type-display").forEach((element) => {
+        const use = displayUses.find((entry) => entry.page === page && element.matches(entry.selector) && element.classList.contains(entry.roleClass));
+        expect(use, `${page} <${element.localName} class="${element.className}"> may not take the display tier`).toBeDefined();
+        found.push(use);
+      });
+    }
+    expect(found.sort((a, b) => a.page.localeCompare(b.page))).toEqual([...displayUses].sort((a, b) => a.page.localeCompare(b.page)));
+    // The lead offer is Malediwy Lagoon Escape, and its heading level stays that of the other offers.
+    const listing = pageDocument("tours.html");
+    expect(listing.querySelectorAll(".tour-card--lead")).toHaveLength(1);
+    expect(listing.querySelector(".tour-card--lead .tour-card__title").textContent.trim()).toBe("Malediwy Lagoon Escape");
+    expect(new Set(Array.from(listing.querySelectorAll(".tour-card__title"), (title) => title.localName))).toEqual(new Set(["h2"]));
+  });
+
+  it("sets region lines and eyebrows as place labels, and durations and prices as facts", () => {
+    let labels = 0;
+    for (const page of pages) {
+      const document = pageDocument(page);
+      document.querySelectorAll(".eyebrow, [data-tour-region]").forEach((element) => {
+        labels++;
+        expect(element.classList.contains("type-place-label"), `${page} ${element.outerHTML}`).toBe(true);
+      });
+    }
+    expect(labels).toBeGreaterThan(0);
+
+    for (const page of ["index.html", "tours.html", "tour.html"]) {
+      const document = pageDocument(page);
+      const facts = document.querySelectorAll(".tour-card__meta, .tour-detail__meta");
+      expect(facts.length, `${page} shows durations and prices`).toBeGreaterThan(0);
+      facts.forEach((element) => expect(element.classList.contains("type-facts"), `${page} ${element.outerHTML}`).toBe(true));
+    }
+    // Every featured offer and every listing entry states its duration and price in the same units.
+    for (const page of ["index.html", "tours.html"]) {
+      pageDocument(page)
+        .querySelectorAll("article.tour-card")
+        .forEach((card) => {
+          const items = Array.from(card.querySelectorAll(".tour-card__meta.type-facts > li"), (item) => item.textContent.trim());
+          expect(items, `${page} ${card.querySelector(".tour-card__title").textContent}`).toEqual([expect.stringMatching(/^\d+ dni$/), expect.stringMatching(/^Od \d{1,3}(?: \d{3})* PLN \/ os\.$/)]);
+        });
+    }
+  });
+
   it("leaves the properties a role declares to the role", () => {
     const roleRules = roleClasses.map(roleRule);
     // The elements of each role, including the sanitised tour content that the role rules reach
@@ -202,7 +273,6 @@ describe("typographic role contract", () => {
     expect(members.length).toBeGreaterThan(0);
 
     const violations = [];
-    const overridesFound = new Set();
     for (const { name, rule } of allRules()) {
       if (roleClasses.some((roleClass) => rule.selectors.includes(`.${roleClass}`))) continue;
       for (const selector of rule.selectors) {
@@ -213,16 +283,11 @@ describe("typographic role contract", () => {
           if (!element.matches(target)) continue;
           declarations(rule)
             .filter((decl) => owned.includes(decl.prop))
-            .forEach((decl) => {
-              const override = heroOverrides.find((entry) => mediaOf(rule) === entry.media && selector === entry.selector && decl.prop === entry.prop && decl.value === entry.value);
-              if (override) overridesFound.add(override);
-              else violations.push(`${name}:${decl.source.start.line} ${selector} { ${decl.prop}: ${decl.value} } on ${page} <${element.localName} class="${element.className}">`);
-            });
+            .forEach((decl) => violations.push(`${name}:${decl.source.start.line} ${selector} { ${decl.prop}: ${decl.value} } on ${page} <${element.localName} class="${element.className}">`));
         }
       }
     }
     expect(violations).toEqual([]);
-    expect(overridesFound.size, "the home hero title keeps --fs-8 below 760px and its role from 760px").toBe(heroOverrides.length);
   });
 
   it("draws the heading divider from one rule", () => {
@@ -252,9 +317,10 @@ describe("typographic roles of sanitised tour content", () => {
     mountFromPage("tour.html", "main");
   });
 
-  it("reaches the description headings and the summary lead through descendant selectors", () => {
+  it("reaches the description headings, the summary lead and the day numbers through descendant selectors", () => {
     expect(roleRule("type-subsection-title").selectors).toContain(tourHeading);
     expect(roleRule("type-lead").selectors).toContain(tourLead);
+    expect(roleRule("type-facts").selectors).toContain(tourDayNumber);
     const [divider] = allRules().filter(({ rule }) => rule.selectors.includes(".heading-divider::after"));
     expect(divider.rule.selectors).toContain(`${tourHeading}::after`);
   });
@@ -273,6 +339,13 @@ describe("typographic roles of sanitised tour content", () => {
     });
     const lead = document.querySelector("[data-tour-summary] p");
     expect(lead.matches(tourLead)).toBe(true);
+    const dayNumbers = document.querySelectorAll("[data-tour-content] .tour-itinerary strong");
+    expect(dayNumbers.length).toBeGreaterThan(0);
+    dayNumbers.forEach((dayNumber) => {
+      expect(dayNumber.attributes).toHaveLength(0);
+      expect(dayNumber.textContent).toMatch(/^Dzień \d+:$/);
+      expect(dayNumber.matches(tourDayNumber)).toBe(true);
+    });
   });
 
   it("cannot receive role classes, because the sanitiser removes them", async () => {

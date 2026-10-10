@@ -14,7 +14,6 @@
   --fw-semibold: 600;
   --fw-bold: 700;
   /* Font size */
-  --fs-eyebrow: clamp(0.7rem, 0.67rem + 0.05vw, 0.78rem);
   --fs-1: clamp(0.75rem, 0.73rem + 0.08vw, 0.82rem);
   --fs-2: clamp(0.85rem, 0.83rem + 0.12vw, 0.92rem);
   --fs-3: clamp(0.95rem, 0.92rem + 0.18vw, 1.05rem);
@@ -23,21 +22,28 @@
   --fs-6: clamp(1.45rem, 1.25rem + 0.9vw, 1.9rem);
   --fs-7: clamp(1.8rem, 1.4rem + 1.6vw, 2.6rem);
   --fs-8: clamp(2.1rem, 1.6rem + 2.2vw, 3rem);
+  --fs-9: clamp(2.6rem, 1.8rem + 3vw, 4rem);
   /* Line heights */
   --lh-tight: 1.15;
   --lh-snug: 1.3;
   --lh-normal: 1.5;
   --lh-relaxed: 1.7;
-  /* Typographic roles: the step of the scale each role uses, one step apart from page title down to
-     small text. base.css (Typographic roles) applies them. */
+  /* Typographic roles: the step of the scale each role uses, one step apart from the home display
+     title down to small text, plus the two voices of travel information (place labels and facts),
+     which sit beside the ladder. base.css (Typographic roles) applies them. */
+  --type-display-hero: var(--fs-9);
+  --type-display: var(--fs-8);
   --type-page-title: var(--fs-7);
   --type-section-title: var(--fs-6);
   --type-subsection-title: var(--fs-5);
   --type-lead: var(--fs-4);
   --type-body: var(--fs-3);
   --type-small: var(--fs-2);
+  --type-place-label: var(--fs-1);
+  --type-facts: var(--fs-3);
   /* Letter spacing */
   --ls-tight: -0.02em;
+  --ls-snug: -0.01em;
   --ls-normal: 0;
   --ls-wide: 0.02em;
   --ls-wider: 0.05em;

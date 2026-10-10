@@ -78,24 +78,49 @@ p + p {
 /* Typographic roles
    Each role is one step of the fluid scale (--type-* in tokens.css), so equivalent text renders
    alike on every page:
-     page title        --fs-7  bold      the h1 of a page; the home hero keeps --fs-8 below 760px
+     display hero      --fs-9  bold      the home hero title, the one largest moment of the site
+     display           --fs-8  bold      the tour-detail title and the lead offer of the listing
+     page title        --fs-7  bold      the h1 of every other page
      section title     --fs-6  bold      the heading of a page section
      subsection title  --fs-5  semibold  a heading inside a section or a legal document block
      lead              --fs-4            the introduction of a page or section
      body              --fs-3            running text: body and p above, so paragraphs need no class
      small             --fs-2            compact copy on cards and short labels
+   Two voices of travel information sit beside the ladder:
+     place label       --fs-1  semibold  region lines and eyebrows: tracked capitals, as on an atlas
+     facts             --fs-3  semibold  durations, prices and itinerary day numbers: lining,
+                                         tabular figures, so numbers align and compare at a glance
+   Display titles are set tight and balanced across their lines; page and section titles take a
+   slightly closed tracking for Manrope at large sizes.
    Pages put the role class next to an element's component class. The component rule may place,
    colour and space the element, but the properties a role declares belong to the role. Headings
    keep --font-heading and --lh-snug from the heading rule above. Tour summaries and descriptions
-   are sanitised HTML without classes (js/features/tour-detail.js), so their first paragraph and
-   their headings join the lead and subsection-title roles through descendant selectors. */
+   are sanitised HTML without classes (js/features/tour-detail.js), so their first paragraph, their
+   headings and their itinerary day numbers join the lead, subsection-title and facts roles through
+   descendant selectors. */
+.type-display-hero {
+  font-size: var(--type-display-hero);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-tight);
+  text-wrap: balance;
+}
+.type-display {
+  font-size: var(--type-display);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-tight);
+  text-wrap: balance;
+}
 .type-page-title {
   font-size: var(--type-page-title);
   font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-snug);
 }
 .type-section-title {
   font-size: var(--type-section-title);
   font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-snug);
 }
 .type-subsection-title,
 .tour-detail__content h3 {
@@ -109,6 +134,22 @@ p + p {
 }
 .type-small {
   font-size: var(--type-small);
+}
+/* The case feature centres separators such as the bullet of "Azja • Japonia" on the capitals. */
+.type-place-label {
+  font-family: var(--font-heading);
+  font-size: var(--type-place-label);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-ultra);
+  text-transform: uppercase;
+  font-feature-settings: "case";
+}
+.type-facts,
+.tour-detail__content .tour-itinerary strong {
+  font-family: var(--font-heading);
+  font-size: var(--type-facts);
+  font-weight: var(--fw-semibold);
+  font-variant-numeric: lining-nums tabular-nums;
 }
 
 /* Heading divider: the one short rule drawn under a heading, on every heading that has one */

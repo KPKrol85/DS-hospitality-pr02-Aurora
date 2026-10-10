@@ -105,7 +105,6 @@
 .tour-detail__meta {
   margin: var(--space-2) 0;
   color: var(--muted);
-  font-weight: var(--fw-semibold);
 }
 .tour-detail__hero {
   display: grid;

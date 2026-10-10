@@ -200,28 +200,9 @@ Priorities express design value and dependency, not defect severity. P1 items es
 
 ### IMP-DESIGN-02 — Give typography an editorial display tier and a travel-facts voice
 
-- **Status:** Proposed
-- **Priority:** P1
-- **Affected area:** Typographic tokens and roles (`tokens.css`, `base.css`); home hero title, tour-detail title, offer titles, eyebrows, region lines, durations, prices and itinerary day labels.
-- **Evidence:** Source: `--type-page-title` (`--fs-7`) is the largest role, and `--fs-8` (max 3 rem) applies to the home hero only below 760 px. `.tour-card__title` uses `--fs-3`, and `.tour-detail__meta` and `.tour-card__meta` render facts as text runs. `tours.json` holds `region`, `days` and `priceFrom` for every offer. Runtime: home `h1` 41.6 px equals every subpage `h1` at 1440 px; offer titles are 16.8 px in 384 px and 1200 px cards; tour facts are set at the 16.8 px body size. Historical: IMP-UI-05 established the role ladder and its test.
-- **Current state:** One consistent ladder from page title to small text, no display tier, and offer facts and place names set as body or small text.
-- **Design judgment:** The home brand moment has no more typographic presence than a 404 page. Place, duration and price, the facts a traveller compares, are visually indistinguishable from description.
-- **Proposed improvement:** Extend the role system with:
-  - a display tier, used only for the home hero, the tour-detail title and a lead offer;
-  - a "place label" role for region lines and eyebrows, read as atlas labelling;
-  - a "facts" role for durations, prices and day numbers, with lining tabular figures and a consistent unit treatment ("dni", "PLN / os.");
-  - tuned heading tracking and weights for the repaired Manrope.
-
-  All within the existing families.
-- **Expected value:** A recognizable editorial voice, a clear top-level hierarchy, and offer data that can be scanned and compared at a glance.
-- **Implementation scope:** New or adjusted `--type-*` tokens and role classes, applied in markup through role classes as the IMP-UI-05 contract requires. Semantic heading levels, sanitized tour content (descendant selectors only) and the button size contract stay unchanged. `tests/typography-roles.test.js` is extended for the new roles.
-- **Dependencies:** P-1; IMP-DESIGN-01 for label and fact colours.
-- **Acceptance criteria:**
-  - `CSS.getPlatformFontsForNode` reports Manrope or Inter for all glyphs of the hero title, a section title, body text and a button label.
-  - The home hero title is visibly larger than every subpage `h1` at 390, 1024 and 1440 px and wraps to at most three lines without a single-word last line.
-  - Durations and prices use the facts role on `index.html`, `tours.html` and `tour.html`, with aligned figures in the listing.
-  - Region lines use the place-label role wherever shown.
-  - Heading levels are unchanged; text reflows without overlap at 200% zoom; both themes are checked.
+- **Status:** COMPLETED — implemented and verified (2026-10-10).
+- **Result:** Extended the typographic roles with a display tier (`--fs-9` for the home hero only; `--fs-8` for the tour-detail title and the lead offer Malediwy Lagoon Escape on `tours.html`), a place-label voice for region lines and eyebrows (tracked Manrope capitals) and a facts voice for durations, prices and itinerary day numbers (Manrope semibold, lining tabular figures). The roles are applied through classes; the sanitised itinerary day numbers join the facts role through a descendant selector. The featured offers on `index.html` gained the catalogue duration and price. Page and section titles take slightly closed tracking. Heading levels, the button size contract, sanitised content rules, themes and theme storage are unchanged. Service Worker updated to `aurora-1.34`.
+- **Verification:** `tests/typography-roles.test.js` (extended) and the tour-catalogue tests passed (25/25), and the Service Worker test passed. `npm run build` passed after `record:sw-bundles`. Headless Chrome 154 checked `index.html`, `tours.html`, `tour.html` (two offers), `about.html` and `contact.html` at 390, 1024 and 1440 px and at 200% zoom, in both themes (48 loads). The hero title was 1.21–1.33 times every subpage `h1` and wrapped to two lines, `CSS.getPlatformFontsForNode` reported only Manrope or Inter for the tested text, and no overlap or horizontal overflow was found. The full test suite, Firefox, Safari, real devices and assistive technologies were not checked.
 - **Impact:** High
 - **Effort:** Medium
 

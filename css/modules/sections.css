@@ -13,12 +13,9 @@
   gap: var(--space-5);
   text-align: center;
 }
-/* The single-column hero keeps the larger --fs-8 step for its title; from 760px, where the title
-   shares the row with the image, it uses the page-title size of its role. */
 .hero__content h1 {
   margin: 0 auto;
   max-width: 18ch;
-  font-size: var(--fs-8);
 }
 .hero__lead {
   margin: var(--space-4) auto;
@@ -87,9 +84,6 @@
   .hero__grid {
     grid-template-columns: 1.1fr 1fr;
     align-items: center;
-  }
-  .hero__content h1 {
-    font-size: var(--type-page-title);
   }
   .hero__media {
     margin-top: 0;
