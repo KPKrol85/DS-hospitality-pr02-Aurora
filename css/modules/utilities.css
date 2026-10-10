@@ -84,8 +84,8 @@
   top: 0;
   left: 50%;
   transform: translate(-50%, -100%);
-  background: var(--primary);
-  color: #fff;
+  background: var(--action-bg);
+  color: var(--action-fg);
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-sm);
   z-index: var(--z-skip-link);

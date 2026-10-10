@@ -1,5 +1,5 @@
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-I57Yn8Gu3+wB0LHTjtknLYvq6CwvamTF5v2iFqeFepA=' 'sha256-TI+wgaKYoHTD362OtNLtdQEC4ivZR4dxNX40VhjAl5w=' 'sha256-wf2I+nXc6kyR2OpAVgAqQ2mxe0cLwhJ3kaah0x2Rge8='; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:; font-src 'self'; connect-src 'self'; frame-src https://www.google.com; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-w/WVxUe6WZE9XhLV3c6LbRaCoDtrxKybMLHBWhEzq2I=' 'sha256-efVsL4QFs2eXGX+q5fmPO0Q4h+h4IxqFdke4VJrkI3g=' 'sha256-LAf1XXtiW+LJk7ykgUg5xOzG3f0lhogpryew4onSjrI='; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:; font-src 'self'; connect-src 'self'; frame-src https://www.google.com; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'
   Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
