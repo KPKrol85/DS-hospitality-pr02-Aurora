@@ -22,6 +22,8 @@
     "verify:js": "node scripts/verify-built-js.js",
     "watch:css": "postcss css/style.css -o dist/css/style.min.css --watch",
     "watch:js": "esbuild js/script.js --bundle --minify --target=es2018 --define:__AURORA_PRODUCTION__=true --outfile=dist/js/script.min.js --watch",
+    "preview:source": "node scripts/preview-server.js source",
+    "preview:dist": "node scripts/preview-server.js dist",
     "check:css-assets": "node scripts/check-css-assets.js",
     "check:assets": "node scripts/check-asset-integrity.js",
     "check:assets:dist": "node scripts/check-asset-integrity.js --dist",

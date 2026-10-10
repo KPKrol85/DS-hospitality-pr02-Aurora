@@ -83,7 +83,7 @@ Projekt nie posiada zależności runtime; wszystkie pakiety są zadeklarowane ja
 ├─ js/
 │  ├─ features/              # moduły funkcjonalne init*
 │  └─ script.js              # punkt wejścia JS
-├─ scripts/                  # skrypty build, pakowania i walidacji
+├─ scripts/                  # skrypty build, pakowania, walidacji i podglądu lokalnego
 ├─ tests/                    # testy regresji Vitest (jsdom)
 ├─ docs/
 │  ├─ archive/               # zakończone plany, audyty i raporty usprawnień
@@ -137,11 +137,11 @@ Repozytorium zawiera `package-lock.json` w formacie `lockfileVersion: 3`. Wymaga
 
 Strony w katalogu głównym ładują bezpośrednio źródła kanoniczne: `css/style.css`, którego dyrektywy `@import` przeglądarka rozwiązuje do plików w `css/modules/`, oraz `js/script.js` jako moduł ES wraz z modułami z `js/features/`. Zmiany w tych plikach są widoczne po odświeżeniu strony, bez kroku budowania. Development nie korzysta z plików `*.min.css` ani `*.min.js`.
 
-Repozytorium nie zawiera skryptu serwera deweloperskiego. Podgląd należy uruchomić przez dowolny serwer HTTP obsługujący katalog główny projektu — ładowanie modułów ES oraz pobieranie `assets/data/*.json` przez `fetch()` nie działają przy otwarciu plików przez `file://`.
+Podgląd źródeł uruchamia `npm run preview:source` pod adresem `http://127.0.0.1:8181/` — lokalny serwer bez zależności, który udostępnia wyłącznie strony i zasoby witryny. Otwarcie plików przez `file://` nie wystarcza: ładowanie modułów ES oraz pobieranie `assets/data/*.json` przez `fetch()` wymagają HTTP.
 
-Service Worker nie jest rejestrowany podczas developmentu, ponieważ jego lista precache wskazuje pliki produkcyjne istniejące wyłącznie w `dist/`. Jeżeli na tym samym originie działał wcześniej produkcyjny Service Worker (np. po podglądzie `dist/` pod tym samym adresem), źródła developerskie go wyrejestrowują; od następnego przeładowania strona nie jest już przez niego kontrolowana.
+Service Worker nie jest rejestrowany podczas developmentu, ponieważ jego lista precache wskazuje pliki produkcyjne istniejące wyłącznie w `dist/`. Podgląd produkcyjny działa domyślnie na innym porcie, czyli pod innym originem, dlatego jego Service Worker nie kontroluje podglądu źródeł. Jeżeli na tym samym originie działał wcześniej produkcyjny Service Worker (np. po podglądzie `dist/` pod tym samym adresem), źródła developerskie go wyrejestrowują; od następnego przeładowania strona nie jest już przez niego kontrolowana.
 
-Podgląd wersji produkcyjnej wymaga uruchomienia `npm run build` i serwera HTTP obsługującego katalog `dist/`. Komendy `npm run watch:css` i `npm run watch:js` odświeżają `dist/css/style.min.css` i `dist/js/script.min.js` w istniejącym katalogu `dist/` — nie są potrzebne do pracy nad źródłami.
+Po `npm run build` podgląd wersji produkcyjnej uruchamia `npm run preview:dist`: serwuje `dist/` jako katalog główny pod adresem `http://127.0.0.1:8182/`, dodaje do odpowiedzi nagłówki reguły `/*` z `dist/_headers`, w tym Content-Security-Policy, a na nieistniejące ścieżki odpowiada stroną `404.html` ze statusem 404. Nie zastępuje `npm run predeploy:check` i nie odtwarza wszystkich funkcji Netlify, m.in. obsługi formularzy. Zmianę portu, zatrzymanie serwera i pozostałe ograniczenia opisuje [docs/settings.md](docs/settings.md#local-preview). Komendy `npm run watch:css` i `npm run watch:js` odświeżają `dist/css/style.min.css` i `dist/js/script.min.js` w istniejącym katalogu `dist/` — nie są potrzebne do pracy nad źródłami.
 
 ### Dostępne skrypty
 
@@ -150,6 +150,7 @@ Komendy potrzebne w codziennej pracy:
 - `npm test` — uruchamia testy regresji Vitest; podczas pracy cały pakiet albo wybrane pliki.
 - `npm run predeploy:check` — kontrola przed każdym wdrożeniem: pełny pakiet testów, a tylko po jego powodzeniu `npm run build`.
 - `npm run build` — tworzy od zera paczkę produkcyjną w `dist/` i weryfikuje źródła oraz paczkę; `npm run dist` jest jego aliasem. Żadna z tych dwóch komend nie uruchamia testów.
+- `npm run preview:source` i `npm run preview:dist` — lokalny podgląd źródeł (`http://127.0.0.1:8181/`) oraz zbudowanej paczki `dist/` z jej nagłówkami i stroną 404 (`http://127.0.0.1:8182/`).
 - `npm run build:images` — generuje `assets/img/` z `assets/img-src/` po zmianie obrazów źródłowych; celowo pozostaje poza łańcuchem `build`.
 
 Pozostałe skrypty to etapy i kontrole uruchamiane przez `npm run build` (`clean`, `build:stage`, `build:css`, `build:js`, `verify:*`, `check:*`), tryby obserwowania `watch:css` i `watch:js` do podglądu istniejącego `dist/`, `record:sw-bundles` do zapisu zatwierdzonej wersji cache'u Service Workera oraz `images:bootstrap`. Polecenie, działanie i moment użycia każdego skryptu, a także rekomendowany przebieg pracy, opisuje [docs/settings.md](docs/settings.md#packagejson-scripts).
@@ -356,7 +357,7 @@ The project has no runtime dependencies; every package is declared under `devDep
 ├─ js/
 │  ├─ features/              # init* feature modules
 │  └─ script.js              # JS entry point
-├─ scripts/                  # build, packaging, and validation scripts
+├─ scripts/                  # build, packaging, validation, and local preview scripts
 ├─ tests/                    # Vitest (jsdom) regression tests
 ├─ docs/
 │  ├─ archive/               # completed plans, audits, and improvement reports
@@ -410,11 +411,11 @@ The repository ships a `package-lock.json` with `lockfileVersion: 3`. Node.js an
 
 The root pages load the canonical sources directly: `css/style.css`, whose `@import` rules the browser resolves to the files in `css/modules/`, and `js/script.js` as an ES module together with the modules in `js/features/`. Changes to these files are visible on reload, with no build step. Development uses no `*.min.css` or `*.min.js` file.
 
-The repository contains no development-server script. Preview the site through any HTTP server rooted at the project directory — ES module loading and `fetch()` of `assets/data/*.json` do not work when the files are opened over `file://`.
+`npm run preview:source` starts the source preview at `http://127.0.0.1:8181/` — a dependency-free local server that exposes only the site's pages and assets. Opening the files over `file://` is not enough: ES module loading and `fetch()` of `assets/data/*.json` require HTTP.
 
-The Service Worker is not registered during development, because its precache list points to production files that exist only in `dist/`. If a production Service Worker was previously active on the same origin (for example after previewing `dist/` at the same address), the development sources unregister it; from the next reload the page is no longer controlled by it.
+The Service Worker is not registered during development, because its precache list points to production files that exist only in `dist/`. The production preview uses a different port by default, and therefore a different origin, so its Service Worker does not control the source preview. If a production Service Worker was previously active on the same origin (for example after previewing `dist/` at the same address), the development sources unregister it; from the next reload the page is no longer controlled by it.
 
-Previewing the production build requires `npm run build` and an HTTP server rooted at `dist/`. `npm run watch:css` and `npm run watch:js` refresh `dist/css/style.min.css` and `dist/js/script.min.js` inside an existing `dist/` — they are not needed when working on the sources.
+After `npm run build`, `npm run preview:dist` previews the production build: it serves `dist/` as the origin root at `http://127.0.0.1:8182/`, adds the headers of the `/*` rule in `dist/_headers`, including the Content-Security-Policy, to its responses, and answers unknown paths with `404.html` and status 404. It does not replace `npm run predeploy:check` and does not reproduce every Netlify feature, for example form handling. [docs/settings.md](docs/settings.md#local-preview) describes port overrides, stopping the server, and the remaining limitations. `npm run watch:css` and `npm run watch:js` refresh `dist/css/style.min.css` and `dist/js/script.min.js` inside an existing `dist/` — they are not needed when working on the sources.
 
 ### Available Scripts
 
@@ -423,6 +424,7 @@ Commands needed in day-to-day work:
 - `npm test` — runs the Vitest regression suite; during development the whole suite or selected files.
 - `npm run predeploy:check` — the check before every deployment: the complete test suite and, only when it passes, `npm run build`.
 - `npm run build` — builds the production package in `dist/` from scratch and verifies the sources and the package; `npm run dist` is its alias. Neither of the two runs the tests.
+- `npm run preview:source` and `npm run preview:dist` — local preview of the sources (`http://127.0.0.1:8181/`) and of the built `dist/` package with its headers and 404 page (`http://127.0.0.1:8182/`).
 - `npm run build:images` — generates `assets/img/` from `assets/img-src/` after source images change; deliberately kept outside the `build` chain.
 
 The remaining scripts are the stages and checks that `npm run build` runs (`clean`, `build:stage`, `build:css`, `build:js`, `verify:*`, `check:*`), the `watch:css` and `watch:js` watch modes for previewing an existing `dist/`, `record:sw-bundles` for recording an approved Service Worker cache version, and `images:bootstrap`. [docs/settings.md](docs/settings.md#packagejson-scripts) documents the command, behavior, and intended use of every script, as well as the recommended workflow.

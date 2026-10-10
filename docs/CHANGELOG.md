@@ -82,6 +82,7 @@ All significant changes to this project are documented in this file.
 - Added SHA-256 validation for production CSS and JavaScript bundles against a tracked Service Worker cache reference, preventing builds with changed bundles and an unchanged cache version. Added an explicit reference-update command and raised the Service Worker version to `aurora-1.6`.
 - Declared the maintained page inventory and the source-to-production CSS and JavaScript entry tags once in `scripts/site-build-contract.js`, shared by `build:stage` and `check:css-assets`. The build now fails before staging when a declared page is missing or a root HTML page is undeclared, so an unlisted page can no longer be published unverified; the production output is unchanged.
 - Added `npm run predeploy:check`, which runs the complete Vitest regression suite and, only when every test passes, the unchanged `npm run build`, and made it the documented pre-deployment check in place of the conditional, per-area `npm test` triggers; `npm run build` and `npm run dist` still do not run the tests.
+- Added a dependency-free local preview server, `scripts/preview-server.js`, with `npm run preview:source` for the maintained sources at `http://127.0.0.1:8181/` and `npm run preview:dist` for the built `dist/` at `http://127.0.0.1:8182/`, which sends the `/*` headers of `dist/_headers`, including the Content-Security-Policy, and answers unmatched paths with `dist/404.html` and HTTP 404. The build, the contents of `dist/` and the manual deployment workflow are unchanged.
 
 ### Testing
 
