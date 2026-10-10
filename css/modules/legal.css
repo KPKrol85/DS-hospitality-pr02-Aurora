@@ -4,13 +4,11 @@
   max-width: 960px;
 }
 .legal {
-  background: var(--bg-elev);
   border-radius: var(--radius-lg);
   padding: var(--space-5) var(--space-2);
   max-width: 960px;
   margin: var(--space-8) auto;
   width: min(100% - (var(--space-1) * 2), 960px);
-  box-shadow: var(--shadow-md);
   border: 1px solid var(--border);
   line-height: var(--lh-relaxed);
   color: var(--text);
@@ -36,14 +34,13 @@
   opacity: 0.9;
 }
 .legal__toc {
-  background: var(--bg-elev);
+  background: var(--bg-alt);
   border-radius: var(--radius-lg);
   padding: var(--space-4);
   max-width: 960px;
   margin-inline: auto;
   width: min(100% - (var(--space-1) * 2), 960px);
   margin-bottom: var(--space-8);
-  box-shadow: var(--shadow-md);
   line-height: var(--lh-relaxed);
   color: var(--text);
 }
@@ -198,7 +195,7 @@
   vertical-align: top;
 }
 .legal__table thead th {
-  background: var(--bg-elev);
+  background: var(--bg-alt);
   font-weight: var(--fw-semibold);
   letter-spacing: var(--ls-wide);
   white-space: nowrap;

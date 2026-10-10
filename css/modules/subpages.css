@@ -75,8 +75,6 @@
   padding: var(--space-6) var(--space-5);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  background: var(--bg-elev);
-  box-shadow: var(--shadow-sm);
   text-align: center;
 }
 .data-state__actions {
@@ -89,10 +87,9 @@
 /* Subpage: Tour */
 
 .tour-detail {
-  background: var(--bg-elev);
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: var(--space-5);
-  box-shadow: var(--shadow-md);
   margin-bottom: var(--space-8);
 }
 .tour-detail__header {
@@ -243,7 +240,7 @@
   top: 54px;
   z-index: var(--z-gallery-filters);
   padding: 0;
-  box-shadow: var(--shadow-xs);
+  box-shadow: var(--shadow-raised);
   background: color-mix(in oklab, var(--bg) 42%, transparent);
   backdrop-filter: blur(6px);
   border-top: 1px solid color-mix(in oklab, var(--muted) 10%, transparent);
@@ -274,7 +271,6 @@
   flex: 0 0 auto;
   border-radius: var(--radius-lg);
   border: 1px solid var(--border);
-  border: none;
   background: var(--bg-elev);
   color: var(--muted);
   padding: var(--space-2) var(--space-3);
@@ -282,7 +278,6 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 6px var(--shadow-xs);
   cursor: pointer;
   transition:
     background var(--dur-2) var(--ease),
@@ -297,7 +292,7 @@
   background: var(--action-bg);
   color: var(--action-fg);
   border-color: color-mix(in srgb, var(--primary) 65%, transparent);
-  box-shadow: var(--shadow-xs);
+  box-shadow: var(--shadow-raised);
 }
 .gallery-grid {
   display: grid;
@@ -356,7 +351,7 @@
   .gallery-filter.contact-media:hover {
     color: var(--text);
     background: var(--bg-elev);
-    box-shadow: var(--shadow-xs);
+    box-shadow: var(--shadow-raised);
     transform: translateY(-1px);
   }
 }
@@ -368,11 +363,16 @@
   gap: var(--space-5);
   align-items: flex-start;
 }
+/* The contact details are informational; the column holding the enquiry form is the raised,
+   interactive surface. */
 .contact-grid__inner > article {
-  background: var(--bg-elev);
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: var(--space-5);
-  box-shadow: var(--shadow-md);
+}
+.contact-grid__inner > article:has(> .form) {
+  background: var(--bg-elev);
+  box-shadow: var(--shadow-raised);
 }
 .contact-grid__inner h2 {
   margin: var(--space-5) 0;
@@ -415,7 +415,6 @@
   height: 280px;
   border: 0;
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
 }
 .contact-media {
   position: relative;
@@ -482,8 +481,8 @@
 }
 .about-values > li {
   padding: var(--space-4);
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  background: var(--bg-elev);
 }
 .about-values h3 {
   margin: 0 0 var(--space-2);
@@ -501,8 +500,6 @@
   padding: var(--space-4);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  background: var(--bg-elev);
-  box-shadow: var(--shadow-sm);
 }
 .about-highlight picture {
   display: block;
@@ -598,10 +595,8 @@
   margin: 0 auto;
 }
 .utility-page__card {
-  background: var(--bg-elev);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
   padding: var(--space-5);
   text-align: center;
 }

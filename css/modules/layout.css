@@ -10,8 +10,10 @@
 .section__header {
   margin-bottom: var(--space-6);
 }
+/* Secondary ground; the hairlines keep it apart from the footer, which shares the ground. */
 .section--muted {
-  background: var(--bg-elev);
+  border-block: 1px solid var(--border);
+  background: var(--bg-alt);
 }
 
 /* Header */
@@ -124,10 +126,10 @@
   display: none;
   flex-direction: column;
   gap: var(--space-6);
-  background: var(--bg);
+  border: 1px solid var(--border);
+  background: var(--bg-overlay);
   border-radius: 0 0 var(--radius-lg) var(--radius-lg);
-  box-shadow: var(--shadow-md);
-  backdrop-filter: blur(6px);
+  box-shadow: var(--shadow-overlay);
   color: inherit;
 }
 /* Below 900px the drawer is collapsed unless the toggle, which precedes it in the header, is expanded. */
@@ -218,11 +220,7 @@
   transform: rotate(0deg) scale(1.02);
 }
 @media (min-width: 900px) {
-  [data-theme] .nav {
-    background: transparent;
-    box-shadow: none;
-    backdrop-filter: none;
-  }
+  /* The inline navigation drops the drawer's overlay surface, with or without a theme attribute. */
   .nav {
     position: static;
     display: flex;
@@ -231,6 +229,9 @@
     padding: 0;
     min-width: 0;
     margin: auto;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
   }
   .nav ul {
     flex-direction: row;
