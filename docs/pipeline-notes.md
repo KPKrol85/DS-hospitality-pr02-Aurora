@@ -44,7 +44,7 @@ Their copies in `dist/` (production):
 
 ## Font preload
 
-`css/modules/fonts.css` declares the two self-hosted variable fonts with `font-display: swap`: Manrope (`--font-heading`, the logo text and the headings, 15 KB) and Inter (`--font-base`, the body text, 85 KB). Every page uses both in its initial view, but without a hint the browser requests them only after it has downloaded and applied the stylesheet. The maintained pages therefore preload them between the theme bootstrap and the stylesheet:
+`css/modules/fonts.css` declares the two self-hosted variable fonts with `font-display: swap`: Manrope (`--font-heading`, the logo text and the headings, 37 KB) and Inter (`--font-base`, the body text, 139 KB). Both files are the official OFL releases from the `google/fonts` repository, subset with fontTools to Latin and Latin Extended (including every Polish letter) with all OpenType features and the `wght` axis kept; Inter's optical-size axis is fixed at its default text size of 14. Their licences are `assets/fonts/Manrope-OFL.txt` and `assets/fonts/Inter-OFL.txt`, published with the fonts. Every page uses both in its initial view, but without a hint the browser requests them only after it has downloaded and applied the stylesheet. The maintained pages therefore preload them between the theme bootstrap and the stylesheet:
 
 ```html
 <!-- index.html only -->
@@ -53,8 +53,8 @@ Their copies in `dist/` (production):
 <link rel="preload" href="assets/fonts/Manrope-VariableFont.woff2" as="font" type="font/woff2" crossorigin />
 ```
 
-- Manrope is preloaded on all 12 pages, so the logo and the headings are painted in it from the first paint instead of swapping, and reflowing, later. The small file did not measurably delay the first paint.
-- Inter is preloaded only on `index.html`, where the stylesheet already shares the connection with the eagerly loaded hero image (`fetchpriority="high"`). On the other pages the stylesheet is the only early request, and in a throttled Chrome comparison the 85 KB preload delayed the stylesheet and the first paint, so there Inter is still discovered through the stylesheet.
+- Manrope is preloaded on all 12 pages, so the logo and the headings are painted in it from the first paint instead of swapping, and reflowing, later. The earlier 15 KB file did not measurably delay the first paint; the 37 KB replacement has not been re-measured.
+- Inter is preloaded only on `index.html`, where the stylesheet already shares the connection with the eagerly loaded hero image (`fetchpriority="high"`). On the other pages the stylesheet is the only early request, and in a throttled Chrome comparison the earlier 85 KB preload delayed the stylesheet and the first paint, so there Inter is still discovered through the stylesheet.
 - The hints follow the theme bootstrap, which still runs first, and precede the stylesheet. `crossorigin` is required although the fonts are same-origin: font requests use CORS mode, and a preload without it is not reused, so the font would be downloaded twice.
 - `href` resolves from the page to `/assets/fonts/…`, the URL of the `@font-face` source both from `/css/modules/fonts.css` in development and from `/css/style.min.css` in production. `build:stage` copies the hints unchanged, so in `dist/` they resolve to `dist/assets/fonts/`.
 - `check:assets` and `check:assets:dist` report a hint whose file is missing, like any other `<link href>`. `tests/font-preload.test.js` checks the page selection, the paths and attributes, one hint per font, the position between the bootstrap and the stylesheet, and the copies that `scripts/build-dist.js` stages.
