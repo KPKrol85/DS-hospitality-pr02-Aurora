@@ -17,7 +17,7 @@ const pages = readdirSync(projectRoot)
   .sort();
 
 const STORAGE_KEY = "kp-travel-theme";
-const BACKGROUNDS = { light: "rgb(248, 247, 242)", dark: "rgb(5, 6, 10)" };
+const BACKGROUNDS = { light: "rgb(248, 247, 242)", dark: "rgb(11, 22, 40)" };
 
 function readPage(page) {
   return readFileSync(resolve(projectRoot, page), "utf8");

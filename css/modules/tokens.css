@@ -42,21 +42,33 @@
   --ls-wide: 0.02em;
   --ls-wider: 0.05em;
   --ls-ultra: 0.1em;
-  /* Colors */
+  /* Colours: Atlas Aurory, light edition (warm paper, navy ink, deep-teal action). The dark edition
+     below redefines every role except the brand accents. */
+  /* Grounds and surfaces: the editorial paper (also the root background, which the inline bootstrap
+     and the theme-color meta of every page repeat), the secondary ground of the footer, the raised
+     surface and the overlay surface. */
   --bg: #f8f7f2;
-  --bg-rgb: 255, 255, 255;
+  --bg-alt: #f3f2ec;
   --bg-elev: #fffffff1;
-  --footer-bg: #f3f2ec;
+  --bg-overlay: #ffffff;
+  /* Ink and hairlines */
   --text: #0c1b33;
   --text-subtle: color-mix(in srgb, var(--text) 75%, var(--muted));
   --muted: #5b6070;
-  /* primary colors */
+  --border: rgba(12, 27, 51, 0.16);
+  /* Accent: links, the current page and the focus colour */
   --primary: #0f6d8c;
   --primary-alt: #6fd1ff;
   --primary-alt-active: color-mix(in srgb, var(--primary-alt) 85%, white);
-  --gradient-primary: linear-gradient(135deg, var(--primary), var(--primary-alt));
-  /* border colors */
-  --border: rgba(15, 109, 140, 0.15);
+  /* Action: the solid background of the default button, the active gallery filter and the skip link,
+     and the label colour paired with it at 4.5:1 or more in both editions. */
+  --action-bg: #0f6d8c;
+  --action-fg: #ffffff;
+  /* Brand accents in both editions: the cyan of the mark for the logotype, lines, routes and
+     decorative motifs (2:1 on the paper, so no other text in the light edition), and the warm sand
+     of the map. */
+  --accent-signature: #0cc0df;
+  --accent-warm: #edcaae;
   /* Shadows */
   --shadow-sm: 0 10px 25px rgba(6, 17, 35, 0.1);
   --shadow-md: 0 18px 40px rgba(6, 17, 35, 0.12);
@@ -121,16 +133,19 @@
 
 [data-theme="dark"] {
   color-scheme: dark;
-  --bg: #05060a;
-  --bg-dark-rgb: 17, 28, 47;
-  --bg-elev: #0e121b;
-  --footer-bg: #0a0f15;
+  /* Night chart: a deep ink-blue ground with a deeper footer ground, surfaces that lighten towards
+     the overlay, cyan hairlines and a luminous cyan action with an ink label. */
+  --bg: #0b1628;
+  --bg-alt: #08111f;
+  --bg-elev: #121f35;
+  --bg-overlay: #172741;
   --text: #f2f4f8;
-  --text-soft: rgba(255, 255, 255, 0.88);
   --muted: #a3aec2;
+  --border: rgba(111, 209, 255, 0.2);
   --primary: #6fd1ff;
   --primary-alt: #0f6d8c;
-  --border: rgba(111, 209, 255, 0.14);
+  --action-bg: #6fd1ff;
+  --action-fg: #0b1628;
   /* Shadows - dark */
   --shadow-sm: 0 10px 25px rgba(0, 0, 0, 0.35);
   --shadow-md: 0 18px 40px rgba(0, 0, 0, 0.38);

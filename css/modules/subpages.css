@@ -294,8 +294,8 @@
   text-align: center;
 }
 .gallery-filter.is-active {
-  background: linear-gradient(135deg, var(--primary-alt), var(--primary));
-  color: #fff;
+  background: var(--action-bg);
+  color: var(--action-fg);
   border-color: color-mix(in srgb, var(--primary) 65%, transparent);
   box-shadow: var(--shadow-xs);
 }

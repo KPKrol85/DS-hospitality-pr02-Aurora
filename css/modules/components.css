@@ -493,8 +493,8 @@ html[data-theme="dark"] .filters__select {
   font-size: var(--fs-2);
   font-weight: var(--fw-semibold);
   line-height: var(--lh-normal);
-  background: var(--gradient-primary) border-box;
-  color: #fff;
+  background: var(--action-bg);
+  color: var(--action-fg);
   cursor: pointer;
   transition:
     transform var(--dur-2) var(--ease),
