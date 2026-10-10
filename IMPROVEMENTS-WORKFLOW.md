@@ -48,20 +48,11 @@ Confirmed defects observed during the analysis are not presented as improvements
 - **Impact:** Medium
 - **Effort:** Medium
 
-### IMP-WORKFLOW-04 — Record the archive convention for completed plans, audits and improvement reports
+### IMP-WORKFLOW-04 — Standardize concise completed improvement records
 
-- **Affected workflow:** Completion and archiving of planning, audit and improvement-report cycles.
-- **Evidence:**
-  - The de facto convention is visible in `docs/archive/plans/PLAN-2026-09-28.md`, `docs/archive/audits/daily-AUDIT-2026-09-22.md` and `docs/archive/improvements/` (UI 2026-10-01, QUALITY 2026-10-04, TECH 2026-10-06, UX 2026-10-08): one directory per record type, and a date in the file name (the audit date for the audit, the completion date for the plan and the reports).
-  - No active document describes it. `AGENTS.md:38-42` covers item status and the changelog only, and neither README project tree (`README.md:89-92`, `:396-399`) shows `docs/archive/`. Commit `1301c29` removed the earlier `AGENTS.md` mention that completed reviews may be archived under `docs/archive/`.
-  - The naming and terminology were settled after the fact: commit `9081891` renamed both of the first archived files, and commit `bdeb85b` changed a status term from "resolved" to "completed".
-  - The four archived reports were finalized in different shapes. UI and UX keep the original fields and add status lines (UX also a **Result**), with archive diffs of +15/−6 and +18/−9 lines (`b2d0661`, `8dcb845`). QUALITY and TECH renamed and rewrote every field, so extensively that Git records each archive commit as a deleted and a new file (+202/−191 and +242/−229 lines, `3b01a0f`, `19e9490`).
-  - The KP_Code improvement standard used for this report defers to "the project's existing archive policy" and forbids inventing an archive path.
-- **Current workflow:** Archiving is a manual step decided anew in each cycle. The target path, the date in the file name and the finalized format are chosen per commit, and earlier choices have to be reconstructed from the files already in `docs/archive/`.
-- **Proposed improvement:** State the existing convention once, in a few lines of the `Task completion` section of `AGENTS.md`. The lines cover the archive directory per record type and which date the file name carries. They also cover the minimum finalization: document status and completion date, per-item status and result, and the original analysis kept unchanged, as in the UI and UX reports. Finally, they state that archiving happens only after every item is resolved and only on the owner's request.
-- **Expected practical value:** The next archive, including this report's, follows a written rule instead of being reconstructed, which avoids follow-up rename and terminology commits. The lighter finalization shape avoids rewriting a whole report.
-- **Implementation scope:** A few lines in `AGENTS.md`, consistent with its simplification in `1301c29`. Do not rename, reformat or re-date files already in `docs/archive/`, and do not create a new documentation file. If IMP-WORKFLOW-02 is not implemented first, `docs/archive/` may be added to the README project trees.
-- **Acceptance criteria:** `AGENTS.md` names the archive directories, the file-name pattern and the meaning of its date, the minimum finalization fields and the preconditions for archiving. The directory and naming rules match all six existing archived files without renaming any of them, and no existing archived file is reformatted. No new documentation file is created.
+- **Status:** COMPLETED — implemented and verified.
+- **Result:** Scope revised by the project owner from documenting the archive convention to a completion-record standard. Added a `Completed improvement records` section to `AGENTS.md` that defines the Status, Result, Verification, Impact and Effort format, preserves the original identifier, title and ratings, and leaves open proposals unchanged; removed the redundant status-update rule from `Task completion`. The archive workflow and archived files remain unchanged.
+- **Verification:** Documentation review of the section against the approved wording, of `AGENTS.md` for conflicting completion rules and intact safeguards, and of this report for unchanged IMP-WORKFLOW-01, 02, 03 and 05; `git diff --check` and full diff review passed. Tests and build not run (documentation-only change).
 - **Impact:** Medium
 - **Effort:** Small
 
