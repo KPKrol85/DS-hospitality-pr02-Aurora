@@ -56,19 +56,11 @@ Confirmed defects observed during the analysis are not presented as improvements
 - **Impact:** Medium
 - **Effort:** Small
 
-### IMP-WORKFLOW-05 — State the changelog's inclusion, ordering and release rules in the changelog itself
+### IMP-WORKFLOW-05 — Adopt the standard changelog entry policy
 
-- **Affected workflow:** Changelog maintenance after implementation and at manual deployment.
-- **Evidence:**
-  - `AGENTS.md:41` admits entries "only when the change meets the project's established changelog criteria", but the only criterion in the repository is `docs/CHANGELOG.md:3` ("All significant changes ...").
-  - `docs/CHANGELOG.md:86-92` (`Testing`) lists the newest entry first, with IMP-QUALITY-04 at `:86` above the original entries at `:90-92`. `Added` (`:9-26`), `Changed` (`:30-49`), `Fixed` (`:53-60`) and `Build and Tooling` (`:75-82`) append the newest entry last.
-  - Every entry since the first commit sits under `[Unreleased]` (`docs/CHANGELOG.md:5`). The repository has no tags, and `package.json:3` has stayed at `1.0.0` while the Service Worker cache reached `aurora-1.28`.
-  - `README.md:17` and `:324` state that the repository contains no information identifying which revision the live site was published from. Deployment is manual (`docs/pipeline-notes.md:187`).
-- **Current workflow:** Whether a change gets an entry, and where in its section, is decided per task from the existing entries. Manual deployments leave no trace in the repository, so the changelog cannot tell which entries are live, even though every shipped bundle change already carries its own Service Worker `VERSION`.
-- **Proposed improvement:** Add a short rules block under the title of `docs/CHANGELOG.md` that covers three points: what qualifies for an entry, the order of entries within a section, and how `[Unreleased]` is closed when the owner publishes `dist/`. On deployment, the entries move into a dated section identified by the deployed Service Worker `VERSION`.
-- **Expected practical value:** The criteria that `AGENTS.md` refers to can be checked within the repository. Entry order no longer depends on which section an author imitates. The changelog records which changes are live, closing the gap the README itself describes.
-- **Implementation scope:** `docs/CHANGELOG.md` only: the rules block, plus one reordering of the `Testing` section if it does not match the stated order. Existing entries are otherwise unchanged, and no release section is created until the owner's next deployment. Deployment stays manual; no tags or release automation are introduced. If the global KP_Code CHANGELOG standard already defines these criteria, the block references that standard instead of restating it; any refinement of the global standard itself is a separate change outside this repository.
-- **Acceptance criteria:** `docs/CHANGELOG.md` states the inclusion criteria, the in-section order and the release-closing rule, so that `AGENTS.md:41` can be followed without information from outside the repository. Every section follows the stated order. After the next manual deployment, the entries it shipped sit under a dated section that names the deployed `VERSION`, and `[Unreleased]` holds only changes that are not yet deployed.
+- **Status:** COMPLETED — implemented and verified.
+- **Result:** Scope revised by the project owner from changelog inclusion, ordering and release rules to adoption of the standard KP_Code changelog entry policy. Added the Eternal Rest introduction and `Entry policy` section to `docs/CHANGELOG.md`, adapted only to the Aurora Travel project name, directly before `[Unreleased]`. The existing `[Unreleased]` section, categories and entries remain unchanged; no ordering, release, deployment-recording or versioning rules were introduced, and `AGENTS.md` is unchanged.
+- **Verification:** Documentation review of the policy against the approved text and the Eternal Rest changelog, of its position before `[Unreleased]`, and of the diff for unchanged history, `AGENTS.md` and other improvement records; `git diff --check` and full diff review passed. Tests and build not run (documentation-only change).
 - **Impact:** Medium
 - **Effort:** Small
 
