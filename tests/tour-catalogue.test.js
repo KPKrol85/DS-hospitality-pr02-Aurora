@@ -37,8 +37,9 @@ function escapeText(text) {
 
 function listingPage() {
   return page(
-    offers.flatMap(({ id, anchor, name, days, priceFrom }) => [
+    offers.flatMap(({ id, region, anchor, name, days, priceFrom }) => [
       `<article class="tour-card tour-card--detailed" id="${anchor}" data-days="${days}" data-price="${priceFrom.replace(/\D/g, "")}">`,
+      `  <p class="tour-card__region type-place-label">${escapeText(region)}</p>`,
       `  <h2 class="tour-card__title">${escapeText(name)}</h2>`,
       '  <ul class="tour-card__meta">',
       `    <li>${days} dni</li>`,
@@ -169,8 +170,26 @@ describe("check-tour-catalogue.js", () => {
     ]);
   });
 
-  it("compares decoded and normalized home region text while listing labels remain optional", () => {
+  it("reports a listing region label that differs from its canonical offer", () => {
+    edit("tours.html", ">Ameryka Południowa • Patagonia</p>", ">Ameryka Północna • Patagonia</p>");
+    const { status, issues } = runChecker();
+    expect(status).toBe(1);
+    expect(issues).toEqual([
+      `tours.html:${lineOf("tours.html", "Ameryka Północna • Patagonia")} [patagonia, card #patagonia] visible region is "Ameryka Północna • Patagonia", expected "Ameryka Południowa • Patagonia" (from region)`,
+    ]);
+  });
+
+  it.each([0, 2])("requires exactly one listing region label, found %i", (count) => {
+    const label = '<p class="tour-card__region type-place-label">Ameryka Południowa • Patagonia</p>';
+    edit("tours.html", label, label.repeat(count));
+    const { status, issues } = runChecker();
+    expect(status).toBe(1);
+    expect(issues).toEqual([`tours.html:${lineOf("tours.html", 'id="patagonia"')} [patagonia, card #patagonia] expected exactly one listing region label (p.tour-card__region), found ${count}`]);
+  });
+
+  it("compares decoded and normalized region text on the listing and the home page", () => {
     edit("index.html", ">Azja • Japonia</p>", ">  Azja&nbsp;&#8226; <span>Japonia</span> </p>");
+    edit("tours.html", ">Ameryka Południowa • Patagonia</p>", ">Ameryka&nbsp;Południowa &#x2022;\n    <span>Patagonia</span></p>");
     const { status, stderr } = runChecker();
     expect(status, stderr).toBe(0);
   });

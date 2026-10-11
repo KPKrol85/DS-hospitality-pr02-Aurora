@@ -199,6 +199,23 @@ function loadCatalogue() {
   });
 }
 
+// The listing cards and the home featured offers each show the catalogue region in exactly one
+// place label. Its text is compared with the catalogue, not with the card's data-region filter value.
+function checkRegionLabel(card, tour, subject, locate, page) {
+  const regionLabels = findElements(card.inner, "p", card.innerIndex).filter((element) => hasClass(element, "tour-card__region"));
+
+  if (regionLabels.length !== 1) {
+    addIssue(locate(card.index), subject, `expected exactly one ${page} region label (p.tour-card__region), found ${regionLabels.length}`);
+    return;
+  }
+
+  const [regionLabel] = regionLabels;
+  const region = toText(regionLabel.inner);
+  if (region !== tour.region) {
+    addIssue(locate(regionLabel.index), subject, `visible region is "${region}", expected "${tour.region}" (from region)`);
+  }
+}
+
 function checkCard(card, tour, subject, locate) {
   const title = findElements(card.inner, "h[1-6]", card.innerIndex).find((element) => hasClass(element, "tour-card__title"));
   const meta = findElements(card.inner, "ul", card.innerIndex).find((element) => hasClass(element, "tour-card__meta"));
@@ -223,6 +240,8 @@ function checkCard(card, tour, subject, locate) {
       addIssue(locate((element || card).index), subject, `${field} is ${found}, expected "${expected}" (from ${source})`);
     }
   }
+
+  checkRegionLabel(card, tour, subject, locate, "listing");
 }
 
 function checkListing(tours) {
@@ -329,17 +348,7 @@ function checkFeaturedCard(card, tour, subject, locate) {
     addIssue(locate((title || card).index), subject, `name is ${title ? `"${name}"` : "missing"}, expected "${tour.name}" (from name)`);
   }
 
-  // Region labels are required only for home featured offers in stage 05A.
-  const regionLabels = findElements(card.inner, "p", card.innerIndex).filter((element) => hasClass(element, "tour-card__region"));
-  if (regionLabels.length !== 1) {
-    addIssue(locate(card.index), subject, `expected exactly one home region label (p.tour-card__region), found ${regionLabels.length}`);
-  } else {
-    const [regionLabel] = regionLabels;
-    const region = toText(regionLabel.inner);
-    if (region !== tour.region) {
-      addIssue(locate(regionLabel.index), subject, `visible region is "${region}", expected "${tour.region}" (from region)`);
-    }
-  }
+  checkRegionLabel(card, tour, subject, locate, "home");
 
   // Every numeric duration in the visible card text must state the catalogue days.
   for (const match of toTextInPlace(card.inner).matchAll(durationPattern)) {

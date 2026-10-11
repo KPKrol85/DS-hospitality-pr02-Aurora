@@ -41,11 +41,48 @@
   gap: var(--space-4);
   min-height: 300px;
 }
-.tour-card--detailed .tour-card__body {
-  grid-template-rows: auto auto auto 1fr auto;
+/* Listing entries: the photograph keeps its uncropped frame, so the Aurora mark in its corner stays
+   visible, and region, title, facts, description and actions follow at the body's fixed gap. From
+   760px the photograph is the left column (components.css); the text block centres against it and,
+   when it is the taller of the two, sets the row height with the photograph at the top. */
+.tour-card--detailed .tour-card__media {
+  aspect-ratio: auto;
 }
+.tour-card--detailed .tour-card__media img {
+  height: auto;
+}
+.tour-card--detailed .tour-card__body {
+  align-content: center;
+  min-width: 0;
+}
+.tour-card--detailed .tour-card__region {
+  color: var(--muted);
+  text-wrap: balance;
+}
+.tour-card--detailed .tour-card__title,
+.tour-card--detailed .tour-card__meta {
+  margin: 0;
+}
+/* The lead offer keeps the display role on its title. */
+.tour-card--detailed:not(.tour-card--lead) .tour-card__title {
+  font-size: var(--fs-6);
+  letter-spacing: var(--ls-snug);
+  text-wrap: balance;
+}
+.tour-card--detailed .tour-card__text {
+  min-height: 0;
+  max-width: 62ch;
+  text-wrap: pretty;
+}
+/* The actions keep their labels on one line and move below each other only when the column is too
+   narrow for the pair. */
 .tour-card--detailed .tour-card__actions {
-  align-self: end;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+.tour-card--detailed .tour-card__actions .btn {
+  flex: 0 1 auto;
+  max-width: none;
 }
 /* Featured offers on the home page link to these cards (tours.html#<id>). Until the page has loaded,
    the browser may place the card while it still carries part of its 40px reveal offset
@@ -64,6 +101,13 @@
   .tours-grid,
   .offers-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  /* A wider gutter between photograph and text; the 460px photograph column is unchanged. */
+  .tour-card--detailed {
+    column-gap: var(--space-6);
+  }
+  .tour-card--detailed .tour-card__body {
+    padding-inline-end: var(--space-4);
   }
 }
 /* .data-state: loading and unavailable-data panel of the JSON-driven views (tour.html, gallery.html) */
