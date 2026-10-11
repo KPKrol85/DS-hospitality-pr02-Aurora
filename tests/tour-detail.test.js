@@ -57,7 +57,7 @@ function candidates(path, format) {
 
 // The main image and the thumbnails render at different widths, so each context declares its own
 // slot on every source and the img. A <source> without its own sizes would use 100vw.
-const mainImageSizes = "(min-width: 1280px) 520px, (min-width: 900px) 43vw, calc(92vw - 48px)";
+const mainImageSizes = "(min-width: 1280px) 672px, (min-width: 900px) calc(54vw - 28px), 92vw";
 const thumbnailSizes = "(min-width: 1280px) 375px, (min-width: 700px) 31vw, (min-width: 480px) 46vw, calc(92vw - 48px)";
 
 function sizesOf(picture) {

@@ -130,41 +130,47 @@
 
 /* Subpage: Tour */
 
-.tour-detail {
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-5);
-  margin-bottom: var(--space-8);
-}
+/* The offer reads as a travel dossier on the page's paper: no panel of its own, only a hairline under
+   the header band, with the photograph and summary, the description and the gallery spaced below. */
 .tour-detail__header {
-  margin-bottom: var(--space-4);
+  display: grid;
+  justify-items: start;
+  row-gap: var(--space-3);
+  padding-bottom: var(--space-6);
+  margin-bottom: var(--space-7);
+  border-bottom: 1px solid var(--border);
 }
 .tour-detail__label {
   color: var(--muted);
-  margin-bottom: var(--space-1);
 }
 .tour-detail__title {
-  margin: var(--space-6) 0;
+  margin: 0;
 }
 .tour-detail__meta {
-  margin: var(--space-2) 0;
+  margin: 0;
   color: var(--muted);
+}
+.tour-detail__header .btn {
+  margin-top: var(--space-3);
 }
 .tour-detail__hero {
   display: grid;
-  gap: var(--space-4);
-  margin-bottom: var(--space-5);
+  gap: var(--space-5);
+  margin-bottom: var(--space-7);
 }
+/* The photograph keeps its uncropped frame, so the Aurora mark in its corner stays visible. Without
+   an offer (the static not-found content) the picture stays empty and takes no space. */
 .tour-detail__image {
   border-radius: var(--radius-lg);
   overflow: hidden;
-  aspect-ratio: 4 / 3;
+}
+.tour-detail__image:empty {
+  display: none;
 }
 .tour-detail__image img {
   width: 100%;
-  height: 100%;
+  height: auto;
   display: block;
-  object-fit: cover;
 }
 .tour-detail__summary {
   line-height: var(--lh-normal);
@@ -174,6 +180,9 @@
 .tour-detail__summary p:first-of-type {
   max-width: 60ch;
   color: var(--text);
+}
+.tour-detail__summary p {
+  text-wrap: pretty;
 }
 .tour-detail__summary p + p {
   margin-top: var(--space-6);
@@ -273,9 +282,25 @@
   }
 }
 @media (min-width: 900px) {
+  /* Region, title and facts stack on the left; the enquiry action closes the band on the right, level
+     with the facts line. */
+  .tour-detail__header {
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: var(--space-7);
+  }
+  .tour-detail__header > :not(.btn) {
+    grid-column: 1;
+  }
+  .tour-detail__header .btn {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    align-self: end;
+    margin-top: 0;
+  }
+  /* The photograph is the wider, 7/12 column, the summary the narrower one beside it. */
   .tour-detail__hero {
-    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.4fr);
-    gap: var(--space-6);
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: var(--space-7);
     align-items: start;
   }
   .tour-gallery {

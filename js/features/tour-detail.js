@@ -2,11 +2,13 @@ import { createCataloguePicture } from "./catalogue-picture.js";
 import { getLightboxTriggerLabel } from "./lightbox.js";
 
 // Rendered widths inside the .tour-detail article (css/modules/subpages.css): the .container is
-// about 92vw wide up to 1200px, and the article's padding takes 48px of it.
-// Main image: the first of the 1.2fr / 1.4fr hero columns from 900px (at most 517px), full width below.
-const TOUR_MAIN_IMAGE_SIZES = "(min-width: 1280px) 520px, (min-width: 900px) 43vw, calc(92vw - 48px)";
-// Thumbnails: three columns from 900px (at most 373px); below, auto-fit columns of at least 180px
-// give three columns from about 700px, two from about 480px and one below.
+// about 92vw wide up to 1200px.
+// Main image: the 7fr of the 7fr / 5fr hero columns, 48px apart, from 900px (at most 672px), the full
+// container below.
+const TOUR_MAIN_IMAGE_SIZES = "(min-width: 1280px) 672px, (min-width: 900px) calc(54vw - 28px), 92vw";
+// Thumbnails, still measured inside the former 48px article padding: three columns from 900px (at
+// most 373px); below, auto-fit columns of at least 180px give three columns from about 700px, two
+// from about 480px and one below.
 const TOUR_THUMBNAIL_SIZES = "(min-width: 1280px) 375px, (min-width: 700px) 31vw, (min-width: 480px) 46vw, calc(92vw - 48px)";
 
 const TOUR_STATE_MESSAGES = {
