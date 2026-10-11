@@ -225,35 +225,9 @@ Priorities express design value and dependency, not defect severity. P1 items es
 
 ### IMP-DESIGN-05 — Present offers as editorial destination entries on the home page and the listing
 
-- **Status:** Proposed
-- **Priority:** P1
-- **Affected area:** The `.cards-grid` featured offers on `index.html`, the `.tour-card--detailed` entries on `tours.html` and the shared `.tour-card` styles.
-- **Evidence:** Source: equal-width `.cards-grid` columns (two from 768 px, three from 1280 px); a padded `.tour-card` with an inner rounded image; `.tour-card--detailed` at 460 px plus 1fr; titles at `--fs-3`. `tours.json` provides a region for every offer, but the listing cards do not show it. The listing cards carry `id`, `data-type`, `data-region`, `data-days` and `data-price`. Runtime: home cards 384 × 507 px; listing entries 1200 × 371 px with a 460 × 345 px image, a 16.8 px title and a 138 px empty gap before the actions. Visual: six identical listing entries and three identical home cards.
-- **Current state:** Offers are uniform cards in which title, place and facts have less presence than surrounding section headings, and no offer leads.
-- **Design judgment:** The catalogue is the core content but reads like a product grid. The space in the listing entries is unused, while the facts that differentiate offers are small.
-- **Proposed improvement:** Create one offer-entry composition shared by both pages:
-  - the image as primary element;
-  - the place label (region line);
-  - a prominent title;
-  - a facts strip (days, price-from);
-  - one descriptive line and the existing actions.
-
-  The home section uses a lead entry plus two secondary entries; which offer leads is an owner decision. The listing uses consistent editorial rows; alternating the media side at 1024 px and wider is optional and must not change DOM order. Card chrome follows IMP-DESIGN-01.
-
-- **Expected value:** Offers become the visual centre of the journey, comparison is easier, and the destination story carries from the home page to the listing.
-- **Implementation scope:**
-  - Markup and styles of the offer entries on the two pages.
-  - Preserve listing `id`s and `scroll-margin-top`, all `data-*` attributes, filtering, sorting, the empty-result state, the result counter, enquiry and detail links, heading levels (`h3` on the home page, `h2` on the listing), and responsive `sizes` updated with the layout.
-  - The titles and "N dni" durations checked by `check:tour-catalogue` stay in sync. If region labels are added to the static cards, the checker is extended to cover them in the same change.
-  - Slices: shared entry composition; home lead and secondary; listing rows.
-- **Dependencies:** IMP-DESIGN-01, IMP-DESIGN-02; IMP-DESIGN-03 for final crops (structure may be built with current images, final approval only with approved assets).
-- **Acceptance criteria:**
-  - At 390, 768, 1024 and 1440 px every offer entry shows image, place label, title, days and price in that visual order, with the title in a larger role than body text.
-  - The home page has exactly one lead entry.
-  - The listing has no unused gap larger than the entry's internal spacing scale between facts and actions.
-  - Filters, sorting, the empty state, the counter and anchor landings (`tours.html#tokio`, `#malediwy`, `#nyc`) behave as before.
-  - `check:tour-catalogue`, `tests/tours-filters.test.js` and `tests/responsive-images.test.js` pass.
-  - Both themes and keyboard order are verified.
+- **Status:** COMPLETED — implemented and verified (2026-10-11).
+- **Result:** Redesigned the home featured offers with Malediwy as the lead destination and two secondary entries, and transformed the six listing cards into responsive editorial rows with uncropped photography, canonical region labels, prominent titles, travel facts and compact action spacing. Preserved filtering, sorting, anchors, links, heading semantics and typography contracts. Updated the Service Worker cache to `aurora-1.38`.
+- **Verification:** Focused Vitest runs passed 66/66 tests for 05A and 69/69 for 05B; catalogue validation and clean production builds passed for both stages. Owner visual QA passed for both 05A and 05B. Full regression suite was not run.
 - **Impact:** High
 - **Effort:** Large
 
