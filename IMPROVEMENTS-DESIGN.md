@@ -206,36 +206,13 @@ Priorities express design value and dependency, not defect severity. P1 items es
 - **Impact:** High
 - **Effort:** Medium
 
-### IMP-DESIGN-03 — Establish a destination-true photography system without burned-in marks
+### IMP-DESIGN-03 — Image metadata and accessibility consistency
 
-- **Status:** Proposed
-- **Priority:** P1
-- **Affected area:** Photography in `assets/img-src/` and its generated output in `assets/img/` (hero, tour-index, tours, about, contact); image roles on `index.html`, `tours.html`, `tour.html`, `gallery.html`, `about.html` and `contact.html`.
-- **Evidence:** Source and Visual: the corner badge is present in all 42 production photographs and in the sampled sources; crop ratios are 16:11 and 16:12 (hero), 4:3 (cards, tour main image, about) and 400:260 (gallery). Visual: the badge appears as a stray teal dot in hero, card and thumbnail corners. The set mixes saturated HDR resort imagery with generic office stock (about meeting, contact headset agent) and a New York image showing the former World Trade Center towers; the hero image is not linked to a catalogue destination. Source: `scripts/build-images.js` generates four widths in AVIF, WebP and JPG per image (`README.md`).
-- **Current state:** Photography is a heterogeneous stock-like collection, stamped with the logo, with role-specific ratios but no defined focal points or grading.
-- **Design judgment:** A raster stamp reads as a stock watermark and undermines a premium editorial presentation. Brand presence should come from the layout, not from marks inside photographs. Generic office imagery contradicts the boutique-concierge narrative, and inconsistent grading prevents the pages from feeling curated.
-- **Proposed improvement:** Write and adopt a photography direction covering:
-  - natural light and one consistent warm, restrained grade;
-  - destination-true subjects for each offer (an establishing place image, an experience image and a detail);
-  - people only where authentic or clearly representative;
-  - no burned-in marks;
-  - defined roles with ratios and focal points: a hero landscape with a separate portrait mobile crop, offer entries, the tour lead image, gallery lead and supporting tiles, and about/contact;
-  - an asset register (role, ratio, focal point, Polish alt, caption, source and licence).
-
-  Image sourcing itself is a later authorized task.
-- **Expected value:** A curated, credible visual story and a coherent atmosphere across pages. Clean images allow the compositions in IMP-DESIGN-04 to 07 to use photography as the lead element.
-- **Implementation scope:** Replacement masters in `assets/img-src/`, regenerated with `npm run build:images`. The `gallery-data.json` and `tours.json` schemas stay unchanged, and base names are kept where possible. `<picture>` markup may gain art-directed `media` sources for the hero. The asset-integrity and responsive-image checks stay green. Slices: direction brief; hero and offer images; tour galleries per destination; about/contact.
-- **Dependencies:** P-3 and P-4; owner approval of sourcing and rights.
-- **Acceptance criteria:**
-  - No production photograph contains a burned-in mark (visual review of every image in every role crop).
-  - Every image has a recorded source and licence.
-  - Each offer's images depict its destination, as confirmed by the owner, and match Polish alt text and captions.
-  - Focal subjects stay inside the visible box at 390, 768, 1440 and 1920 px.
-  - Grading reads as one set when the home, listing and gallery pages are compared side by side in both themes.
-  - Per-variant file sizes stay within the range of the current variants unless the owner accepts a difference.
-  - The asset-integrity check and `tests/responsive-images.test.js` pass.
+- **Status:** COMPLETED — implemented and verified (2026-10-11).
+- **Result:** Redefined by the owner from a photography replacement into a metadata task; the current photographs and the embedded Aurora logo are approved and unchanged. The 36 English gallery captions in `assets/data/gallery-data.json` were translated into Polish without new content (the proper name "Laguna de los Tres" kept), the gallery alt text for `tokio/tokio-02` names the Shibuya crossing instead of a street, and the placeholder `...` alt texts of `maroko/maroko-05` and `maroko/maroko-06` in `assets/data/tours.json` were replaced with descriptions limited to what both data files state. JSON schemas, `base` values, the `maledivy` filter key, HTML, CSS, scripts and the image pipeline are unchanged; the Service Worker does not cache the data files, so `VERSION` stays `aurora-1.34`. The placeholder fallback of the tour-detail lightbox label is now tested with a synthetic record. Unresolved: for 32 of the 36 shared `base` values the two data files describe different subjects (they agree only for `malediwy-01`, `malediwy-02`, `maroko-05` and `tokio-02`), and the `tours.html` card alt texts for `tokio-01`, `new-york-01` and `islandia-01` name a third subject; the correct description cannot be chosen without viewing the photographs.
+- **Verification:** Static checks: both data files parse, no `alt` or `caption` is empty or a placeholder, and no English caption remains apart from proper names; `npm run check:assets` and `npm run check:tour-catalogue` passed; `tests/gallery.test.js` and `tests/asset-integrity.test.js` passed, and `tests/tour-detail.test.js` passed (28/28) after its placeholder assertion was moved to a synthetic record. The photographs were not viewed, so no visual match between images and their text was verified; image sourcing and licensing remain unresolved. The full test suite, the build and browser checks were not run.
 - **Impact:** High
-- **Effort:** Large
+- **Effort:** Small
 
 ### IMP-DESIGN-04 — Re-art-direct the home hero around one dominant photographic anchor
 

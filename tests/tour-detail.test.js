@@ -182,8 +182,15 @@ describe("initTourDetail", () => {
     });
 
     expect(buttons[0].getAttribute("aria-label")).toBe(`Otwórz zdjęcie: ${tour.images[0].alt}`);
-    // maroko-05 has the placeholder alt "...", so its label falls back to the caption.
-    expect(tour.images[4].alt).toBe("...");
+  });
+
+  it("labels a gallery button with the caption when the alt text is a placeholder", async () => {
+    const tour = structuredClone(tours.find((entry) => entry.id === "maroko"));
+    tour.images[4].alt = "...";
+
+    await renderTour(`/tour.html?id=${tour.id}`, [tour]);
+
+    const buttons = Array.from(field("gallery").querySelectorAll(":scope > button"));
     expect(buttons[4].getAttribute("aria-label")).toBe(`Otwórz zdjęcie: ${tour.images[4].caption}`);
   });
 
