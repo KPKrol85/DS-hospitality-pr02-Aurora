@@ -17,8 +17,12 @@ const pageSlots = [
   // .hero__grid: the 1.3fr column of 1fr / 1.3fr from 1280px (image at most 651px), 1.15fr of
   // 1fr / 1.15fr from 1024px, full width below.
   ["index.html", ".hero__media", 1, "(min-width: 1280px) 660px, (min-width: 1024px) 49vw, 92vw"],
-  // .cards-grid: three columns from 1280px (at most 358px), two from 768px, one below.
-  ["index.html", ".cards-grid picture", 3, "(min-width: 1280px) 360px, (min-width: 768px) 46vw, 92vw"],
+  // Home: container C = min(1200px, 100vw - 2 * clamp(16px, 4vw, 48px)). Card borders take 2px.
+  // Featured image: C - 2px below 1024px; (C - 24px gutter) / 2 - 2px above it.
+  ["index.html", ".cards-grid .tour-card--featured picture", 1, "(min-width: 1296px) 586px, (min-width: 1200px) calc(50vw - 62px), (min-width: 1024px) calc(46vw - 14px), (min-width: 400px) calc(92vw - 2px), calc(100vw - 34px)"],
+  // Secondary image: full card below 640px; 36% of its inner width above it, in a half-grid
+  // column from 1024px. Container padding reaches 48px at 1200px; C reaches 1200px at 1296px.
+  ["index.html", ".cards-grid .tour-card:not(.tour-card--featured) picture", 2, "(min-width: 1296px) 210.96px, (min-width: 1200px) calc(18vw - 22.32px), (min-width: 1024px) calc(16.56vw - 5.04px), (min-width: 640px) calc(33.12vw - 0.72px), (min-width: 400px) calc(92vw - 2px), calc(100vw - 34px)"],
   // .tour-card--detailed: a 460px media column from 1024px and a 360px one from 760px.
   ["tours.html", ".tour-list picture", 6, "(min-width: 1024px) 460px, (min-width: 760px) 360px, 92vw"],
   // .about-grid: the 1fr column of 1.6fr / 1fr from 760px (image at most 415px), full width below.

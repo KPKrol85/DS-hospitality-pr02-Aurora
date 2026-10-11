@@ -12,10 +12,10 @@ const checker = resolve(import.meta.dirname, "../scripts/check-tour-catalogue.js
 // two anchors differ from the catalogue IDs, so a featured card reaches its offer only through
 // the listing card it links to. Patagonia is listed but not featured.
 const offers = [
-  { id: "tokio-kyoto", anchor: "tokio", name: "Tokio & Kyoto Private Edition", days: 9, priceFrom: "od 24 000 PLN / os." },
-  { id: "malediwy", anchor: "malediwy", name: "Malediwy Lagoon Escape", days: 7, priceFrom: "od 18 000 PLN / os." },
-  { id: "nowy-jork", anchor: "nyc", name: "New York City Break Platinum", days: 5, priceFrom: "od 15 000 PLN / os." },
-  { id: "patagonia", anchor: "patagonia", name: "Patagonia Signature Expedition", days: 10, priceFrom: "od 19 500 PLN / os." },
+  { id: "tokio-kyoto", region: "Azja • Japonia", anchor: "tokio", name: "Tokio & Kyoto Private Edition", days: 9, priceFrom: "od 24 000 PLN / os." },
+  { id: "malediwy", region: "Azja • Malediwy", anchor: "malediwy", name: "Malediwy Lagoon Escape", days: 7, priceFrom: "od 18 000 PLN / os." },
+  { id: "nowy-jork", region: "Ameryka Północna • USA", anchor: "nyc", name: "New York City Break Platinum", days: 5, priceFrom: "od 15 000 PLN / os." },
+  { id: "patagonia", region: "Ameryka Południowa • Patagonia", anchor: "patagonia", name: "Patagonia Signature Expedition", days: 10, priceFrom: "od 19 500 PLN / os." },
 ];
 
 // The featured offer cards of index.html. The Tokio card states its duration only in words.
@@ -68,6 +68,7 @@ function homePage() {
       '<article class="tour-card reveal">',
       '  <img src="assets/img/tour-index/tour.jpg" alt="" />',
       '  <div class="tour-card__body">',
+      `    <p class="tour-card__region type-place-label">${escapeText(offers.find((offer) => offer.anchor === anchor).region)}</p>`,
       `    <h3 class="tour-card__title">${title}</h3>`,
       `    <p class="tour-card__text type-small">${text}</p>`,
       `    <a class="btn btn--text" href="tours.html#${anchor}">Poznaj szczegóły</a>`,
@@ -147,6 +148,40 @@ describe("check-tour-catalogue.js", () => {
     expect(issues).toEqual([
       `index.html:${lineOf("index.html", "New York City Break</h3>")} [nowy-jork, featured card -> tours.html#nyc] name is "New York City Break", expected "New York City Break Platinum" (from name)`,
     ]);
+  });
+
+  it("reports a home region label that differs from its canonical offer", () => {
+    edit("index.html", ">Azja • Malediwy</p>", ">Europa • Malediwy</p>");
+    const { status, issues } = runChecker();
+    expect(status).toBe(1);
+    expect(issues).toEqual([
+      `index.html:${lineOf("index.html", "Europa • Malediwy")} [malediwy, featured card -> tours.html#malediwy] visible region is "Europa • Malediwy", expected "Azja • Malediwy" (from region)`,
+    ]);
+  });
+
+  it.each([0, 2])("requires exactly one home region label, found %i", (count) => {
+    const label = '<p class="tour-card__region type-place-label">Azja • Japonia</p>';
+    edit("index.html", label, label.repeat(count));
+    const { status, issues } = runChecker();
+    expect(status).toBe(1);
+    expect(issues).toEqual([
+      `index.html:${lineOf("index.html", "<!-- item 1 -->") + 1} [tokio-kyoto, featured card -> tours.html#tokio] expected exactly one home region label (p.tour-card__region), found ${count}`,
+    ]);
+  });
+
+  it("compares decoded and normalized home region text while listing labels remain optional", () => {
+    edit("index.html", ">Azja • Japonia</p>", ">  Azja&nbsp;&#8226; <span>Japonia</span> </p>");
+    const { status, stderr } = runChecker();
+    expect(status, stderr).toBe(0);
+  });
+
+  it("rejects missing canonical region data", () => {
+    const records = JSON.parse(read("assets/data/tours.json"));
+    delete records[0].region;
+    write("assets/data/tours.json", JSON.stringify(records));
+    const { status, issues } = runChecker();
+    expect(status).toBe(1);
+    expect(issues).toEqual(["assets/data/tours.json [record 1, tokio-kyoto] region must be a non-empty string"]);
   });
 
   it("reports each numeric duration in a featured card that differs from the catalogue days", () => {

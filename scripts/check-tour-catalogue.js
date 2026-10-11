@@ -168,7 +168,7 @@ function loadCatalogue() {
   const seenIds = new Set();
 
   return records.map((record, position) => {
-    const { id, name, days, priceFrom } = record ?? {};
+    const { id, name, region, days, priceFrom } = record ?? {};
     const subject = typeof id === "string" && id ? `record ${position + 1}, ${id}` : `record ${position + 1}`;
     const priceAmount = typeof priceFrom === "string" ? parsePriceAmount(priceFrom) : null;
 
@@ -183,6 +183,10 @@ function loadCatalogue() {
       addIssue(catalogueFile, subject, "name must be a non-empty string");
     }
 
+    if (typeof region !== "string" || !collapseWhitespace(region)) {
+      addIssue(catalogueFile, subject, "region must be a non-empty string");
+    }
+
     if (!Number.isInteger(days) || days < 1) {
       addIssue(catalogueFile, subject, `days must be a positive integer, found ${JSON.stringify(days)}`);
     }
@@ -191,7 +195,7 @@ function loadCatalogue() {
       addIssue(catalogueFile, subject, `priceFrom must state a numeric amount, found ${JSON.stringify(priceFrom)}`);
     }
 
-    return { id, name: collapseWhitespace(String(name)), days, priceFrom: collapseWhitespace(String(priceFrom)), priceAmount };
+    return { id, name: collapseWhitespace(String(name)), region: collapseWhitespace(String(region)), days, priceFrom: collapseWhitespace(String(priceFrom)), priceAmount };
   });
 }
 
@@ -323,6 +327,18 @@ function checkFeaturedCard(card, tour, subject, locate) {
 
   if (name !== tour.name) {
     addIssue(locate((title || card).index), subject, `name is ${title ? `"${name}"` : "missing"}, expected "${tour.name}" (from name)`);
+  }
+
+  // Region labels are required only for home featured offers in stage 05A.
+  const regionLabels = findElements(card.inner, "p", card.innerIndex).filter((element) => hasClass(element, "tour-card__region"));
+  if (regionLabels.length !== 1) {
+    addIssue(locate(card.index), subject, `expected exactly one home region label (p.tour-card__region), found ${regionLabels.length}`);
+  } else {
+    const [regionLabel] = regionLabels;
+    const region = toText(regionLabel.inner);
+    if (region !== tour.region) {
+      addIssue(locate(regionLabel.index), subject, `visible region is "${region}", expected "${tour.region}" (from region)`);
+    }
   }
 
   // Every numeric duration in the visible card text must state the catalogue days.

@@ -139,15 +139,11 @@
   display: grid;
   gap: var(--space-4);
 }
-.cards-grid,
 .tour-list {
   display: grid;
   gap: var(--space-5);
 }
 @media (min-width: 768px) {
-  .cards-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
   .features-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -157,8 +153,93 @@
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
-@media (min-width: 1280px) {
+
+/* Home featured offers: one full-frame destination and two compact editorial entries.
+   Every rule stays beneath .cards-grid; the listing keeps its own composition and title role. */
+.cards-grid {
+  display: grid;
+  gap: var(--space-5);
+  align-items: start;
+}
+.cards-grid .tour-card {
+  gap: 0;
+  padding: 0;
+  min-width: 0;
+  align-content: start;
+}
+.cards-grid .tour-card picture {
+  aspect-ratio: auto;
+  border-radius: calc(var(--radius-lg) - 1px) calc(var(--radius-lg) - 1px) 0 0;
+}
+.cards-grid .tour-card picture img {
+  height: auto;
+}
+.cards-grid .tour-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+  padding: var(--space-4);
+}
+.cards-grid .tour-card__region {
+  color: var(--muted);
+}
+.cards-grid .tour-card .tour-card__title {
+  margin: 0;
+  font-size: var(--fs-5);
+  letter-spacing: var(--ls-snug);
+  text-wrap: balance;
+}
+.cards-grid .tour-card__meta {
+  gap: var(--space-1);
+  margin: 0;
+}
+.cards-grid .tour-card__meta li + li::before {
+  margin-inline: var(--space-1);
+}
+.cards-grid .tour-card__text {
+  min-height: 0;
+  margin: 0;
+  text-wrap: pretty;
+}
+.cards-grid .tour-card .btn--text {
+  align-self: flex-start;
+  margin: 0;
+}
+.cards-grid .tour-card--featured .tour-card__body {
+  gap: var(--space-3);
+  padding: var(--space-5);
+}
+.cards-grid .tour-card--featured .tour-card__title {
+  max-width: 18ch;
+  font-size: var(--fs-7);
+  line-height: var(--lh-tight);
+}
+@media (min-width: 640px) {
+  .cards-grid .tour-card:not(.tour-card--featured) {
+    grid-template-columns: minmax(0, 36fr) minmax(0, 64fr);
+    align-items: center;
+    /* The square-cornered photograph can reach the card's rounded corners near 1024px. */
+    overflow: clip;
+  }
+  .cards-grid .tour-card:not(.tour-card--featured) picture {
+    border-radius: 0;
+  }
+}
+@media (min-width: 1024px) {
   .cards-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    /* Equal rows share any height difference between the lead and the stacked entries, so both
+       columns end on one line instead of leaving the whole gap under the last entry. */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(2, 1fr);
+    align-items: stretch;
+  }
+  .cards-grid .tour-card--featured {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
+  .cards-grid .tour-card:not(.tour-card--featured) {
+    grid-column: 2;
+    align-content: center;
   }
 }
