@@ -217,23 +217,9 @@ Priorities express design value and dependency, not defect severity. P1 items es
 
 ### IMP-DESIGN-04 — Re-art-direct the home hero around one dominant photographic anchor
 
-- **Status:** Proposed
-- **Priority:** P1
-- **Affected area:** The `.hero` section of `index.html` and the hero rules in `css/modules/sections.css`.
-- **Evidence:** Source: `.hero__grid` is a 1.1fr/1fr split from 760 px. `.hero__media` is a rounded framed picture with a hover lift and zoom. `.hero__logo` is a 16% opacity logo shown only between 480 and 759 px. The image is eager with `fetchpriority="high"`. Runtime: image 556 × 417 px at both 1440 and 1920 px; at 390 px it starts at y ≈ 590 px and is 246 px tall. Visual: at 600 px the watermark sits behind the lead text; at 1920 px the next section appears in the first viewport.
-- **Current state:** Copy and image share the hero with similar weight, the photograph is boxed like a card, and mobile shows it last.
-- **Design judgment:** "Świat w zasięgu Twojej podróży" deserves one dominant visual anchor. The current split hero, like many templates, does not establish an image-led brand moment, and the breakpoint-specific watermark adds clutter.
-- **Proposed improvement:** Recompose the hero so the approved photograph is the dominant anchor (a wide or bleeding composition within the section), with title, lead and the two existing actions on a calm paper zone rather than over uncontrolled image areas. Add an optional true place caption in the place-label role, and use art-directed crops per breakpoint, including a mobile crop that brings the image into the first view. The 480–759 px watermark and the non-interactive hover lift are removed.
-- **Expected value:** A distinctive first impression that carries the promise of travel, with clearer hierarchy at every width.
-- **Implementation scope:** Hero markup and styles only. Keep the `h1` → lead → actions → image DOM order, the LCP attributes with updated `sizes` (responsive-image tests), the alt text, reduced-motion behaviour and both themes. Header, navigation and the following sections are out of scope.
-- **Dependencies:** IMP-DESIGN-01, IMP-DESIGN-02, IMP-DESIGN-03 (approved hero image and crops), P-1, P-2.
-- **Acceptance criteria:**
-  - At 390, 768, 1024, 1440 and 1920 px the photograph is the largest element of the hero, and title, lead and both actions remain within the first viewport at 390 × 844 and 1440 × 900.
-  - No hero text sits on photographic pixels unless its rendered contrast measures at least 4.5:1.
-  - The image focal point is visible in every crop.
-  - DOM order and the LCP attributes are unchanged in kind.
-  - No hero element transforms on hover or under reduced motion.
-  - Both themes and 200% zoom show no overlap.
+- **Status:** COMPLETED — implemented; owner browser QA pending (2026-10-11).
+- **Result:** Recomposed the hero around the uncropped 3:2 approved photograph (with its embedded Aurora mark): full container width under the copy below 1024 px, about 53% of the grid from 1024 px and 56% from 1280 px, with the copy on the page background. The copy column fits the H1 in three lines from 1024 px and two from 1280 px (owner follow-up: the first 60–63% split wrapped it into four). Tightened the mobile spacing, removed the `.hero__logo` watermark and the static `scale(1.01)`, and updated `sizes` and its responsive-image contract. Preserved copy, DOM order, CTAs, alt, LCP attributes, typography tokens, themes and reduced motion. SW `aurora-1.36`.
+- **Verification:** H1 line widths computed from Manrope Bold font metrics (about 476 px for two lines at 64 px). The final `npm run build` passed after the `VERSION` bump and `npm run record:sw-bundles`. Vitest, browser, responsive, theme and 200% zoom checks were not run; owner visual acceptance remains pending.
 - **Impact:** High
 - **Effort:** Medium
 

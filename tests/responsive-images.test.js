@@ -14,6 +14,9 @@ const pages = readdirSync(projectRoot)
 // Slots of the static pages. The .container is about 92vw wide up to its 1200px maximum; the
 // column rules are in css/modules/sections.css, components.css and subpages.css.
 const pageSlots = [
+  // .hero__grid: the 1.3fr column of 1fr / 1.3fr from 1280px (image at most 651px), 1.15fr of
+  // 1fr / 1.15fr from 1024px, full width below.
+  ["index.html", ".hero__media", 1, "(min-width: 1280px) 660px, (min-width: 1024px) 49vw, 92vw"],
   // .cards-grid: three columns from 1280px (at most 358px), two from 768px, one below.
   ["index.html", ".cards-grid picture", 3, "(min-width: 1280px) 360px, (min-width: 768px) 46vw, 92vw"],
   // .tour-card--detailed: a 460px media column from 1024px and a 360px one from 760px.

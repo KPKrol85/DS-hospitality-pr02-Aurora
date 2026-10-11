@@ -1,16 +1,21 @@
 /* Hero */
 
+/* The photograph is the anchor: it keeps its full 3:2 frame (the Aurora mark sits in its corner)
+   and stays on the page background apart from the copy. Below 1024px it spans the container under
+   the copy; from 1024px it takes about 53% of the grid and about 56% from 1280px. The copy column
+   keeps the display-hero title to three lines from 1024px and two lines from 1280px (Manrope Bold
+   at 64px needs about 480px for two lines). */
 .hero {
-  padding: var(--space-8) 0;
+  padding: var(--space-6) 0 var(--space-7);
 }
 .hero__grid {
   display: grid;
-  gap: var(--space-6);
+  gap: var(--space-5);
 }
 .hero__content {
   display: grid;
   margin: 0 auto;
-  gap: var(--space-5);
+  gap: var(--space-4);
   text-align: center;
 }
 .hero__content h1 {
@@ -18,7 +23,7 @@
   max-width: 18ch;
 }
 .hero__lead {
-  margin: var(--space-4) auto;
+  margin: 0 auto;
   max-width: 48ch;
   color: var(--text-subtle);
   font-weight: var(--fw-medium);
@@ -28,27 +33,20 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
-  margin: var(--space-5) auto 0;
+  margin: var(--space-2) auto 0;
   align-items: center;
 }
 .hero__actions .btn {
   width: 160px;
 }
-.hero__logo {
-  display: none;
-}
 .hero__media {
-  margin-top: var(--space-2);
   border-radius: var(--radius-lg);
   overflow: hidden;
 }
 .hero__media img {
   width: 100%;
   height: auto;
-  aspect-ratio: 16 / 11;
   display: block;
-  object-fit: cover;
-  transform: scale(1.01);
 }
 @media (min-width: 480px) {
   .hero__content {
@@ -57,42 +55,37 @@
   }
   .hero__content h1 {
     margin: 0;
-    max-width: 18ch;
   }
   .hero__lead {
     margin: 0;
   }
   .hero__actions {
-    display: flex;
-    flex-wrap: wrap;
     justify-content: flex-start;
     gap: var(--space-4);
-    margin: var(--space-5) 0 0;
-  }
-  .hero__logo {
-    display: block;
-    position: absolute;
-    top: 28%;
-    left: 75%;
-    transform: translate(-50%, -50%);
-    opacity: 0.16;
-    filter: grayscale(0.12) saturate(0.9);
-    pointer-events: none;
+    margin: var(--space-2) 0 0;
   }
 }
 @media (min-width: 760px) {
+  .hero {
+    padding: var(--space-8) 0;
+  }
   .hero__grid {
-    grid-template-columns: 1.1fr 1fr;
+    gap: var(--space-6);
+  }
+  .hero__content {
+    gap: var(--space-5);
+  }
+}
+@media (min-width: 1024px) {
+  .hero__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
     align-items: center;
   }
-  .hero__media {
-    margin-top: 0;
-  }
-  .hero__media img {
-    aspect-ratio: 16 / 12;
-  }
-  .hero__logo {
-    display: none;
+}
+@media (min-width: 1280px) {
+  .hero__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
+    gap: var(--space-7);
   }
 }
 
