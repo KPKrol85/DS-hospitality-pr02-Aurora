@@ -233,28 +233,9 @@ Priorities express design value and dependency, not defect severity. P1 items es
 
 ### IMP-DESIGN-06 — Shape the tour detail as a travel dossier with a route-line itinerary
 
-- **Status:** Proposed
-- **Priority:** P2
-- **Affected area:** `tour.html` and the tour-detail rules in `css/modules/subpages.css` and `base.css`.
-- **Evidence:** Source: one elevated `.tour-detail` panel holds the header, enquiry button, main image, summary, `ol.tour-itinerary` (`<strong>Dzień N:</strong>` items), `ul.tour-summary-list` inclusions and the gallery. The sanitizer in `js/features/tour-detail.js` allows `class` only on `UL` and `OL`. `about.html` already draws a route-like `.timeline` with dots and a left rule. Runtime: panel 1200 × 1,981 px at 1440 px; itinerary at 16.8 px; gallery tiles 373 × 243 px. Visual: Islandia detail at 1440 px in the light theme and at 390 px in the dark theme.
-- **Current state:** The richest travel content (day-by-day route, inclusions, gallery) is a plain list inside one large card.
-- **Design judgment:** The itinerary is Aurora's most characteristic content and the natural signature of an atlas identity, yet it has no visual form.
-- **Proposed improvement:** Compose the detail as a dossier:
-  - a header band with place label, display title, facts strip and the enquiry action;
-  - the lead image with the summary;
-  - the itinerary as a route line of numbered day stops, sharing one visual language with the about timeline;
-  - inclusions as a distinct panel;
-  - a gallery with a lead and supporting rhythm;
-  - the page on the paper ground rather than inside one elevated card.
-- **Expected value:** A memorable, scannable offer page that turns planning content into identity and links the about page and the tour pages through one motif.
-- **Implementation scope:** Styles for the existing structure and classes. Keep the sanitizer allowlist unchanged unless a change is separately reviewed, along with the `tours.json` schema, the loading and unavailable states, the enquiry-link contract, the breadcrumb, lightbox behaviour and the heading structure. Update the about `.timeline` only to share the route motif.
-- **Dependencies:** IMP-DESIGN-01, IMP-DESIGN-02; IMP-DESIGN-03 for final gallery images.
-- **Acceptance criteria:**
-  - For all six offers at 390, 768 and 1440 px in both themes, each itinerary day reads as a numbered stop on one continuous route line, and inclusions are visually distinct from the itinerary.
-  - Place, title, days, price and enquiry action are visible together in the header band at 1440 px.
-  - The about timeline and the itinerary share the same motif.
-  - Loading, failure and not-found states render as before.
-  - `tests/tour-detail.test.js` and `tests/lightbox.test.js` pass, and reading order is unchanged.
+- **Status:** COMPLETED — implemented and verified (2026-10-11).
+- **Result:** Rebuilt the tour detail into an editorial travel dossier with a responsive header, an uncropped lead photograph and summary on the page background. Introduced a continuous route-line itinerary sharing its visual motif with the about timeline, a distinct inclusions panel and a responsive editorial gallery with lead and supporting photographs. Preserved catalogue data, sanitization, semantic structure, enquiry links, loading states and lightbox contracts; updated the Service Worker cache to `aurora-1.41`.
+- **Verification:** Focused Vitest runs passed 57/57 tests for 06A, 57/57 for 06B and 58/58 for 06C; clean production builds passed for all three stages. Owner visual QA passed for 06A, 06B and 06C, including responsive layouts and both themes. The full regression suite was not run.
 - **Impact:** Medium
 - **Effort:** Medium
 
