@@ -1,7 +1,7 @@
 {
-  "version": "aurora-1.40",
+  "version": "aurora-1.41",
   "sha256": {
-    "dist/css/style.min.css": "f9e9454a2ef748267e0b416a47c3b134e45b6363f82fa2e85826841501afa117",
-    "dist/js/script.min.js": "74632be290318915025d80ce35e6fc715729262220b883832aa70771ef99b819"
+    "dist/css/style.min.css": "3d6d52f569952f5d1d2549ee8f82bdcef21a321ce72ed7d591d0857c67b3fbfa",
+    "dist/js/script.min.js": "ebbb7610c359ff9d1077c96ecc87ad6492e8887f2ca9a3a65c3a7e895127f943"
   }
 }

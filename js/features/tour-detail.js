@@ -6,10 +6,11 @@ import { getLightboxTriggerLabel } from "./lightbox.js";
 // Main image: the 7fr of the 7fr / 5fr hero columns, 48px apart, from 900px (at most 672px), the full
 // container below.
 const TOUR_MAIN_IMAGE_SIZES = "(min-width: 1280px) 672px, (min-width: 900px) calc(54vw - 28px), 92vw";
-// Thumbnails, still measured inside the former 48px article padding: three columns from 900px (at
-// most 373px); below, auto-fit columns of at least 180px give three columns from about 700px, two
-// from about 480px and one below.
-const TOUR_THUMBNAIL_SIZES = "(min-width: 1280px) 375px, (min-width: 700px) 31vw, (min-width: 480px) 46vw, calc(92vw - 48px)";
+// Gallery, 16px gaps: from 760px three columns, the lead spanning two (at most 795px) and the
+// supporting photographs one (at most 390px); from 480px the lead spans the container and the
+// supporting photographs half of it; one column below.
+const TOUR_GALLERY_LEAD_SIZES = "(min-width: 1280px) 795px, (min-width: 760px) calc(61.33vw - 5px), 92vw";
+const TOUR_GALLERY_SUPPORT_SIZES = "(min-width: 1280px) 390px, (min-width: 760px) calc(30.67vw - 11px), (min-width: 480px) calc(46vw - 8px), 92vw";
 
 const TOUR_STATE_MESSAGES = {
   loading: "Ładowanie szczegółów oferty…",
@@ -113,7 +114,7 @@ function fillTourContent(tour) {
 
   const galleryEl = document.querySelector("[data-tour-gallery]");
   if (galleryEl && tour.images.length > 0) {
-    galleryEl.replaceChildren(...tour.images.map((img) => createGalleryItem(img)));
+    galleryEl.replaceChildren(...tour.images.map((img, index) => createGalleryItem(img, index === 0 ? TOUR_GALLERY_LEAD_SIZES : TOUR_GALLERY_SUPPORT_SIZES)));
   }
 }
 
@@ -147,13 +148,13 @@ function sanitizeTourHtml(html) {
 }
 
 // Gallery thumbnails open the lightbox; the main image reuses createPicture without a button.
-function createGalleryItem(image) {
+function createGalleryItem(image, sizes) {
   const button = document.createElement("button");
   button.type = "button";
   button.className = "tour-gallery__button";
   button.dataset.lightboxTrigger = "";
   button.setAttribute("aria-label", getLightboxTriggerLabel(image.alt, image.caption));
-  button.append(createPicture(image, TOUR_THUMBNAIL_SIZES));
+  button.append(createPicture(image, sizes));
   return button;
 }
 

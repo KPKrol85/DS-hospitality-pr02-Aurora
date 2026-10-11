@@ -55,10 +55,12 @@ function candidates(path, format) {
   return [`${path}-400x260.${format} 400w`, `${path}-800x520.${format} 800w`, `${path}-1200x780.${format} 1200w`, `${path}-1600x1040.${format} 1600w`];
 }
 
-// The main image and the thumbnails render at different widths, so each context declares its own
-// slot on every source and the img. A <source> without its own sizes would use 100vw.
+// The main image, the leading gallery photograph and the supporting ones render at different
+// widths, so each declares its own slot on every source and the img. A <source> without its own
+// sizes would use 100vw.
 const mainImageSizes = "(min-width: 1280px) 672px, (min-width: 900px) calc(54vw - 28px), 92vw";
-const thumbnailSizes = "(min-width: 1280px) 375px, (min-width: 700px) 31vw, (min-width: 480px) 46vw, calc(92vw - 48px)";
+const galleryLeadSizes = "(min-width: 1280px) 795px, (min-width: 760px) calc(61.33vw - 5px), 92vw";
+const gallerySupportSizes = "(min-width: 1280px) 390px, (min-width: 760px) calc(30.67vw - 11px), (min-width: 480px) calc(46vw - 8px), 92vw";
 
 function sizesOf(picture) {
   return Array.from(picture.querySelectorAll("source, img")).map((element) => element.getAttribute("sizes"));
@@ -175,7 +177,8 @@ describe("initTourDetail", () => {
       expect(button.classList.contains("tour-gallery__button")).toBe(true);
       expect(button.hasAttribute("data-lightbox-trigger")).toBe(true);
       expect(img.getAttribute("src")).toBe(`assets/img/tours/${image.base}-1200x780.jpg`);
-      expect(sizesOf(button)).toEqual([thumbnailSizes, thumbnailSizes, thumbnailSizes]);
+      const sizes = index === 0 ? galleryLeadSizes : gallerySupportSizes;
+      expect(sizesOf(button)).toEqual([sizes, sizes, sizes]);
       expect(img.alt).toBe(image.alt);
       expect(img.dataset.lightboxSrc).toBe(`assets/img/tours/${image.base}-1600x1040.jpg`);
       expect(img.dataset.caption).toBe(image.caption);

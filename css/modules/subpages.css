@@ -287,10 +287,14 @@
 .tour-detail__gallery h2 {
   margin: var(--space-5) 0;
 }
+/* Editorial rhythm in catalogue order, without reordering: one column on small screens; from 480px the
+   first photograph leads across the full width with the others in pairs below it, on four tracks so
+   that an unpaired last photograph closes the gallery centred; from 760px the lead takes two of three
+   columns and two rows (tour-detail.js declares the matching sizes). Supporting photographs keep their
+   uncropped 20:13 frame; the lead fills its two rows and loses only a sliver of its width. */
 .tour-gallery {
   display: grid;
   gap: var(--space-4);
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 }
 .tour-gallery__button {
   display: block;
@@ -340,6 +344,38 @@
     transform: scale(1.03);
   }
 }
+@media (min-width: 480px) {
+  .tour-gallery {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .tour-gallery__button {
+    grid-column: span 2;
+  }
+  .tour-gallery__button:first-child {
+    grid-column: span 4;
+  }
+  .tour-gallery__button:nth-child(even):last-child {
+    grid-column: 2 / span 2;
+  }
+}
+@media (min-width: 760px) {
+  .tour-gallery {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .tour-gallery__button,
+  .tour-gallery__button:first-child,
+  .tour-gallery__button:nth-child(even):last-child {
+    grid-column: auto;
+  }
+  /* With at least two photographs beside it, the lead spans two columns and two rows. */
+  .tour-gallery__button:first-child:nth-last-child(n + 3) {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+  .tour-gallery__button:first-child:nth-last-child(n + 3) .tour-gallery__item {
+    height: 100%;
+  }
+}
 @media (min-width: 900px) {
   /* Region, title and facts stack on the left; the enquiry action closes the band on the right, level
      with the facts line. */
@@ -361,9 +397,6 @@
     grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
     gap: var(--space-7);
     align-items: start;
-  }
-  .tour-gallery {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
