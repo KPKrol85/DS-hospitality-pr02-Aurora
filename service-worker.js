@@ -1,4 +1,4 @@
-const VERSION = "aurora-1.39";
+const VERSION = "aurora-1.40";
 
 const STATIC_CACHE = `${VERSION}_static`;
 const HTML_CACHE = `${VERSION}_html`;

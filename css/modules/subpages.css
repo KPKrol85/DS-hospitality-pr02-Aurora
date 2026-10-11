@@ -203,23 +203,82 @@
 .tour-detail__content p {
   margin-bottom: var(--space-2);
 }
+/* Route line: the Atlas Aurory motif of the tour itinerary and the about-page timeline. Every item is a
+   stop with a marker beside its first line, on one rail drawn in segments from each marker to the
+   next, so the rail starts at the first stop and ends at the last at any width and text size. Each
+   list sets --route-gap (the space between stops) and --route-anchor (half the height of an item's
+   first line). Rail and markers are borders, so they stay visible in forced colours. */
+.timeline,
 .tour-itinerary {
+  --route-gutter: var(--space-6);
+  --route-stop: 0.875rem;
+  --route-rail: 2px;
+  display: grid;
+  gap: var(--route-gap);
+  margin: 0;
+  padding: 0 0 0 var(--route-gutter);
   list-style: none;
-  padding-left: 0;
 }
-.tour-itinerary li + li {
-  margin-top: var(--space-3);
+.timeline > li,
+.tour-itinerary > li {
+  position: relative;
+}
+.timeline > li::before,
+.tour-itinerary > li::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  top: calc(var(--route-anchor) - var(--route-stop) / 2);
+  left: calc(-1 * var(--route-gutter));
+  box-sizing: border-box;
+  width: var(--route-stop);
+  height: var(--route-stop);
+  border: 2px solid var(--accent-signature);
+  border-radius: 50%;
+  background: var(--primary);
+}
+.timeline > li:not(:last-child)::after,
+.tour-itinerary > li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: var(--route-anchor);
+  bottom: calc(-1 * (var(--route-gap) + var(--route-anchor)));
+  left: calc(var(--route-stop) / 2 - var(--route-gutter) - var(--route-rail) / 2);
+  border-left: var(--route-rail) solid color-mix(in srgb, var(--accent-signature) 65%, transparent);
+}
+/* The day label opens its stop as a travel fact, on its own line above the day's description. */
+.tour-itinerary {
+  --route-gap: var(--space-5);
+  --route-anchor: calc(1em * var(--lh-normal) / 2);
+}
+.tour-itinerary > li {
+  max-width: 62ch;
+  text-wrap: pretty;
 }
 .tour-itinerary strong {
-  color: var(--muted);
+  display: block;
+  margin-bottom: var(--space-1);
+  color: var(--primary);
+}
+/* What the price includes follows the route as a separate editorial panel: the secondary ground with a
+   hairline and no shadow, close below its heading. */
+.tour-detail__content .tour-itinerary + h3 {
+  margin-top: var(--space-7);
+}
+.tour-detail__content h3:has(+ ul.tour-summary-list, + ul.tour-includes-list) {
+  margin-bottom: var(--space-4);
 }
 .tour-detail__content ul.tour-summary-list,
 .tour-detail__content ul.tour-includes-list {
+  max-width: 62ch;
   margin: 0 0 var(--space-3);
-  padding-left: var(--space-4);
+  padding: var(--space-5) var(--space-5) var(--space-5) calc(var(--space-5) + var(--space-4));
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-alt);
 }
 .tour-detail__gallery {
   border-top: 1px solid var(--border);
@@ -596,33 +655,18 @@
   color: var(--primary);
   line-height: var(--ls-tight);
 }
+/* The timeline shares the tour itinerary's route line (Subpage: Tour); its markers sit beside the
+   step headings, which therefore open the step without a top margin. */
 .timeline {
-  list-style: none;
-  margin: 0;
-  padding: 0 0 0 var(--space-5);
-  display: grid;
-  gap: var(--space-5);
-  border-left: 2px solid var(--border);
+  --route-gap: var(--space-6);
+  --route-anchor: calc(var(--type-subsection-title) * var(--lh-snug) / 2);
 }
 .timeline h3 {
+  margin: 0 0 var(--space-2);
   letter-spacing: var(--ls-wide);
 }
 .timeline p {
   opacity: 0.9;
-}
-.timeline li {
-  position: relative;
-  margin-bottom: var(--space-4);
-}
-.timeline li::before {
-  content: "";
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: var(--primary);
-  position: absolute;
-  left: calc(-1 * var(--space-5) - 8px);
-  top: 6px;
 }
 @media (min-width: 760px) {
   .about-grid {
