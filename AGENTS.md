@@ -54,6 +54,8 @@ Use this format in `IMPROVEMENTS-*.md`:
 - **Impact:** Original impact rating.
 - **Effort:** Original effort rating.
 
+Keep completion records short, professional, and factual. Limit **Result** and **Verification** to 1–3 concise sentences each, covering only essential changes, actual checks, and relevant limitations. Avoid lengthy implementation narratives, repetition, and unnecessary technical details.
+
 Preserve the original identifier, title, impact, and effort. Remove obsolete proposal details, evidence, implementation plans, and acceptance criteria only after verified completion.
 
 Keep open or incomplete proposals unchanged. Never claim completion or verification without evidence. Update improvement records only within the approved task scope.
