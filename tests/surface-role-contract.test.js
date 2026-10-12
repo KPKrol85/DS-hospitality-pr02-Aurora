@@ -12,7 +12,7 @@ import { describe, expect, it } from "vitest";
 const modulesDir = resolve(import.meta.dirname, "../css/modules");
 
 const editorial = [
-  ["components.css", ".feature-card"],
+  ["sections.css", ".principles__item"],
   ["components.css", ".testimonials"],
   ["layout.css", ".section--muted"],
   ["sections.css", ".cta"],
@@ -28,7 +28,6 @@ const editorial = [
 ];
 const interactive = [
   ["components.css", ".tour-card"],
-  ["components.css", ".testimonials__icon"],
   ["subpages.css", ".contact-grid__inner > article:has(> .form)"],
 ];
 const overlays = [

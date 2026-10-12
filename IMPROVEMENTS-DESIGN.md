@@ -249,29 +249,9 @@ Priorities express design value and dependency, not defect severity. P1 items es
 
 ### IMP-DESIGN-08 — Re-pace the home narrative after the offers: principles, testimony and closing invitation
 
-- **Status:** Proposed
-- **Priority:** P2
-- **Affected area:** The "Dlaczego Aurora Travel", "Opinie klientów" and CTA sections of `index.html` and their styles in `components.css` and `sections.css`.
-- **Evidence:** Source: four `.feature-card` articles with icons and hover lift; tabs inside a `.testimonials` card; `.testimonials__icons` circles linking to `https://tripadvisor.com` and `https://google.com`; a 760 px gradient `.cta` card with scarcity copy. Runtime: features 4 × 288 × 213 px at 1440 px and 767 px stacked at 390 px. Visual: three consecutive eyebrow → heading → boxed-grid sections; at 760 px and wider the CTA's copy is centred and its action right-aligned.
-- **Current state:** The second half of the home page repeats the same boxed pattern three times and ends on a generic gradient card.
-- **Design judgment:** Principles are presented in a software-feature idiom, testimony has no weight as a moment, and the page ends without a composed finish.
-- **Proposed improvement:** Re-pace the sections:
-  - the principles as an annotated typographic list (ruled or numbered, no shadowed cards);
-  - the testimony as one editorial quotation moment with the existing tabs restyled as quiet category labels;
-  - the closing invitation as a calm full-width band that hands off to the footer with one primary action.
-
-  Review-platform icons and copy changes follow the owner decisions in Section 10.
-
-- **Expected value:** Clear moments of emphasis and quiet, a more credible tone, and a finished closing sequence.
-- **Implementation scope:** Markup and styles of these three sections. Preserve the tabs' ARIA roles and keyboard behaviour, `aria-labelledby` IDs, heading levels and reveal behaviour. The footer structure is unchanged; only its relation to the closing band is designed.
-- **Dependencies:** IMP-DESIGN-01, IMP-DESIGN-02; owner decision on testimonials, review links and CTA copy.
-- **Acceptance criteria:**
-  - At 390, 768 and 1440 px in both themes, the three sections use three distinct compositions, none of them a grid of shadowed cards.
-  - The quotation is the dominant element of its section.
-  - The closing band has exactly one primary action aligned with its copy.
-  - Tabs remain operable by arrow keys with correct `aria-selected`.
-  - No external review link points to a generic platform home page unless the owner confirms it.
-  - The home page height at 390 px does not exceed the current 6,021 px.
+- **Status:** COMPLETED — implemented and verified (2026-10-12).
+- **Result:** Replaced the four feature cards with a numbered, hairline-ruled principles list (two columns from 760 px, header beside it from 1024 px), and recomposed the testimonials as one large quotation with quiet underlined category tabs and a visible demonstration note outside the tab panels. Replaced the gradient CTA with a hairline-bounded closing band carrying the approved copy and one "Wyślij zapytanie" action, and removed the generic TripAdvisor and Google links. Tab ARIA and keyboard behaviour (`tabs.js` unchanged), headings, IDs and reveal were preserved; SW `aurora-1.43`.
+- **Verification:** Focused Vitest runs passed 112/113 (the failure, a missing `.tour-detail` rule in the surface-role test, also fails at HEAD) and 38/38 Service Worker and build-stage tests; the production build passed. Headless Chrome 154 at 390, 768 and 1440 px in both themes confirmed the compositions, content, arrow-key and focus behaviour, contrast, the forced-colors tab state and no overflow; the 390 px page height fell from 5,953 to 5,522 px. Full suite, other browsers and owner visual QA not run.
 - **Impact:** Medium
 - **Effort:** Medium
 

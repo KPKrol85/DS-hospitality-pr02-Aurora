@@ -1,29 +1,3 @@
-/* Feauture Card */
-
-.feature-card {
-  padding: var(--space-4);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-.feature-card svg {
-  width: 28px;
-  height: 28px;
-  fill: none;
-  stroke: var(--primary);
-  margin-bottom: var(--space-2);
-}
-.feature-card__title {
-  margin: 0;
-  font-size: var(--fs-3);
-}
-.feature-card__text {
-  letter-spacing: var(--ls-wide);
-  color: var(--muted);
-}
-
 /* Tour Card */
 
 .tour-card {
@@ -127,110 +101,87 @@
   }
 }
 
-/* Testimonials */
-
+/* Testimonials: one editorial quotation on the section's secondary ground, without a frame. The
+   category tabs are quiet tracked labels on a hairline; the selected one turns to ink over a
+   --primary underline, and keyboard focus keeps the global outline. The quotation is the largest
+   text of the section, set against a signature-cyan rule. The demonstration note sits in the
+   section header, outside the tab panels, so it stays visible whichever tab is selected. */
 .testimonials {
-  max-width: 760px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-5);
-  background: var(--bg);
+  max-width: 56rem;
+}
+.testimonials__note {
+  margin-top: var(--space-4);
+  color: var(--muted);
 }
 .tabs__list {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-4);
-  margin: var(--space-4) 0 var(--space-6);
+  column-gap: var(--space-5);
+  margin: 0 0 var(--space-6);
+  border-bottom: 1px solid var(--border);
 }
+/* Only the selected tab draws its underline, and its padding gives up the underline's 2px, so the
+   labels never move. Forced-colors mode paints every border, transparent ones included, so the
+   other tabs have none and the selected one takes the Highlight colour there. */
 .tabs__list button {
-  border-radius: var(--radius-lg);
-  border: none;
-  padding: var(--space-4);
-  background: color-mix(in oklab, var(--bg) 90%, var(--text) 10%);
-  color: var(--text);
-  cursor: pointer;
-  text-transform: uppercase;
+  min-height: 2.75rem;
+  margin-bottom: -1px;
+  padding: var(--space-2) 0 calc(var(--space-2) + 2px);
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-family: var(--font-heading);
   font-size: var(--fs-1);
   font-weight: var(--fw-semibold);
-  opacity: 0.94;
-  transition:
-    background var(--dur-2) var(--ease),
-    color var(--dur-2) var(--ease),
-    border-color var(--dur-2) var(--ease),
-    transform var(--dur-1) var(--ease);
-}
-.tabs__list button:hover {
-  background: color-mix(in oklab, var(--bg) 80%, var(--primary) 20%);
-  border-color: color-mix(in oklab, var(--border) 40%, var(--primary) 60%);
+  letter-spacing: var(--ls-ultra);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color var(--dur-2) var(--ease);
 }
 .tabs__list button[aria-selected="true"] {
-  background: var(--primary-alt-active);
+  padding-bottom: var(--space-2);
+  border-bottom: 2px solid var(--primary);
   color: var(--text);
-  border-color: var(--primary);
-  transform: translateY(-1px);
-}
-.tabs__panel {
-  margin: 0;
-  max-width: 56ch;
-  animation: testimonial-fade 200ms ease-out;
-}
-.tabs__panel > p:first-of-type {
-  font-style: italic;
-  color: var(--text);
-  font-size: var(--fs-2);
-  letter-spacing: var(--ls-wide);
-  opacity: 0.96;
-}
-.quote-author {
-  font-weight: var(--fw-semibold);
-  color: var(--muted);
-}
-.testimonials__icons {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  gap: var(--space-6);
-  margin: var(--space-6) auto 0;
-}
-.testimonials__icon {
-  width: 72px;
-  height: 72px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-pill);
-  background: var(--bg-elev);
-  box-shadow: var(--shadow-raised);
-  display: flex;
-  color: var(--text);
-  align-items: center;
-  justify-content: center;
-  transition:
-    transform var(--dur-2) var(--ease),
-    border-color var(--dur-2) var(--ease);
-}
-.testimonials__icon svg {
-  width: 28px;
-  height: 28px;
-}
-@media (min-width: 760px) {
-  .testimonials__layout {
-    display: grid;
-    grid-template-columns: minmax(0, 760px) auto;
-    align-items: end;
-    gap: var(--space-6);
-  }
-  .testimonials__icons {
-    margin: auto;
-    flex-direction: column;
-  }
 }
 @media (hover: hover) and (pointer: fine) {
-  .testimonials__icon:hover {
-    border-color: var(--border-hover);
+  .tabs__list button:hover {
+    color: var(--text);
   }
 }
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .testimonials__icon:hover {
-    transform: translateY(-2px);
+@media (forced-colors: active) {
+  .tabs__list button[aria-selected="true"] {
+    border-bottom-color: Highlight;
+  }
+}
+.tabs__panel {
+  animation: testimonial-fade 200ms ease-out;
+}
+.testimonials__quote {
+  margin: 0;
+  padding-left: var(--space-5);
+  border-left: 2px solid var(--accent-signature);
+}
+.testimonials__text {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: var(--fs-6);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--ls-snug);
+  text-wrap: pretty;
+}
+.testimonials__author {
+  margin-top: var(--space-4);
+  color: var(--text-subtle);
+  font-weight: var(--fw-semibold);
+}
+@media (min-width: 1024px) {
+  .testimonials__quote {
+    padding-left: var(--space-6);
+  }
+  .testimonials__text {
+    font-size: var(--fs-7);
+    line-height: var(--lh-tight);
   }
 }
 @keyframes testimonial-fade {

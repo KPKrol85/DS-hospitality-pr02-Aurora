@@ -62,20 +62,19 @@
        sits on the ground it is placed on, with a --border hairline where it needs an edge, and no
        shadow.
      - A secondary ground (--bg-alt) separates a section quietly, between hairlines.
-     - Interactive surfaces (offer cards, the enquiry form, the review links) are --bg-elev with a
-       hairline and --shadow-raised, which also lifts the sticky gallery filter bar and its active
-       filter. Individual form controls are --bg-elev with a --border-control edge and no resting
+     - Interactive surfaces (offer cards, the enquiry form) are --bg-elev with a hairline and
+       --shadow-raised, which also lifts the sticky gallery filter bar and its active filter. Individual form controls are --bg-elev with a --border-control edge and no resting
        shadow.
      - Overlays (navigation drawer, project notice, update banner) are --bg-overlay with a hairline
        and --shadow-overlay; the lightbox close button takes the overlay surface and hairline.
      The dark edition separates the roles by surface lightness and hairlines, since shadows barely
      register on its ground.
      Hover follows the same roles. Editorial content and images that open nothing have no hover
-     state. Links and header controls change colour or tint their surface; bordered controls,
-     filter chips, offer cards and review links take the --border-hover edge; buttons rise to
-     --shadow-raised, and no hover goes beyond it. Movement on hover (the 2px lift of buttons,
-     offer cards and review links, the arrow of text buttons and the zoom of tour thumbnails) is
-     limited to fine pointers and to prefers-reduced-motion: no-preference. */
+     state. Links, header controls and the testimonial tabs change colour or tint their surface;
+     bordered controls, filter chips and offer cards take the --border-hover edge; buttons rise to
+     --shadow-raised, and no hover goes beyond it. Movement on hover (the 2px lift of buttons and
+     offer cards, the arrow of text buttons and the zoom of tour thumbnails) is limited to fine
+     pointers and to prefers-reduced-motion: no-preference. */
   /* Ink and hairlines */
   --text: #0c1b33;
   --text-subtle: color-mix(in srgb, var(--text) 75%, var(--muted));
@@ -84,15 +83,13 @@
   /* The edge of a form control, 3:1 or more against the raised surface and the paper in both
      editions, so a control stays identifiable without a shadow. */
   --border-control: color-mix(in srgb, var(--muted) 75%, transparent);
-  /* The hover edge of controls, filter chips, offer cards and review links: stronger than
-     --border-control, 3:1 or more against the raised surface and the paper in both editions, and
-     without the focus ring that marks keyboard focus. */
+  /* The hover edge of controls, filter chips and offer cards: stronger than --border-control,
+     3:1 or more against the raised surface and the paper in both editions, and without the focus
+     ring that marks keyboard focus. */
   --border-hover: color-mix(in srgb, var(--primary) 80%, transparent);
   /* Accent: links, the current page and the focus colour */
   --primary: #0f6d8c;
   --primary-alt: #6fd1ff;
-  /* The fill of the selected testimonial tab */
-  --primary-alt-active: color-mix(in srgb, var(--primary-alt) 85%, white);
   /* Action: the solid background of the default button, the active gallery filter and the skip link,
      and the label colour paired with it at 4.5:1 or more in both editions. */
   --action-bg: #0f6d8c;
@@ -175,9 +172,6 @@
   --border: rgba(111, 209, 255, 0.2);
   --primary: #6fd1ff;
   --primary-alt: #0f6d8c;
-  /* The deep teal itself, so the light --text label of the selected tab keeps 4.5:1; lightened
-     by white as in the light edition it fell below that. */
-  --primary-alt-active: var(--primary-alt);
   --action-bg: #6fd1ff;
   --action-fg: #0b1628;
   /* Shadows - dark */

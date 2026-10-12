@@ -89,69 +89,101 @@
   }
 }
 
-/* CTA */
-
-.cta {
+/* Principles: an annotated, numbered list on the page ground instead of cards. Each principle opens
+   on a hairline with its number beside the title, in the title's size and the muted ink; the text
+   hangs under the title. From 760px the principles pair in two columns, and from 1024px the
+   section header stands beside them. */
+.principles__list {
   display: grid;
   gap: var(--space-5);
-  padding: var(--space-7) var(--space-5);
-  max-width: 760px;
-  margin-inline: auto;
-  border-radius: var(--radius-lg);
-  text-align: center;
-  background: linear-gradient(135deg, color-mix(in oklab, var(--bg) 88%, var(--primary) 12%) 0%, color-mix(in oklab, var(--bg) 95%, var(--primary) 5%) 100%);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: principle;
 }
-.cta__content {
+.principles__item {
   display: grid;
-  gap: var(--space-3);
+  grid-template-columns: auto minmax(0, 1fr);
+  align-content: start;
+  align-items: baseline;
+  gap: var(--space-2) var(--space-3);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+  counter-increment: principle;
 }
-.cta__content h2 {
-  margin: 0 0 var(--space-2);
+.principles__item::before {
+  content: counter(principle, decimal-leading-zero);
+  font-family: var(--font-heading);
+  font-size: var(--type-subsection-title);
+  line-height: var(--lh-snug);
+  font-variant-numeric: lining-nums tabular-nums;
+  color: var(--muted);
 }
-.cta__content p {
-  margin: 0 auto;
-  max-width: 42ch;
-  opacity: 0.96;
+.principles__title {
+  margin: 0;
+}
+.principles__text {
+  grid-column: 2;
+  max-width: 48ch;
   color: var(--text-subtle);
-}
-.cta__actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--space-3);
-}
-.cta__actions .btn {
-  text-decoration: none;
+  text-wrap: pretty;
 }
 @media (min-width: 760px) {
-  .cta {
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
+  .principles__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-6) var(--space-7);
   }
-  .cta__actions {
-    justify-content: flex-end;
+}
+@media (min-width: 1024px) {
+  .principles {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    align-items: start;
+    gap: var(--space-7);
+  }
+  .principles__header {
+    margin-bottom: 0;
+  }
+}
+
+/* Closing invitation: a calm band across the container on the page ground, between the hairline
+   of the testimonials and its own hairline, where the footer's ground begins. The heading stands
+   on the left; the text and the one action share the right column from 760px, the text's first
+   line on the heading's first baseline, and stack under the heading on smaller screens. */
+.cta {
+  border-bottom: 1px solid var(--border);
+}
+.cta__inner {
+  display: grid;
+  gap: var(--space-4);
+}
+.cta__title {
+  margin: 0;
+  max-width: 20ch;
+  text-wrap: balance;
+}
+.cta__body {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-5);
+}
+.cta__text {
+  max-width: 42ch;
+  color: var(--text-subtle);
+}
+@media (min-width: 760px) {
+  .cta__inner {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: baseline;
+    gap: var(--space-7);
   }
 }
 
 /* Grids */
 
-.features-grid {
-  display: grid;
-  gap: var(--space-4);
-}
 .tour-list {
   display: grid;
   gap: var(--space-5);
-}
-@media (min-width: 768px) {
-  .features-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-@media (min-width: 1024px) {
-  .features-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
 }
 
 /* Home featured offers: one full-frame destination and two compact editorial entries.

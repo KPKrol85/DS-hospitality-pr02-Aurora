@@ -301,7 +301,7 @@ describe("typographic role contract", () => {
 
     // Only the headings that had a divider carry it, plus the home page's section headers, which
     // share the about page's eyebrow and h2 pattern.
-    const withDivider = [".section__header > h2", ".about-section__title", ".feature-card__title", ".site-footer__grid h3"];
+    const withDivider = [".section__header > h2", ".about-section__title", ".site-footer__grid h3"];
     for (const document of documents) {
       document.querySelectorAll(".heading-divider").forEach((element) => {
         expect(/^h[1-6]$/.test(element.localName), element.outerHTML).toBe(true);
