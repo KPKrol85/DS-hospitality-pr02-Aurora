@@ -2,7 +2,8 @@ export function initGalleryFilters() {
   const gallery = document.querySelector("[data-gallery]");
   if (!gallery) return;
 
-  const items = Array.from(gallery.querySelectorAll("figure[data-country]"));
+  // Each filter shows or hides whole destination chapters: heading, offer link and photographs.
+  const items = Array.from(gallery.querySelectorAll(":scope > [data-country]"));
   const buttons = Array.from(document.querySelectorAll("[data-gallery-filter]"));
 
   if (!items.length || !buttons.length) return;

@@ -460,22 +460,50 @@
   border-color: color-mix(in srgb, var(--primary) 65%, transparent);
   box-shadow: var(--shadow-raised);
 }
-.gallery-grid {
+/* Destination chapters in data order (js/features/gallery.js): each opens with its place label, heading
+   and offer link, then its first photograph leads and the others support it, without reordering and
+   in their uncropped 20:13 frame. Below 760px the lead spans the two columns and the supporting
+   photographs pair up, an unpaired last one spanning the row. From 760px the supporting photographs
+   run in rows of three on six tracks, and a closing row of two or one shares the full width. From
+   1024px the header takes two tracks beside the lead. gallery.js declares the matching sizes. */
+.gallery-journal {
   display: grid;
-  gap: var(--space-4);
-  grid-template-columns: 1fr;
+  gap: var(--space-8);
 }
-.gallery-grid figure {
-  margin: 0;
-  transition:
-    opacity var(--dur-2) var(--ease),
-    transform var(--dur-2) var(--ease);
+.gallery-chapter {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-5) var(--space-4);
+  align-items: start;
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--border);
 }
-.gallery-grid figure.is-hidden {
-  opacity: 0;
-  pointer-events: none;
-  transform: scale(0.98);
+.gallery-chapter.is-hidden {
   display: none;
+}
+.gallery-chapter__header {
+  grid-column: 1 / -1;
+  display: grid;
+  justify-items: start;
+  gap: var(--space-2);
+}
+.gallery-chapter__region {
+  margin: 0;
+  color: var(--muted);
+}
+.gallery-chapter__title {
+  margin: 0;
+}
+.gallery-chapter__link {
+  padding-inline: 0;
+}
+.gallery-photo {
+  margin: 0;
+  min-width: 0;
+}
+.gallery-photo--lead,
+.gallery-photo:nth-child(odd):last-child {
+  grid-column: 1 / -1;
 }
 .gallery-item {
   display: block;
@@ -487,30 +515,45 @@
   color: inherit;
   cursor: pointer;
 }
-.gallery-grid picture {
+.gallery-journal picture {
   display: block;
 }
-.gallery-grid img {
+.gallery-journal img {
   display: block;
   width: 100%;
   aspect-ratio: 400 / 260;
   height: auto;
   object-fit: cover;
 }
-.gallery-grid figcaption {
-  font-size: var(--fs-1);
+.gallery-journal figcaption {
   margin-top: var(--space-2);
   line-height: var(--lh-normal);
-  color: var(--text);
+  color: var(--muted);
 }
-@media (min-width: 560px) {
-  .gallery-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+@media (min-width: 760px) {
+  .gallery-chapter {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  .gallery-photo,
+  .gallery-photo:nth-child(odd):last-child {
+    grid-column: span 2;
+  }
+  .gallery-photo:nth-child(3n):nth-last-child(2),
+  .gallery-photo:nth-child(3n):nth-last-child(2) + .gallery-photo {
+    grid-column: span 3;
+  }
+  .gallery-photo--lead,
+  .gallery-photo:nth-child(3n):last-child {
+    grid-column: 1 / -1;
   }
 }
 @media (min-width: 1024px) {
-  .gallery-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  .gallery-chapter__header {
+    grid-column: span 2;
+    padding-right: var(--space-5);
+  }
+  .gallery-photo--lead {
+    grid-column: span 4;
   }
 }
 @media (hover: hover) and (pointer: fine) {

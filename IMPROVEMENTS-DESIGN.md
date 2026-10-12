@@ -241,22 +241,9 @@ Priorities express design value and dependency, not defect severity. P1 items es
 
 ### IMP-DESIGN-07 — Recompose the gallery as a destination-grouped photo journal
 
-- **Status:** Proposed
-- **Priority:** P2
-- **Affected area:** `gallery.html`, the rendering structure in `js/features/gallery.js` and the gallery rules in `css/modules/subpages.css`.
-- **Evidence:** Source: 36 figures from `gallery-data.json` render into one `.gallery-grid` with 1, 2 or 3 columns, a 400:260 image ratio and `--fs-1` captions; sticky filter chips with `aria-pressed`. Gallery country keys (`maledivy`, `new-york`, `tokio`) differ from the tour IDs (`malediwy`, `nowy-jork`, `tokio-kyoto`). Runtime: 4,598 px tall at 1440 px and 11,604 px at 390 px. Visual: twelve identical rows with English captions.
-- **Current state:** The gallery is an undifferentiated contact sheet ordered by destination, with no destination headings or link to the related offer.
-- **Design judgment:** Destination grouping and rhythm would turn an archive into a visual journal that supports the offers.
-- **Proposed improvement:** Group images by destination, each group opening with a place label and heading and an optional link to the matching offer (requires an explicit key mapping). Each group gets a lead image and supporting tiles in a varied but systematic rhythm, with Polish captions as quiet annotations. The filters keep their behaviour.
-- **Expected value:** Stronger storytelling, visible connection between imagery and offers, and a less monotonous mobile scroll.
-- **Implementation scope:** Gallery markup produced by `gallery.js` and its styles. Preserve the `gallery-data.json` schema, filter buttons and `aria-pressed`, the lightbox trigger buttons with Polish labels, the lightbox sequence matching the visible order, the data-state messages, responsive `sizes` and reduced motion. Heading levels nest under the page `h1`.
-- **Dependencies:** P-3, IMP-DESIGN-03, IMP-DESIGN-01, IMP-DESIGN-02.
-- **Acceptance criteria:**
-  - With "Wszystkie" active, each of the six destinations is identifiable by its heading at 390, 768 and 1440 px, and each group has one lead image.
-  - Filtering shows only the chosen group, and lightbox previous/next follow the visible order.
-  - Captions are Polish and match the photographs.
-  - `tests/gallery.test.js` and `tests/lightbox.test.js` pass (updated only for intended structure, not weakened).
-  - Both themes and keyboard traversal are verified.
+- **Status:** COMPLETED — implemented and verified (2026-10-12).
+- **Result:** Rendered the gallery as six destination chapters. Each chapter has a place label, an `h2` and a link to its offer through an explicit key-to-tour mapping, followed by an uncropped lead photograph and supporting photographs in rows of three, two or one. The JSON schema, filters with `aria-pressed`, lightbox buttons and order, data states and `lightbox.js` were preserved. Filters now hide whole chapters, `sizes` follow each slot, and the Service Worker cache was updated to `aurora-1.42`.
+- **Verification:** Gallery and lightbox tests passed 37/37 (71/71 with the Service Worker tests), and the production build passed. Headless Chrome 154 at 390, 768 and 1440 px in both themes confirmed the layout, no overflow, the image slots, chapter filtering, keyboard order and the lightbox sequence. The full test suite, other browsers and owner visual QA were not run; the caption-to-photo mismatches carried over from IMP-DESIGN-03 remain.
 - **Impact:** Medium
 - **Effort:** Medium
 

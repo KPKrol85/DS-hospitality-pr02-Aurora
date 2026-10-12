@@ -104,12 +104,13 @@ describe("lightbox on gallery.html", () => {
   it.each([...new Set(galleryData.map((item) => item.country))])("wraps both arrow keys through only visible %s images", (country) => {
     document.querySelector(`[data-gallery-filter="${country}"]`).click();
     const figures = Array.from(document.querySelectorAll("[data-gallery] figure"));
-    const visible = figures.filter((figure) => !figure.classList.contains("is-hidden"));
+    // The filter hides whole destination chapters, so a figure is hidden through its chapter.
+    const visible = figures.filter((figure) => !figure.closest(".is-hidden"));
     const images = visible.map((figure) => figure.querySelector("img"));
     expect(images.length).toBeGreaterThan(1);
     expect(images).toHaveLength(galleryData.filter((item) => item.country === country).length);
     expect(visible.every((figure) => figure.dataset.country === country)).toBe(true);
-    expect(figures.some((figure) => figure.classList.contains("is-hidden"))).toBe(true);
+    expect(figures.some((figure) => figure.closest(".is-hidden"))).toBe(true);
     visible[0].querySelector("button").click();
     expectPreview(images[0]);
 
@@ -121,6 +122,35 @@ describe("lightbox on gallery.html", () => {
       pressKey("ArrowLeft");
       expectPreview(images[(images.length - step) % images.length]);
     }
+  });
+});
+
+describe("lightbox across the gallery chapters", () => {
+  it("steps through every photograph in DOM order across chapters with the all filter", async () => {
+    mountFromPage("gallery.html", ".gallery-filters", "[data-gallery]", "[data-lightbox]");
+    stubFetchJson(galleryData);
+    initLightbox();
+    await initGallery();
+    initGalleryFilters();
+
+    document.querySelector('[data-gallery-filter="tokio"]').click();
+    document.querySelector('[data-gallery-filter="all"]').click();
+    const chapters = document.querySelectorAll("[data-gallery] > .gallery-chapter");
+    const images = Array.from(document.querySelectorAll("[data-gallery] figure img"));
+    expect(chapters).toHaveLength(6);
+    expect(images).toHaveLength(galleryData.length);
+    expect(images.map((img) => img.dataset.lightboxSrc)).toEqual(galleryData.map((item) => item.lightbox));
+
+    // From the last photograph of the first chapter into the lead of the second, then around.
+    const lastOfFirst = chapters[0].querySelectorAll("figure").length - 1;
+    images[lastOfFirst].closest("button").click();
+    expectPreview(images[lastOfFirst]);
+    for (let step = 1; step <= images.length; step += 1) {
+      pressKey("ArrowRight");
+      expectPreview(images[(lastOfFirst + step) % images.length]);
+    }
+    pressKey("ArrowLeft");
+    expectPreview(images[(lastOfFirst - 1 + images.length) % images.length]);
   });
 });
 

@@ -176,7 +176,7 @@ p + p {
     transition: none !important;
   }
   .reveal,
-  .gallery-grid figure.reveal {
+  .gallery-journal figure.reveal {
     opacity: 1;
     transform: none;
   }

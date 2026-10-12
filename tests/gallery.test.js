@@ -4,6 +4,7 @@ import { initGalleryFilters } from "../js/features/gallery-filters.js";
 import { mountFromPage, readJson, stubFetchDeferred, stubFetchError, stubFetchJson, stubFetchMalformedJson } from "./helpers.js";
 
 const galleryData = readJson("assets/data/gallery-data.json");
+const tours = readJson("assets/data/tours.json");
 
 const loadingMessage = "Ładowanie galerii…";
 const unavailableMessage = "Nie udało się wczytać galerii. Sprawdź połączenie z internetem i odśwież stronę.";
@@ -12,9 +13,26 @@ function galleryEl() {
   return document.querySelector("[data-gallery]");
 }
 
-function figures() {
-  return Array.from(galleryEl().querySelectorAll(":scope > figure"));
+function chapters() {
+  return Array.from(galleryEl().querySelectorAll(":scope > .gallery-chapter"));
 }
+
+// Every photograph in DOM order, across the chapters.
+function figures() {
+  return Array.from(galleryEl().querySelectorAll(":scope > .gallery-chapter > figure"));
+}
+
+// Countries in order of first appearance: the chapter order.
+function countriesOf(items) {
+  return [...new Set(items.map((item) => item.country))];
+}
+
+// The slots of the chapter grid in css/modules/subpages.css, by position in a chapter of six.
+const leadSizes = "(min-width: 1280px) 795px, (min-width: 1024px) calc(61.33vw - 5px), 92vw";
+const rowOfThreeSizes = "(min-width: 1280px) 390px, (min-width: 760px) calc(30.67vw - 11px), calc(46vw - 8px)";
+const rowOfTwoSizes = "(min-width: 1280px) 592px, (min-width: 760px) calc(46vw - 8px), calc(46vw - 8px)";
+const unpairedRowOfTwoSizes = "(min-width: 1280px) 592px, (min-width: 760px) calc(46vw - 8px), 92vw";
+const chapterOfSixSizes = [leadSizes, rowOfThreeSizes, rowOfThreeSizes, rowOfThreeSizes, rowOfTwoSizes, unpairedRowOfTwoSizes];
 
 function filtersSection() {
   return document.querySelector("[data-gallery-filters]");
@@ -42,8 +60,12 @@ function filterButton(filter) {
   return document.querySelector(`[data-gallery-filter="${filter}"]`);
 }
 
+function visibleChapters() {
+  return chapters().filter((chapter) => !chapter.classList.contains("is-hidden"));
+}
+
 function visibleFigures() {
-  return figures().filter((figure) => !figure.classList.contains("is-hidden"));
+  return figures().filter((figure) => !figure.closest(".is-hidden"));
 }
 
 function pressedFilters() {
@@ -70,7 +92,9 @@ describe("initGallery", () => {
     await initGallery();
 
     expect(fetchMock).toHaveBeenCalledWith("assets/data/gallery-data.json");
+    expect(galleryData).toHaveLength(36);
     expect(figures()).toHaveLength(galleryData.length);
+    expect(galleryEl().querySelectorAll("figure")).toHaveLength(galleryData.length);
     expect(figures().map((figure) => figure.dataset.country)).toEqual(galleryData.map((item) => item.country));
     expect(figures().map((figure) => figure.querySelector("figcaption").textContent)).toEqual(galleryData.map((item) => item.caption));
   });
@@ -84,8 +108,8 @@ describe("initGallery", () => {
     const picture = figures()[0].querySelector("picture");
     const [avif, webp, img] = picture.children;
     const path = "assets/img/tours/islandia/islandia-01";
-    // The .gallery-grid column slot. A <source> without its own sizes would use 100vw.
-    const sizes = "(min-width: 1280px) 390px, (min-width: 1024px) 31vw, (min-width: 560px) 46vw, 92vw";
+    // The lead slot of the chapter grid. A <source> without its own sizes would use 100vw.
+    const sizes = leadSizes;
 
     expect(avif.tagName).toBe("SOURCE");
     expect(avif.type).toBe("image/avif");
@@ -105,10 +129,125 @@ describe("initGallery", () => {
 
     figures().forEach((figure, index) => {
       expect(figure.querySelector("img").getAttribute("src")).toBe(`assets/img/tours/${galleryData[index].base}-1200x780.jpg`);
-      figure.querySelectorAll("source, img").forEach((element) => {
-        expect(element.getAttribute("sizes")).toBe(sizes);
+    });
+    chapters().forEach((chapter) => {
+      const chapterFigures = Array.from(chapter.querySelectorAll("figure"));
+      expect(chapterFigures).toHaveLength(chapterOfSixSizes.length);
+      chapterFigures.forEach((figure, index) => {
+        figure.querySelectorAll("source, img").forEach((element) => {
+          expect(element.getAttribute("sizes")).toBe(chapterOfSixSizes[index]);
+        });
       });
     });
+  });
+
+  it("declares the slot of each photograph for chapters of other lengths", async () => {
+    const islandia = galleryData.filter((item) => item.country === "islandia");
+    const sizesOf = () => figures().map((figure) => figure.querySelector("img").getAttribute("sizes"));
+
+    await renderGallery(islandia.slice(0, 1));
+    expect(sizesOf()).toEqual([leadSizes]);
+
+    // One supporting photograph: alone in its row from 760px and unpaired below.
+    await renderGallery(islandia.slice(0, 2));
+    expect(sizesOf()).toEqual([leadSizes, "(min-width: 1280px) 1200px, (min-width: 760px) 92vw, 92vw"]);
+
+    // Three: one row of three, the last unpaired below 760px.
+    await renderGallery(islandia.slice(0, 4));
+    expect(sizesOf()).toEqual([leadSizes, rowOfThreeSizes, rowOfThreeSizes, "(min-width: 1280px) 390px, (min-width: 760px) calc(30.67vw - 11px), 92vw"]);
+
+    // Four: a row of three, then one alone, paired below 760px.
+    await renderGallery(islandia.slice(0, 5));
+    expect(sizesOf()).toEqual([leadSizes, rowOfThreeSizes, rowOfThreeSizes, rowOfThreeSizes, "(min-width: 1280px) 1200px, (min-width: 760px) 92vw, calc(46vw - 8px)"]);
+  });
+
+  it("groups the photographs into one chapter per destination, in catalogue order", async () => {
+    stubFetchJson(galleryData);
+
+    await initGallery();
+
+    expect(chapters()).toHaveLength(6);
+    expect(galleryEl().children).toHaveLength(6);
+    expect(chapters().map((chapter) => chapter.dataset.country)).toEqual(["islandia", "maledivy", "maroko", "new-york", "patagonia", "tokio"]);
+    expect(chapters().map((chapter) => chapter.dataset.country)).toEqual(countriesOf(galleryData));
+    chapters().forEach((chapter) => {
+      const country = chapter.dataset.country;
+      const chapterFigures = Array.from(chapter.querySelectorAll("figure"));
+      expect(chapter.localName).toBe("section");
+      expect(chapterFigures.map((figure) => figure.querySelector("img").getAttribute("src"))).toEqual(
+        galleryData.filter((item) => item.country === country).map((item) => `assets/img/tours/${item.base}-1200x780.jpg`),
+      );
+      expect(chapterFigures.every((figure) => figure.dataset.country === country)).toBe(true);
+    });
+  });
+
+  it("heads each chapter with its place label, an h2 named like its filter and a link to its offer", async () => {
+    const tourIds = { islandia: "islandia", maledivy: "malediwy", maroko: "maroko", "new-york": "nowy-jork", patagonia: "patagonia", tokio: "tokio-kyoto" };
+    stubFetchJson(galleryData);
+
+    await initGallery();
+
+    const headingIds = new Set();
+    chapters().forEach((chapter) => {
+      const country = chapter.dataset.country;
+      const tour = tours.find((entry) => entry.id === tourIds[country]);
+      const header = chapter.firstElementChild;
+      const [region, heading, link] = header.children;
+      const name = filterButton(country).textContent.trim();
+
+      expect(tour, `tours.json has no offer for "${country}"`).toBeDefined();
+      expect(header.localName).toBe("header");
+      expect(header.children).toHaveLength(3);
+      expect(region.localName).toBe("p");
+      expect(region.classList.contains("type-place-label")).toBe(true);
+      expect(region.textContent).toBe(tour.region);
+      expect(heading.localName).toBe("h2");
+      expect(heading.classList.contains("type-section-title")).toBe(true);
+      expect(heading.textContent).toBe(name);
+      expect(chapter.querySelectorAll("h1, h2, h3, h4, h5, h6")).toHaveLength(1);
+      expect(chapter.getAttribute("aria-labelledby")).toBe(heading.id);
+      headingIds.add(heading.id);
+      expect(link.localName).toBe("a");
+      expect(link.getAttribute("href")).toBe(`tour.html?id=${tour.id}`);
+      expect(link.textContent).toBe(`Zobacz ofertę wyjazdu: ${name}`);
+      expect(link.querySelector(".visually-hidden").textContent).toBe(`: ${name}`);
+      expect(chapter.querySelectorAll("a")).toHaveLength(1);
+    });
+    expect(headingIds.size).toBe(6);
+    expect(document.querySelectorAll('[id^="gallery-chapter-"]')).toHaveLength(6);
+  });
+
+  it("leads each chapter with its first photograph", async () => {
+    stubFetchJson(galleryData);
+
+    await initGallery();
+
+    chapters().forEach((chapter) => {
+      const leads = chapter.querySelectorAll(".gallery-photo--lead");
+      const first = galleryData.find((item) => item.country === chapter.dataset.country);
+
+      expect(leads).toHaveLength(1);
+      expect(leads[0]).toBe(chapter.querySelector("figure"));
+      expect(leads[0]).toBe(chapter.children[1]);
+      expect(leads[0].querySelector("img").getAttribute("src")).toBe(`assets/img/tours/${first.base}-1200x780.jpg`);
+    });
+    expect(galleryEl().querySelectorAll(".gallery-photo--lead")).toHaveLength(6);
+  });
+
+  it("groups interleaved records without losing their order and heads an unknown destination by its key", async () => {
+    const [islandia1, islandia2] = galleryData.filter((item) => item.country === "islandia");
+    const [tokio1, tokio2] = galleryData.filter((item) => item.country === "tokio");
+    const unknown = { ...islandia1, country: "lofoty", base: "lofoty/lofoty-01", lightbox: "assets/img/tours/lofoty/lofoty-01-1600x1040.jpg" };
+
+    await renderGallery([tokio1, islandia1, unknown, tokio2, islandia2]);
+
+    expect(chapters().map((chapter) => chapter.dataset.country)).toEqual(["tokio", "islandia", "lofoty"]);
+    expect(figures().map((figure) => figure.querySelector("img").dataset.lightboxSrc)).toEqual([tokio1, tokio2, islandia1, islandia2, unknown].map((item) => item.lightbox));
+    const unknownChapter = chapters()[2];
+    expect(unknownChapter.querySelector("h2").textContent).toBe("lofoty");
+    expect(unknownChapter.querySelector("header").children).toHaveLength(1);
+    expect(unknownChapter.querySelector("a, .type-place-label")).toBeNull();
+    expect(unknownChapter.querySelectorAll(".gallery-photo--lead")).toHaveLength(1);
   });
 
   it("keeps the alt text, caption and lightbox source of every record", async () => {
@@ -247,6 +386,7 @@ describe("initGalleryFilters", () => {
   it("starts with every item visible and only the all filter pressed", async () => {
     await renderGallery(galleryData);
 
+    expect(visibleChapters()).toHaveLength(6);
     expect(visibleFigures()).toHaveLength(galleryData.length);
     expect(pressedFilters()).toEqual(["all"]);
     expect(filterButtons().filter((button) => button.classList.contains("is-active"))).toEqual([filterButton("all")]);
@@ -269,6 +409,17 @@ describe("initGalleryFilters", () => {
       expect(expected, `gallery-data.json has no items for the "${country}" filter`).toBeGreaterThan(0);
       expect(visibleFigures()).toHaveLength(expected);
       expect(visibleFigures().every((figure) => figure.dataset.country === country)).toBe(true);
+      // The whole chapter shows: its heading, offer link and every photograph; the others hide whole.
+      expect(visibleChapters()).toHaveLength(1);
+      const [chapter] = visibleChapters();
+      expect(chapter.dataset.country).toBe(country);
+      expect(chapter.querySelector("h2").textContent).toBe(button.textContent.trim());
+      expect(chapter.querySelector("a").hasAttribute("href")).toBe(true);
+      expect(chapter.querySelectorAll("figure")).toHaveLength(expected);
+      chapters()
+        .filter((other) => other !== chapter)
+        .forEach((other) => expect(other.classList.contains("is-hidden")).toBe(true));
+      expect(galleryEl().querySelectorAll(".is-hidden figure")).toHaveLength(galleryData.length - expected);
       expect(pressedFilters()).toEqual([country]);
       expect(filterButton("all").getAttribute("aria-pressed")).toBe("false");
     });
@@ -280,6 +431,7 @@ describe("initGalleryFilters", () => {
     filterButton("tokio").click();
     filterButton("all").click();
 
+    expect(visibleChapters()).toHaveLength(6);
     expect(visibleFigures()).toHaveLength(galleryData.length);
     expect(pressedFilters()).toEqual(["all"]);
   });
@@ -290,6 +442,8 @@ describe("initGalleryFilters", () => {
 
     filterButton("tokio").click();
 
+    expect(chapters()).toHaveLength(1);
+    expect(visibleChapters()).toHaveLength(1);
     expect(visibleFigures()).toHaveLength(islandia.length);
     expect(pressedFilters()).toEqual(["all"]);
     expect(filterButton("tokio").getAttribute("aria-pressed")).toBe("false");
