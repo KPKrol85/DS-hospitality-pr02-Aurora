@@ -257,22 +257,9 @@ Priorities express design value and dependency, not defect severity. P1 items es
 
 ### IMP-DESIGN-09 — Replace the page-hero map watermark with a purpose-drawn cartographic motif
 
-- **Status:** Proposed
-- **Priority:** P2
-- **Affected area:** `.page-hero` on `about.html`, `tours.html`, `tour.html`, `gallery.html`, `contact.html`, `regulamin.html`, `polityka-prywatnosci.html` and `cookies.html`; the utility-page card on `404.html`, `dziekuje.html` and `offline.html`; `assets/img/about/mapa.svg`.
-- **Evidence:** Source: `.page-hero::before` draws `mapa.svg` at 12% opacity, centred, at `clamp(220px, 26vw, 420px)`, on eight pages. The file is 9,898,547 bytes and wraps two embedded PNG images in SVG masks; its colour is sand `#edcaae`. Utility pages carry no motif. Visual: the map reads as a faint texture placed without relation to title or content in both themes.
-- **Current state:** The cartographic idea exists but is a heavy raster texture used as a background watermark.
-- **Design judgment:** The motif is the right idea for Aurora, but at 12% opacity and fixed centring it is decoration rather than identity. A real vector route-and-map motif could carry the direction across every supporting page at a fraction of the weight.
-- **Proposed improvement:** Draw one lightweight vector motif: simplified map linework, route lines and place markers in the line and accent tokens from IMP-DESIGN-01. Place it deliberately in page heroes, aligned to the grid and never behind running text, with a reduced variant for utility pages. The legal pages receive only the shared motif and material.
-- **Expected value:** A signature element that makes subpages recognizable without the logo, and a lighter asset in place of a 9.9 MB file.
-- **Implementation scope:** A new SVG asset (vector, no embedded raster) and the page-hero and utility-page rules. Keep breadcrumb, title and lead structure, page content, print styles and both themes. `mapa.svg` is retired only after no reference remains, with the asset checks and the Service Worker precache rules checked.
-- **Dependencies:** IMP-DESIGN-01.
-- **Acceptance criteria:**
-  - All eight page heroes and three utility pages show the motif at 390, 768 and 1440 px in both themes, without overlapping running text.
-  - The motif asset contains no embedded raster data, and its size is recorded and approved.
-  - It is decorative to assistive technology.
-  - Print output of legal pages is unchanged.
-  - `check:assets` and `check:css-assets` pass.
+- **Status:** COMPLETED — implemented and verified.
+- **Result:** Replaced the 9,898,547-byte `mapa.svg` with one original 1,490-byte vector chart (99.984947% smaller): curved grid, abstract contours, one cyan route and three markers. Shared decorative pseudo-elements reserve a separate row below hero copy on mobile and a column beside it from 760 px, with compact tour and quieter utility variants across all eight heroes and three utility pages; HTML, content, accessibility contracts and legal print rules are unchanged. Retired the old asset and precached the new one under SW `aurora-1.44`.
+- **Verification:** 89/89 focused Vitest tests, asset/CSS/CSP checks and a clean production build with recorded bundle hashes passed; the surface-role test retains its pre-existing missing `.tour-detail` rule failure, also absent at HEAD. Headless Chromium 147 checked all 11 pages at 390/768/1440 px in both themes in source and production, no overlap or overflow, system themes, utility keyboard focus, pixel-identical print emulations of the three legal pages, and the real offline fallback with its precached motif. Full suite, other browser engines and paginated print were not checked; technical implementation is complete, with final owner visual/asset approval pending.
 - **Impact:** Medium
 - **Effort:** Medium
 

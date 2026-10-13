@@ -373,6 +373,18 @@ describe("HTML requests offline", () => {
 });
 
 describe("static asset requests", () => {
+  it("keeps the offline page's decorative motif available without a prior subpage visit", async () => {
+    await worker.install();
+    worker.network.mockRejectedValue(new Error("offline"));
+    const path = "/assets/img/decor/aurora-cartographic-motif.svg";
+
+    const response = await worker.dispatchFetch(createRequest(path, { destination: "image" }));
+
+    expect(response).toBe(worker.lookup(worker.STATIC_CACHE, path));
+    expect(response.body).toBe(`precached ${path}`);
+    expect(worker.network).not.toHaveBeenCalled();
+  });
+
   it("answers a precached bundle from the static cache without calling fetch", async () => {
     await worker.install();
 

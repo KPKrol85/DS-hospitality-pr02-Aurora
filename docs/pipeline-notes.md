@@ -40,7 +40,7 @@ Their copies in `dist/` (production):
 - `assetReferences` in `scripts/site-build-contract.js` is the only declaration of these two tag pairs. `scripts/build-dist.js` applies it and `scripts/check-css-assets.js` verifies both sides against it.
 - `scripts/build-dist.js` replaces each exact source tag once in each page copy. It fails when a page contains a source tag zero or several times, or still mentions `css/style.css` or `js/script.js` after the rewrite.
 - Development needs an HTTP server rooted at the project directory; module scripts and `fetch()` do not work over `file://`. The browser resolves the `@import` rules of `css/style.css` and the module imports of `js/script.js` natively.
-- `css/modules/fonts.css` references `../../assets/fonts/*.woff2` and `css/modules/subpages.css` references `../../assets/img/about/mapa.svg`. In development they resolve from `/css/modules/` to `/assets/…`. `postcss-import` inlines them into `/css/style.min.css` unchanged, where URL resolution stops the extra `../` at the site root, so production resolves to the same `/assets/…` files. Like the root-relative Service Worker paths, this requires deployment at the domain root.
+- `css/modules/fonts.css` references `../../assets/fonts/*.woff2` and `css/modules/subpages.css` references `../../assets/img/decor/aurora-cartographic-motif.svg`. In development they resolve from `/css/modules/` to `/assets/…`. `postcss-import` inlines them into `/css/style.min.css` unchanged, where URL resolution stops the extra `../` at the site root, so production resolves to the same `/assets/…` files. Like the root-relative Service Worker paths, this requires deployment at the domain root.
 
 ## Font preload
 
@@ -102,7 +102,7 @@ dist/
 ## Service Worker
 
 - Production: esbuild replaces `__AURORA_PRODUCTION__` with `true`, so the check in `initPwaLifecycle()` of `js/features/service-worker-lifecycle.js`, which `js/script.js` calls at module evaluation, folds and only the registration branch remains in `dist/js/script.min.js`: `navigator.serviceWorker.register("/service-worker.js")` after `load`, the update banner for a waiting worker, the `SKIP_WAITING` message, and the reload on `controllerchange`.
-- The worker precaches `/`, `/index.html`, `/css/style.min.css`, `/js/script.min.js`, `/site.webmanifest`, and `/offline.html`, all of which exist in `dist/`. `offline.html` remains the offline fallback for HTML requests.
+- The worker precaches `/`, `/index.html`, `/css/style.min.css`, `/js/script.min.js`, `/site.webmanifest`, `/offline.html`, and `/assets/img/decor/aurora-cartographic-motif.svg`, all of which exist in `dist/`. `offline.html` remains the offline fallback for HTML requests; its decorative motif is available even without a prior subpage visit.
 - Development: the unbundled sources leave the flag undeclared, so the maintained pages never register the worker, whose precache would fail on the absent bundles. They unregister any worker already registered on the origin, so an earlier production preview at the same address cannot keep serving the sources cache-first.
 - `VERSION` names both caches, and activation deletes the caches of every other version. The build ties it to the generated bundles, as described in the next section.
 

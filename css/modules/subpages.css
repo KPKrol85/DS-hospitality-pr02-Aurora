@@ -5,30 +5,75 @@
   overflow: visible;
   padding: var(--space-2) 0 var(--space-6);
 }
-.page-hero::before {
+.page-hero .container {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+.page-hero .container > * {
+  min-width: 0;
+  grid-column: 1;
+}
+/* One vector chart, on its own grid track: below the copy on small screens and beside it when the
+   container can accommodate two columns. The external SVG uses neutral ink and the brand cyan,
+   chosen for both grounds; page custom properties do not inherit into an external image. */
+.page-hero .container::after,
+.utility-page__card::before {
   content: "";
-  position: absolute;
-  inset: 0;
-  background-image: url("../../assets/img/about/mapa.svg");
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: clamp(220px, 26vw, 420px);
-  opacity: 0.12;
+  display: block;
+  aspect-ratio: 26 / 15;
+  background: url("../../assets/img/decor/aurora-cartographic-motif.svg") center / contain no-repeat;
   pointer-events: none;
 }
-.page-hero .container {
-  position: relative;
-  z-index: 1;
+.page-hero .container::after {
+  width: min(50%, 11rem);
+  justify-self: end;
+  margin-top: var(--space-3);
 }
 .page-hero__title {
   margin: var(--space-8) 0 var(--space-4);
   text-wrap: balance;
 }
 .page-hero__lead {
-  margin-bottom: var(--space-6);
+  margin-bottom: 0;
   color: var(--muted);
   max-width: 62ch;
   text-wrap: pretty;
+}
+/* tour.html deliberately keeps only the breadcrumb here; its title belongs to the offer below. */
+.page-tour-detail .page-hero .container::after {
+  width: min(50%, 9rem);
+}
+@media (min-width: 760px) {
+  .page-hero .container {
+    grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr);
+    column-gap: var(--space-6);
+  }
+  .page-hero .breadcrumb {
+    grid-column: 1 / -1;
+  }
+  .page-hero .container::after {
+    grid-column: 2;
+    grid-row: 2 / 4;
+    align-self: center;
+    width: 100%;
+    max-width: 24rem;
+    margin-top: var(--space-7);
+  }
+  .page-hero__lead {
+    margin-bottom: var(--space-6);
+  }
+  .page-tour-detail .page-hero .container {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 9rem);
+    align-items: center;
+  }
+  .page-tour-detail .page-hero .breadcrumb {
+    grid-column: 1;
+  }
+  .page-tour-detail .page-hero .container::after {
+    grid-row: 1;
+    width: 100%;
+    margin-top: 0;
+  }
 }
 
 /* Subpage: Tours */
@@ -776,6 +821,11 @@
   border-radius: var(--radius-lg);
   padding: var(--space-5);
   text-align: center;
+}
+.utility-page__card::before {
+  width: min(50%, 8rem);
+  margin: 0 auto var(--space-5);
+  opacity: 0.65;
 }
 .utility-page__eyebrow {
   margin: 0 0 var(--space-3);
