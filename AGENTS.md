@@ -60,6 +60,24 @@ Preserve the original identifier, title, impact, and effort. Remove obsolete pro
 
 Keep open or incomplete proposals unchanged. Never claim completion or verification without evidence. Update improvement records only within the approved task scope.
 
+## Audit finding lifecycle
+
+Preserve all original audit findings throughout remediation and archival, including `P0-*`, `P1-*`, `P2-*` and optional `O-*` items.
+
+- Never delete a finding solely because it has been resolved.
+- Preserve its original identifier, title, severity or optional category, and order.
+- After implementation and verification, replace the active finding description with a concise completion record containing **Status**, **Resolution** and **Verification**.
+- Retain a brief original issue description when necessary to explain the resolution.
+- Record actual verification results and relevant limitations. Never claim unperformed checks as passed.
+- Keep unresolved findings open until their completion is supported by evidence.
+- When closing an audit, archive all original findings, including completed items, without deleting their history.
+
+Keep completion records concise, professional, technical and factual. Avoid repeated implementation narratives and unnecessary verification details.
+
+A new root `AUDIT.md` is a separate current-state assessment. Historical findings remain in the archived audit and must not be copied into a new audit without current verification.
+
+Apply these rules only within the explicitly approved documentation scope.
+
 ## Delivery safety
 
 Do not stage, commit, push, tag, deploy, create or modify branches or worktrees, or perform other repository-delivery actions unless the project owner explicitly requests them.
