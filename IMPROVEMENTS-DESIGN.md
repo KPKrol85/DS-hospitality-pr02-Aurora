@@ -217,9 +217,9 @@ Priorities express design value and dependency, not defect severity. P1 items es
 
 ### IMP-DESIGN-04 — Re-art-direct the home hero around one dominant photographic anchor
 
-- **Status:** COMPLETED — implemented; owner browser QA pending (2026-10-11).
-- **Result:** Recomposed the hero around the uncropped 3:2 approved photograph (with its embedded Aurora mark): full container width under the copy below 1024 px, about 53% of the grid from 1024 px and 56% from 1280 px, with the copy on the page background. The copy column fits the H1 in three lines from 1024 px and two from 1280 px (owner follow-up: the first 60–63% split wrapped it into four). Tightened the mobile spacing, removed the `.hero__logo` watermark and the static `scale(1.01)`, and updated `sizes` and its responsive-image contract. Preserved copy, DOM order, CTAs, alt, LCP attributes, typography tokens, themes and reduced motion. SW `aurora-1.36`.
-- **Verification:** H1 line widths computed from Manrope Bold font metrics (about 476 px for two lines at 64 px). The final `npm run build` passed after the `VERSION` bump and `npm run record:sw-bundles`. Vitest, browser, responsive, theme and 200% zoom checks were not run; owner visual acceptance remains pending.
+- **Status:** COMPLETED — implemented and verified (2026-10-30).
+- **Result:** Recomposed the responsive home hero around the uncropped 3:2 photograph, with balanced text and image proportions across desktop, tablet and mobile. Improved heading wrapping and spacing, removed redundant decorations, and updated responsive image sizing while preserving accessibility, theme and interaction contracts. SW `aurora-1.36`.
+- **Verification:** Production build passed after the Service Worker cache update. Owner visual QA accepted at 1440, 1024 and 390 px in both themes, including typography, image presentation and responsive layout. Vitest, 200% zoom and other browser engines were not verified.
 - **Impact:** High
 - **Effort:** Medium
 
