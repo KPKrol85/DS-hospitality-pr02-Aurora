@@ -48,12 +48,12 @@
 
 **Goal:** Remove the two defects visible only in the production package: the first-visit reload and the broken nested-path 404 page.
 
-- [ ] **PH2-01 — Reload only when a new Service Worker replaces an active one**
-  - [ ] ignore the `controllerchange` that the first `clients.claim()` causes on a page without a controller (`js/features/service-worker-lifecycle.js`)
-  - [ ] keep exactly one reload after "Odśwież" in the update banner (`SKIP_WAITING`)
-  - [ ] add a focused jsdom regression test for both paths; no current test covers this module
-  - [ ] update the Service Worker section of `docs/pipeline-notes.md`, which describes the unconditional reload
-  - [ ] complete the cache-version update for the changed JS bundle
+- [x] **PH2-01 — Reload only when a new Service Worker replaces an active one**
+  - [x] ignore the `controllerchange` that the first `clients.claim()` causes on a page without a controller (`js/features/service-worker-lifecycle.js`)
+  - [x] keep exactly one reload after "Odśwież" in the update banner (`SKIP_WAITING`)
+  - [x] add a focused jsdom regression test for both paths; no current test covers this module
+  - [x] update the Service Worker section of `docs/pipeline-notes.md`, which describes the unconditional reload
+  - [x] complete the cache-version update for the changed JS bundle
   - **Verification:** under `npm run preview:dist`, a fresh-profile visit to any page produces one main-frame load, and the update-banner flow still reloads once
   - **Depends on:** `PH1-01`
   - **Source:** `AUDIT.md` — P2-01
@@ -82,9 +82,10 @@
 
 - [ ] **PH3-02 — Describe the cache names in the cookies policy independently of `VERSION`**
   - [ ] replace `aurora-1.3_static` and `aurora-1.3_html` in the storage table of `cookies.html` with a description of the `<VERSION>_static` and `<VERSION>_html` names that `service-worker.js` creates
+  - [ ] clarify the purpose of the `<VERSION>_html` cache, now described as storing "ostatnio odwiedzonych podstron": it holds only pages loaded while the Service Worker controls the page, so since `PH2-01` the first page of a first visit is available offline only after it has been opened again online, and other pages fall back to `offline.html`
   - [ ] update the policy's last-updated date
-  - **Completion condition:** the cache names in `cookies.html` remain correct for the current and any future `VERSION`
-  - **Source:** `AUDIT.md` — P2-06
+  - **Completion condition:** the cache names in `cookies.html` remain correct for the current and any future `VERSION`, and the HTML cache description matches the pages the worker stores
+  - **Source:** `AUDIT.md` — P2-06; owner decision of 2026-10-31 after the `PH2-01` offline check in Chromium
 
 - [ ] **PH3-03 — Correct punctuation spacing and the English theme-toggle tooltip**
   - [ ] remove the line break between inline elements and the following punctuation: 27 occurrences, in `regulamin.html` (10), `cookies.html` (10), `polityka-prywatnosci.html` (6) and the consent label of `contact.html` (1)

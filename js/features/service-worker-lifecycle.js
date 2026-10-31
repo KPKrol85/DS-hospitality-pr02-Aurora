@@ -1,6 +1,10 @@
 let isRefreshing = false;
+// Set when "Odśwież" on this page asks the waiting worker to take over.
+let isUpdateAccepted = false;
 
-export function initPwaLifecycle() {
+// reload reloads the current document once a new worker controls it; tests pass their own, as
+// jsdom cannot reload.
+export function initPwaLifecycle({ reload = () => window.location.reload() } = {}) {
   if ("serviceWorker" in navigator) {
     // __AURORA_PRODUCTION__ is defined as true only in the production bundle (build:js
     // --define). Development loads the unbundled sources, which lack the bundles the
@@ -11,10 +15,19 @@ export function initPwaLifecycle() {
           const registration = await navigator.serviceWorker.register("/service-worker.js");
           watchForWaitingServiceWorker(registration);
 
+          // Activation calls clients.claim(), so a first visit also receives controllerchange when
+          // the page gets its first controller; that page already runs the current bundles. Reload
+          // once when a new worker replaces the page's controller (only after SKIP_WAITING from the
+          // update banner of an open page), or when it takes over after "Odśwież" on a page loaded
+          // without a controller, such as after a hard reload.
+          let controller = navigator.serviceWorker.controller;
+
           navigator.serviceWorker.addEventListener("controllerchange", () => {
-            if (isRefreshing) return;
+            const replacedController = controller;
+            controller = navigator.serviceWorker.controller;
+            if (isRefreshing || (!replacedController && !isUpdateAccepted)) return;
             isRefreshing = true;
-            window.location.reload();
+            reload();
           });
         } catch {
 
@@ -59,6 +72,7 @@ function promptServiceWorkerUpdate(registration) {
   dismissButton.textContent = "Zamknij";
 
   refreshButton.addEventListener("click", () => {
+    isUpdateAccepted = true;
     registration.waiting?.postMessage({ type: "SKIP_WAITING" });
   });
 

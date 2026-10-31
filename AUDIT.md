@@ -131,6 +131,9 @@ None detected.
 - **Impact:** Every first-time visitor sees an unrequested reload. Any interaction that starts before the worker activates is lost. On real networks, where precaching takes longer, the window widens.
 - **Recommended direction:** Reload on `controllerchange` only when it replaces an existing controller, for example after the update banner's `SKIP_WAITING`. Leave the first claim without a reload.
 - **Verification criteria:** A fresh-profile visit to any `dist/` page produces one main-frame load. The update-banner flow still reloads once after "Odśwież".
+- **Status:** COMPLETED — verified.
+- **Resolution:** The `controllerchange` handler now tracks the page's controller and reloads only when a new worker replaces it, or takes over after "Odśwież" on that page; the existing guard still prevents a second reload, and `clients.claim()` and the update banner are unchanged. The changed JS bundle was released under `aurora-1.47`, and `tests/service-worker-lifecycle.test.js` covers both paths.
+- **Verification:** Under `npm run preview:dist` in headless Chrome 156, a fresh context per page loaded all 12 pages once (twice at the unchanged HEAD), and text typed on `contact.html` was kept. The update-banner flow reloaded exactly once after "Odśwież" and left only the `aurora-1.47` caches; `npm test` passed 308/308 and `npm run predeploy:check` exited 0.
 
 ### [P2-02] 404 page breaks on nested unknown paths
 
