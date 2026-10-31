@@ -27,12 +27,12 @@
 
 **Goal:** Restore `npm run predeploy:check` as a passing and trustworthy deployment gate on the committed revision.
 
-- [ ] **PH1-01 — Complete the pending Service Worker cache-version update** — **Priority:** Critical
-  - [ ] confirm on a clean checkout that `npm run build` stops only at `check:sw-bundles`, where the CSS hash differs from the `aurora-1.45` record and the JS hash matches
-  - [ ] raise `VERSION` in `service-worker.js` above `aurora-1.45`
-  - [ ] record both bundle hashes for the new version with `npm run record:sw-bundles`
-  - [ ] confirm that a following clean `npm run build` reproduces the recorded hashes
-  - [ ] keep `service-worker-bundles.json` and `service-worker.js` in the same change
+- [x] **PH1-01 — Complete the pending Service Worker cache-version update** — **Priority:** Critical
+  - [x] confirm on a clean checkout that `npm run build` stops only at `check:sw-bundles`, where the CSS hash differs from the `aurora-1.45` record and the JS hash matches
+  - [x] raise `VERSION` in `service-worker.js` above `aurora-1.45`
+  - [x] record both bundle hashes for the new version with `npm run record:sw-bundles`
+  - [x] confirm that a following clean `npm run build` reproduces the recorded hashes
+  - [x] keep `service-worker-bundles.json` and `service-worker.js` in the same change
   - **Completion condition:** `npm run build` exits 0 on a clean checkout with the lockfile toolchain, and `check:sw-bundles` reports that both bundles match the recorded version
   - **Source:** `AUDIT.md` — P0-01
 

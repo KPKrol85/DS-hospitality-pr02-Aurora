@@ -112,6 +112,9 @@ Once the bundle record is corrected, the project fits continued development and 
 - **Impact:** The documented release workflow says to deploy only the `dist/` of a passing `npm run predeploy:check`, and that check cannot currently pass. If a package with these CSS bytes were published under the already-used `aurora-1.45` cache name, returning visitors could keep a different cached stylesheet.
 - **Recommended direction:** Complete the documented intentional cache-version update for the committed CSS. Raise `VERSION` in `service-worker.js`, record the bundles with `npm run record:sw-bundles` and rebuild. Then commit the record together with the worker.
 - **Verification criteria:** On a clean checkout with the lockfile toolchain, `npm run build` exits 0, and `check:sw-bundles` reports that both bundles match the recorded version.
+- **Status:** COMPLETED — verified.
+- **Resolution:** Raised `VERSION` to `aurora-1.46` and recorded both bundles with `npm run record:sw-bundles`: the CSS hash changed to `8900dd27…` and the JS hash `ab803a5c…` stayed unchanged. No application CSS or JavaScript changed.
+- **Verification:** On a clean worktree at `f5bd29e`, with the installed toolchain matching `package-lock.json`, `npm run build` first reproduced the CSS-only mismatch. After recording, it exited 0, and `check:sw-bundles` confirmed both bundles for `aurora-1.46`.
 
 ## 5. P1 — Important issues worth fixing next
 

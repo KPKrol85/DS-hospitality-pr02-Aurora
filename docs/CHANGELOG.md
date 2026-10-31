@@ -88,6 +88,7 @@ For each implementation task, determine `Changelog: yes` or `Changelog: no`. Add
 - Updated canonical, social, structured-data, and legal URLs to the confirmed Netlify production domain.
 - Replaced incomplete Manrope and Inter font subsets with properly licensed Latin and Latin Extended variants.
 - Corrected Polish gallery captions and inaccurate or placeholder image alternative text.
+- Fixed the failing production build caused by a stale bundle record by releasing the current CSS bundle under Service Worker cache `aurora-1.46`.
 
 ### Security
 
