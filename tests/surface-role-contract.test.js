@@ -36,7 +36,6 @@ const interactive = [
 ];
 const overlays = [
   ["layout.css", ".nav"],
-  ["components.css", ".project-notice__inner"],
   ["components.css", ".sw-update-banner"],
 ];
 const controls = [

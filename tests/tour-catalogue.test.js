@@ -51,16 +51,6 @@ function listingPage() {
   );
 }
 
-function contactPage() {
-  return page([
-    '<select name="tour" required>',
-    '  <option value="">Wybierz ofertę</option>',
-    ...offers.map(({ id, name }) => `  <option value="${id}">${escapeText(name)}</option>`),
-    '  <option value="custom">Inna podróż</option>',
-    "</select>",
-  ]);
-}
-
 // As on the real page, an "item <n>" comment precedes each card, which locates its start tag.
 function homePage() {
   return page(
@@ -121,7 +111,6 @@ beforeEach(() => {
   siteRoot = mkdtempSync(join(tmpdir(), "aurora-tour-catalogue-"));
   write("assets/data/tours.json", JSON.stringify(offers.map(({ anchor, ...tour }) => tour), null, 2));
   write("tours.html", listingPage());
-  write("contact.html", contactPage());
   write("index.html", homePage());
 });
 
@@ -135,7 +124,7 @@ describe("check-tour-catalogue.js", () => {
 
     expect(status, stderr).toBe(0);
     expect(stdout).toContain(
-      "Tour catalogue check passed (4 offers in assets/data/tours.json match the tours.html listing cards, the contact.html tour select, and the 3 featured offers in index.html)."
+      "Tour catalogue check passed (4 offers in assets/data/tours.json match the tours.html listing cards and the 3 featured offers in index.html)."
     );
   });
 

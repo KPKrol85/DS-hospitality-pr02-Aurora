@@ -23,6 +23,11 @@ function field(name) {
   return document.querySelector(`[data-tour-${name}]`);
 }
 
+// The project inquiry action in the offer header, a static link that no offer state rewrites.
+function enquiryLink() {
+  return document.querySelector(".tour-detail__header a.btn");
+}
+
 function statePanel() {
   return document.querySelector("[data-tour-state]");
 }
@@ -103,14 +108,14 @@ describe("initTourDetail", () => {
     mountFromPage("tour.html", "main");
   });
 
-  it("ships the enquiry action as a plain link to the contact form", () => {
-    const link = field("enquiry");
+  it("ships the project inquiry action as a plain link to the contact form", () => {
+    const link = enquiryLink();
 
     expect(link.localName).toBe("a");
     expect(link.getAttribute("href")).toBe("contact.html");
     expect(link.classList.contains("btn")).toBe(true);
-    expect(link.textContent.trim()).toBe("Zapytaj o ofertę");
-    expect(document.querySelectorAll("[data-tour-enquiry]")).toHaveLength(1);
+    expect(link.textContent.trim()).toBe("Zapytaj o projekt");
+    expect(document.querySelectorAll('a[href^="contact.html"]')).toHaveLength(1);
   });
 
   it.each(tours.map((tour) => [tour.id, tour]))("renders %s from tours.json", async (id, tour) => {
@@ -126,14 +131,14 @@ describe("initTourDetail", () => {
     expect(field("summary").innerHTML).toBe(parsed(tour.shortSummary));
     expect(field("content").textContent.trim()).not.toBe("");
     expect(field("content").innerHTML).toBe(parsed(tour.longDescription));
-    expect(field("enquiry").getAttribute("href")).toBe(`contact.html?tour=${tour.id}`);
+    expect(enquiryLink().getAttribute("href")).toBe("contact.html");
   });
 
   it("ignores whitespace around the id", async () => {
     await renderTour("/tour.html?id=%20patagonia%20");
 
     expect(field("title").textContent).toBe("Patagonia Signature Expedition");
-    expect(field("enquiry").getAttribute("href")).toBe("contact.html?tour=patagonia");
+    expect(enquiryLink().getAttribute("href")).toBe("contact.html");
   });
 
   it("renders the first catalogue image as the main picture", async () => {
@@ -205,7 +210,7 @@ describe("initTourDetail", () => {
     expect(fetchMock).not.toHaveBeenCalled();
     expect(document.querySelector("main").innerHTML).toBe(placeholder);
     expect(field("title").textContent).toBe("Nie znaleziono lub nie wybrano oferty");
-    expect(field("enquiry").getAttribute("href")).toBe("contact.html");
+    expect(enquiryLink().getAttribute("href")).toBe("contact.html");
   });
 
   it("keeps the placeholder content for an id missing from the catalogue", async () => {
@@ -216,7 +221,7 @@ describe("initTourDetail", () => {
     expect(fetchMock).toHaveBeenCalledOnce();
     expect(document.querySelector("main").innerHTML).toBe(placeholder);
     expect(field("gallery").children).toHaveLength(0);
-    expect(field("enquiry").getAttribute("href")).toBe("contact.html");
+    expect(enquiryLink().getAttribute("href")).toBe("contact.html");
   });
 
   it("shows a loading state, and no not-found content, until the catalogue arrives", async () => {
@@ -244,7 +249,7 @@ describe("initTourDetail", () => {
     expect(field("status").textContent).toBe("");
     expect(field("title").textContent).toBe(tour.name);
     expect(field("breadcrumb-current").textContent).toBe(tour.name);
-    expect(field("enquiry").getAttribute("href")).toBe("contact.html?tour=maroko");
+    expect(enquiryLink().getAttribute("href")).toBe("contact.html");
     expect(document.activeElement).toBe(document.body);
   });
 
@@ -289,7 +294,7 @@ describe("initTourDetail", () => {
     expect(isShown(field("retry"))).toBe(true);
     expect(toursLink().getAttribute("href")).toBe("tours.html");
     expect(field("breadcrumb-current").textContent).toBe("Szczegóły oferty");
-    expect(field("enquiry").getAttribute("href")).toBe("contact.html");
+    expect(enquiryLink().getAttribute("href")).toBe("contact.html");
     expect(consoleError).toHaveBeenCalledWith("Błąd ładowania danych wycieczki", expect.any(errorType));
     expect(document.activeElement).toBe(document.body);
   });

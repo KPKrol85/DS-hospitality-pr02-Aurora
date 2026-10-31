@@ -234,12 +234,12 @@
               <a class="legal__back-link" href="#privacy-toc-heading" aria-label="Wróć do spisu treści">↑</a>
             </div>
             <p>
-              Serwis „Aurora Travel” ma charakter demonstracyjny i służy prezentacji rozwiązań projektowych oraz implementacji front-end przygotowanych dla branży turystycznej i hospitality. Serwis
-              nie prowadzi rzeczywistej działalności turystycznej ani sprzedaży i nie umożliwia składania wiążących zamówień, rezerwacji ani dokonywania płatności.
+              Serwis „Aurora Travel” ma charakter demonstracyjny i służy prezentacji rozwiązań projektowych oraz implementacji front-end przygotowanych dla branży turystycznej i hospitality. „Aurora Travel”
+              jest fikcyjną marką, a Serwis nie prowadzi rzeczywistej działalności turystycznej ani sprzedaży i nie umożliwia składania wiążących zamówień, rezerwacji ani dokonywania płatności.
             </p>
             <p>
               Funkcjonalności dostępne w Serwisie należy traktować zgodnie z ich rzeczywistym przeznaczeniem opisanym w niniejszym dokumencie. Formularz kontaktowy dostępny na podstronie „Kontakt”
-              rzeczywiście przesyła wprowadzone dane do Administratora za pośrednictwem dostawcy obsługującego formularz — wprowadzane w nim dane nie mają zatem charakteru wyłącznie testowego i są
+              służy do kontaktu z Administratorem w sprawie Projektu lub podobnej strony internetowej i rzeczywiście przesyła wprowadzone dane do Administratora za pośrednictwem dostawcy obsługującego formularz — wprowadzane w nim dane nie mają zatem charakteru wyłącznie testowego i są
               przetwarzane zgodnie z zasadami opisanymi w niniejszej Polityce prywatności.
             </p>
             <p>Za pośrednictwem Serwisu nie należy przekazywać w szczególności:</p>
@@ -268,7 +268,7 @@
               <li>imię i nazwisko,</li>
               <li>adres e-mail,</li>
               <li>numer telefonu, jeżeli został podany,</li>
-              <li>wybraną wycieczkę, terminy podróży oraz liczbę uczestników,</li>
+              <li>temat zapytania,</li>
               <li>treść wiadomości oraz inne informacje dobrowolnie przekazane przez Użytkownika,</li>
               <li>adres IP oraz podstawowe dane techniczne związane z żądaniem, takie jak typ i wersja przeglądarki, system operacyjny lub adres odwiedzanej podstrony.</li>
             </ul>
@@ -279,7 +279,7 @@
             <ul>
               <li>
                 <code>localStorage</code>
-                – zapamiętanie wybranego motywu jasnego lub ciemnego oraz potwierdzenia informacji o demonstracyjnym charakterze Serwisu,
+                – zapamiętanie wybranego motywu jasnego lub ciemnego,
               </li>
               <li>Cache Storage – przechowywanie zasobów statycznych oraz ostatnio odwiedzonych podstron na potrzeby działania Serwisu w trybie offline,</li>
               <li>Service Worker – obsługa pamięci podręcznej oraz dostarczenie strony zastępczej przy braku połączenia z siecią.</li>
@@ -323,7 +323,7 @@
                 <tbody>
                   <tr>
                     <th scope="row">Obsługa zapytania przesłanego za pośrednictwem formularza kontaktowego</th>
-                    <td>Imię i nazwisko, adres e-mail, numer telefonu (jeżeli podany), wybrana wycieczka, terminy podróży, liczba osób, treść wiadomości</td>
+                    <td>Imię i nazwisko, adres e-mail, numer telefonu (jeżeli podany), temat zapytania, treść wiadomości</td>
                     <td>Art. 6 ust. 1 lit. f RODO – prawnie uzasadniony interes Administratora polegający na prowadzeniu korespondencji i udzieleniu odpowiedzi na zapytanie</td>
                     <td>Do zakończenia korespondencji, a następnie przez okres niezbędny do zabezpieczenia lub dochodzenia ewentualnych roszczeń</td>
                   </tr>
@@ -399,7 +399,7 @@
                     <th scope="row">Netlify, Inc.</th>
                     <td>Hosting Serwisu oraz obsługa formularza kontaktowego (Netlify Forms)</td>
                     <td>
-                      Dane techniczne związane z hostingiem oraz dane przesłane w formularzu kontaktowym (imię i nazwisko, adres e-mail, numer telefonu, wybrana wycieczka, terminy, liczba osób,
+                      Dane techniczne związane z hostingiem oraz dane przesłane w formularzu kontaktowym (imię i nazwisko, adres e-mail, numer telefonu, temat zapytania,
                       treść wiadomości)
                     </td>
                     <td>Podmiot przetwarzający dane w zakresie hostingu i obsługi formularza</td>
@@ -551,7 +551,7 @@
             <ul>
               <li>
                 <code>localStorage</code>
-                – zapamiętanie wybranego motywu oraz potwierdzenia informacji o demonstracyjnym charakterze Serwisu,
+                – zapamiętanie wybranego motywu,
               </li>
               <li>Cache Storage oraz Service Worker – zapewnienie działania wybranych zasobów Serwisu w trybie offline.</li>
             </ul>
@@ -613,32 +613,11 @@
           <!-- Data ostatniej aktualizacji -->
           <p class="legal__meta">
             Data ostatniej aktualizacji:
-            <time datetime="2026-09-23">23.09.2026</time>
+            <time datetime="2026-10-31">31.10.2026</time>
           </p>
         </div>
       </section>
     </main>
-
-    <!-- Project Notice -->
-    <section class="project-notice" aria-labelledby="project-notice-title" data-project-notice>
-      <div class="project-notice__inner">
-        <h2 class="project-notice__title" id="project-notice-title">Informacja o projekcie</h2>
-        <p class="project-notice__text">
-          Serwis "Aurora Travel" ma charakter demonstracyjny i został przygotowany przez
-          <strong>KP_Code Digital Studio</strong>
-          jako przykładowa strona internetowa dla branży hotelarskiej i turystycznej. Korzystając z serwisu akceptujesz
-          <a class="project-notice__link" href="regulamin.html">Regulamin</a>
-          .
-        </p>
-        <div class="project-notice__links" aria-label="Dokumenty prawne">
-          <a class="project-notice__link" href="polityka-prywatnosci.html">Polityka prywatności</a>
-          <a class="project-notice__link" href="cookies.html">Polityka cookies</a>
-        </div>
-        <div class="project-notice__actions">
-          <button class="btn" type="button" data-project-notice-accept hidden>Rozumiem i zamykam</button>
-        </div>
-      </div>
-    </section>
 
     <!-- Footer -->
     <footer class="site-footer">
@@ -651,7 +630,7 @@
             <h2 class="site-footer__brand">
               <a class="site-footer__brand-link" href="index.html">Aurora Travel</a>
             </h2>
-            <p class="site-footer__description">Ekskluzywne biuro podróży tworzące spersonalizowane doświadczenia dla wymagających globtroterów.</p>
+            <p class="site-footer__description">Fikcyjne biuro podróży i demonstracyjny projekt strony stworzony przez KP_Code Digital Studio. Usługi, oferty, ceny i historia firmy mają charakter ilustracyjny.</p>
           </div>
           <!-- footer nav -->
           <div class="site-footer__col site-footer__col--nav">
@@ -675,10 +654,12 @@
           </div>
           <!-- footer contact -->
           <div class="site-footer__col site-footer__col--contact">
-            <h3 class="heading-divider">Kontakt</h3>
+            <h3 class="heading-divider">Kontakt z autorem</h3>
             <address class="site-footer__address">
               <p class="site-footer__address-text">
-                ul. Marynarki Wojennej 12
+                KP_Code Digital Studio
+                <br />
+                ul. Marynarki Wojennej 12/31
                 <br />
                 33-100 Tarnów
                 <br />

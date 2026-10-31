@@ -301,7 +301,7 @@
   transition: color 0.25s ease;
 }
 .site-footer__description {
-  max-width: 42ch;
+  max-width: 32ch;
   margin: 0;
   opacity: 0.9;
 }
@@ -478,6 +478,6 @@
     grid-area: auto;
   }
   .site-footer__description {
-    max-width: 28ch;
+    max-width: 24ch;
   }
 }

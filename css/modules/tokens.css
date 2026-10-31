@@ -65,7 +65,7 @@
      - Interactive surfaces (offer cards, the enquiry form) are --bg-elev with a hairline and
        --shadow-raised, which also lifts the sticky gallery filter bar and its active filter. Individual form controls are --bg-elev with a --border-control edge and no resting
        shadow.
-     - Overlays (navigation drawer, project notice, update banner) are --bg-overlay with a hairline
+     - Overlays (navigation drawer, update banner) are --bg-overlay with a hairline
        and --shadow-overlay; the lightbox close button takes the overlay surface and hairline.
      The dark edition separates the roles by surface lightness and hairlines, since shadows barely
      register on its ground.
@@ -143,10 +143,8 @@
   /* Layering, lowest to highest */
   --z-gallery-filters: 10;
   --z-filters: 20;
-  /* Above page content and filters; below the project notice, navigation, header and lightbox */
+  /* Above page content and filters; below the navigation, header and lightbox */
   --z-update-banner: 70;
-  /* Project notice */
-  --z-overlay: 90;
   /* Mobile navigation drawer; nested in the header, so on the page it stacks at --z-header */
   --z-nav: 850;
   --z-header: 900;

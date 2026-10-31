@@ -6,12 +6,7 @@ const projectRoot = process.cwd();
 // Canonical catalogue and the static pages that restate its offers.
 const catalogueFile = "assets/data/tours.json";
 const listingFile = "tours.html";
-const contactFile = "contact.html";
 const homeFile = "index.html";
-
-// Contact select options that are not catalogue offers: the empty required-field
-// placeholder and the custom inquiry option.
-const nonCatalogueOptionValues = new Set(["", "custom"]);
 
 const namedEntities = new Map([
   ["amp", "&"],
@@ -299,47 +294,6 @@ function checkListing(tours) {
   return listingAnchors;
 }
 
-function checkContactSelect(tours) {
-  const html = blankComments(readProjectFile(contactFile));
-  const locate = (index) => `${contactFile}:${getLineNumber(html, index)}`;
-  const select = findElements(html, "select").find((element) => element.attributes.name === "tour");
-
-  if (!select) {
-    addIssue(contactFile, "tour select", 'no <select name="tour"> found');
-    return;
-  }
-
-  const toursById = new Map(tours.map((tour) => [tour.id, tour]));
-  const catalogueIds = tours.map((tour) => tour.id).join(", ");
-  const listedIds = new Set();
-
-  for (const option of findElements(select.inner, "option", select.innerIndex)) {
-    const label = toText(option.inner);
-    const value = option.attributes.value ?? label;
-    const tour = toursById.get(value);
-
-    if (nonCatalogueOptionValues.has(value)) {
-      continue;
-    }
-
-    if (!tour) {
-      addIssue(locate(option.index), `option "${value}"`, `unknown catalogue ID (label "${label}"); catalogue IDs: ${catalogueIds}`);
-    } else if (listedIds.has(value)) {
-      addIssue(locate(option.index), value, "duplicate option");
-    } else if (label !== tour.name) {
-      addIssue(locate(option.index), value, `option label is "${label}", expected "${tour.name}" (from name)`);
-    }
-
-    listedIds.add(value);
-  }
-
-  for (const tour of tours) {
-    if (!listedIds.has(tour.id)) {
-      addIssue(locate(select.index), tour.id, `missing from the tour select (expected value "${tour.id}", label "${tour.name}")`);
-    }
-  }
-}
-
 function checkFeaturedCard(card, tour, subject, locate) {
   const title = findElements(card.inner, "h[1-6]", card.innerIndex).find((element) => hasClass(element, "tour-card__title"));
   const name = title && toText(title.inner);
@@ -405,7 +359,6 @@ function main() {
 
   if (issues.length === 0) {
     const listingAnchors = checkListing(tours);
-    checkContactSelect(tours);
     featuredOffers = checkFeaturedOffers(listingAnchors);
   }
 
@@ -418,7 +371,7 @@ function main() {
   }
 
   console.log(
-    `Tour catalogue check passed (${tours.length} offers in ${catalogueFile} match the ${listingFile} listing cards, the ${contactFile} tour select, ` +
+    `Tour catalogue check passed (${tours.length} offers in ${catalogueFile} match the ${listingFile} listing cards ` +
       `and the ${featuredOffers} featured ${featuredOffers === 1 ? "offer" : "offers"} in ${homeFile}).`
   );
 }

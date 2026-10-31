@@ -15,7 +15,6 @@ const initializers = vi.hoisted(() => ({
   initTourDetail: vi.fn(),
   initGallery: vi.fn(),
   initGalleryFilters: vi.fn(),
-  initProjectNotice: vi.fn(),
 }));
 
 vi.mock("../js/features/nav.js", () => ({ initNav: initializers.initNav }));
@@ -31,7 +30,6 @@ vi.mock("../js/features/lightbox.js", () => ({ initLightbox: initializers.initLi
 vi.mock("../js/features/tour-detail.js", () => ({ initTourDetail: initializers.initTourDetail }));
 vi.mock("../js/features/gallery.js", () => ({ initGallery: initializers.initGallery }));
 vi.mock("../js/features/gallery-filters.js", () => ({ initGalleryFilters: initializers.initGalleryFilters }));
-vi.mock("../js/features/project-notice.js", () => ({ initProjectNotice: initializers.initProjectNotice }));
 
 describe("page initializer isolation", () => {
   let consoleError;

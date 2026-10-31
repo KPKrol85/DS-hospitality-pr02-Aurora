@@ -11,7 +11,6 @@ import { initLightbox } from "./features/lightbox.js";
 import { initTourDetail } from "./features/tour-detail.js";
 import { initGallery } from "./features/gallery.js";
 import { initGalleryFilters } from "./features/gallery-filters.js";
-import { initProjectNotice } from "./features/project-notice.js";
 import { initPwaLifecycle } from "./features/service-worker-lifecycle.js";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -36,7 +35,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   runInitializer("initTourDetail", initTourDetail);
   runInitializer("initLightbox", initLightbox);
-  runInitializer("initProjectNotice", initProjectNotice);
   runInitializer("updateYear", updateYear);
 });
 

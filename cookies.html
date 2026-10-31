@@ -222,8 +222,8 @@
             <p>Operatorem Serwisu jest KP_Code Digital Studio, dalej zwany „Operatorem”.</p>
             <p>
               Serwis ma charakter prezentacyjny i służy przedstawieniu rozwiązań projektowych oraz implementacji front-end przygotowanych dla branży turystycznej i hospitality. Serwis nie prowadzi
-              rzeczywistej działalności turystycznej, nie prowadzi sprzedaży oraz nie umożliwia składania wiążących zamówień, rezerwacji ani dokonywania płatności. Formularz kontaktowy oraz
-              prezentowane oferty wycieczek służą wyłącznie demonstracji interfejsu.
+              rzeczywistej działalności turystycznej, nie prowadzi sprzedaży oraz nie umożliwia składania wiążących zamówień, rezerwacji ani dokonywania płatności. Prezentowane
+              oferty wycieczek służą wyłącznie demonstracji interfejsu, a formularz kontaktowy – kontaktowi z Operatorem w sprawie Projektu lub podobnej strony internetowej.
             </p>
             <p>
               Opisane w niniejszym dokumencie mechanizmy odpowiadają technologiom rzeczywiście wykorzystywanym w aktualnej wersji Serwisu. Zakres ich stosowania może ulec zmianie wraz z rozwojem
@@ -344,14 +344,6 @@
                     <td>Do usunięcia przez Użytkownika.</td>
                   </tr>
                   <tr>
-                    <th scope="row"><code>aurora-project-notice-accepted</code></th>
-                    <td><code>localStorage</code></td>
-                    <td>Operator</td>
-                    <td>niezbędna</td>
-                    <td>Zapamiętanie potwierdzenia przez Użytkownika informacji o demonstracyjnym charakterze Serwisu, aby komunikat nie wyświetlał się ponownie.</td>
-                    <td>Do usunięcia przez Użytkownika.</td>
-                  </tr>
-                  <tr>
                     <th scope="row"><code>aurora-1.3_static</code></th>
                     <td>Cache Storage</td>
                     <td>Operator</td>
@@ -380,7 +372,7 @@
                     <td>Pliki cookies oraz pamięć przeglądarki zapisywane w kontekście dostawcy</td>
                     <td>Google</td>
                     <td>funkcjonalna</td>
-                    <td>Wyświetlenie osadzonej mapy z lokalizacją biura na podstronie „Kontakt”. Mechanizm jest uruchamiany wyłącznie na tej podstronie, wraz z wczytaniem mapy.</td>
+                    <td>Wyświetlenie osadzonej mapy z lokalizacją biura autora projektu na podstronie „Kontakt”. Mechanizm jest uruchamiany wyłącznie na tej podstronie, wraz z wczytaniem mapy.</td>
                     <td>Nazwy oraz okresy przechowywania są ustalane przez dostawcę i nie są definiowane w kodzie Serwisu.</td>
                   </tr>
                 </tbody>
@@ -415,7 +407,6 @@
               <li>utrzymania bezpieczeństwa oraz stabilności technicznej,</li>
               <li>dostarczenia funkcjonalności wyraźnie żądanych przez Użytkownika,</li>
               <li>zapamiętania wybranego przez Użytkownika motywu jasnego lub ciemnego,</li>
-              <li>zapamiętania potwierdzenia informacji o demonstracyjnym charakterze Serwisu,</li>
               <li>zapewnienia działania wybranych zasobów Serwisu w trybie offline,</li>
               <li>wyświetlenia osadzonej mapy na podstronie „Kontakt”.</li>
             </ul>
@@ -460,7 +451,7 @@
               W aktualnej wersji Serwisu Operator nie stosuje własnych technologii analitycznych ani marketingowych. Mechanizmy wskazane w
               <a href="#cookies-section-3">punkcie 3</a>
               i ustawiane przez Operatora są uruchamiane wyłącznie w zakresie niezbędnym do dostarczenia Serwisu albo po wykonaniu przez Użytkownika czynności wyraźnie żądającej danej funkcji, to jest
-              przełączenia motywu lub potwierdzenia informacji o demonstracyjnym charakterze projektu.
+              przełączenia motywu.
             </p>
             <p>
               Osadzona mapa, o której mowa w
@@ -500,7 +491,6 @@
             <p>Usunięcie danych zapisanych przez Serwis powoduje następujące skutki:</p>
             <ul>
               <li>usunięcie zapisanego motywu – Serwis ponownie dopasuje motyw do ustawień systemowych urządzenia,</li>
-              <li>usunięcie potwierdzenia informacji o projekcie – komunikat o demonstracyjnym charakterze Serwisu wyświetli się ponownie,</li>
               <li>usunięcie pamięci podręcznej lub wyrejestrowanie Service Workera – Serwis przestanie działać w trybie offline do czasu ponownego zapisania zasobów.</li>
             </ul>
             <p>Zablokowanie mechanizmów pamięci przeglądarki nie uniemożliwia korzystania z podstawowych funkcjonalności Serwisu, może jednak spowodować utratę wcześniej zapisanych ustawień.</p>
@@ -569,32 +559,11 @@
           <!-- Data ostatniej aktualizacji -->
           <p class="legal__meta">
             Data ostatniej aktualizacji:
-            <time datetime="2026-09-22">22.09.2026</time>
+            <time datetime="2026-10-31">31.10.2026</time>
           </p>
         </div>
       </section>
     </main>
-
-    <!-- Project Notice -->
-    <section class="project-notice" aria-labelledby="project-notice-title" data-project-notice>
-      <div class="project-notice__inner">
-        <h2 class="project-notice__title" id="project-notice-title">Informacja o projekcie</h2>
-        <p class="project-notice__text">
-          Serwis "Aurora Travel" ma charakter demonstracyjny i został przygotowany przez
-          <strong>KP_Code Digital Studio</strong>
-          jako przykładowa strona internetowa dla branży hotelarskiej i turystycznej. Korzystając z serwisu akceptujesz
-          <a class="project-notice__link" href="regulamin.html">Regulamin</a>
-          .
-        </p>
-        <div class="project-notice__links" aria-label="Dokumenty prawne">
-          <a class="project-notice__link" href="polityka-prywatnosci.html">Polityka prywatności</a>
-          <a class="project-notice__link" href="cookies.html">Polityka cookies</a>
-        </div>
-        <div class="project-notice__actions">
-          <button class="btn" type="button" data-project-notice-accept hidden>Rozumiem i zamykam</button>
-        </div>
-      </div>
-    </section>
 
     <!-- Footer -->
     <footer class="site-footer">
@@ -607,7 +576,7 @@
             <h2 class="site-footer__brand">
               <a class="site-footer__brand-link" href="index.html">Aurora Travel</a>
             </h2>
-            <p class="site-footer__description">Ekskluzywne biuro podróży tworzące spersonalizowane doświadczenia dla wymagających globtroterów.</p>
+            <p class="site-footer__description">Fikcyjne biuro podróży i demonstracyjny projekt strony stworzony przez KP_Code Digital Studio. Usługi, oferty, ceny i historia firmy mają charakter ilustracyjny.</p>
           </div>
           <!-- footer nav -->
           <div class="site-footer__col site-footer__col--nav">
@@ -631,10 +600,12 @@
           </div>
           <!-- footer contact -->
           <div class="site-footer__col site-footer__col--contact">
-            <h3 class="heading-divider">Kontakt</h3>
+            <h3 class="heading-divider">Kontakt z autorem</h3>
             <address class="site-footer__address">
               <p class="site-footer__address-text">
-                ul. Marynarki Wojennej 12
+                KP_Code Digital Studio
+                <br />
+                ul. Marynarki Wojennej 12/31
                 <br />
                 33-100 Tarnów
                 <br />

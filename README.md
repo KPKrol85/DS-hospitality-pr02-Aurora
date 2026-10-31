@@ -6,9 +6,9 @@
 
 Aurora Travel to wielostronicowy, statyczny serwis biura podróży w języku polskim, zbudowany z ręcznie pisanego HTML, modularnego CSS i bundlowanego JavaScriptu. Repozytorium zawiera 12 stron w katalogu głównym: stronę główną, listę wycieczek, widok szczegółów wycieczki, galerię, stronę o firmie, kontakt, stronę podziękowania, 404, stronę offline oraz trzy strony prawne.
 
-Projekt nie posiada backendu ani bazy danych. Treść jest dostarczana jako statyczny HTML uzupełniony dwoma plikami JSON pobieranymi w przeglądarce, a formularz kontaktowy korzysta z obsługi formularzy po stronie hostingu statycznego. Stan użytkownika (motyw, akceptacja informacji o projekcie) jest przechowywany wyłącznie lokalnie w przeglądarce.
+Projekt nie posiada backendu ani bazy danych. Treść jest dostarczana jako statyczny HTML uzupełniony dwoma plikami JSON pobieranymi w przeglądarce, a formularz kontaktowy korzysta z obsługi formularzy po stronie hostingu statycznego. Stan użytkownika (motyw) jest przechowywany wyłącznie lokalnie w przeglądarce.
 
-Zgodnie z treścią informacji o projekcie wyświetlanej na stronach, serwis ma charakter demonstracyjny i został przygotowany przez KP_Code Digital Studio jako przykładowa realizacja dla branży hotelarskiej i turystycznej.
+Zgodnie z informacją w stopce każdej strony Aurora Travel jest fikcyjnym biurem podróży, a serwis — demonstracyjnym projektem przygotowanym przez KP_Code Digital Studio jako przykładowa realizacja dla branży hotelarskiej i turystycznej. Formularz kontaktowy i dane kontaktowe dotyczą KP_Code Digital Studio jako autora projektu.
 
 ### Wersja online
 
@@ -23,13 +23,13 @@ Jest to adres produkcyjny potwierdzony przez właściciela projektu i adres kano
 - Galeria (`gallery.html`) renderowana z `assets/data/gallery-data.json` wraz z filtrowaniem po kierunku (przyciski z `aria-pressed`).
 - Wspólny lightbox dla galerii i galerii w widoku wycieczki: otwieranie klawiszem `Enter` lub `Space`, nawigacja strzałkami, zamknięcie klawiszem `Escape`, pułapka fokusu, powrót fokusu do elementu wyzwalającego, przesunięcie dotykiem oraz przełączanie trybu pełnoekranowego.
 - Przełącznik motywu jasny/ciemny zapisywany w `localStorage`, uzupełniony skryptem w `<head>`, który ustawia motyw z zapisanej preferencji lub `prefers-color-scheme` przed załadowaniem arkusza stylów.
-- Walidacja formularza kontaktowego po stronie klienta: pola wymagane, format e-mail, minimalna długość numeru telefonu, data rozpoczęcia nie wcześniejsza niż dzisiaj, data zakończenia nie wcześniejsza niż data rozpoczęcia, liczba osób w zakresie 1–12 oraz zgoda RODO. Komunikaty trafiają do powiązanych obszarów `aria-live`, a pola otrzymują `aria-invalid`.
+- Walidacja formularza zapytań o projekt po stronie klienta: pola wymagane, w tym temat zapytania, format e-mail, minimalna długość numeru telefonu oraz zgoda RODO. Komunikaty trafiają do powiązanych obszarów `aria-live`, a pola otrzymują `aria-invalid`.
 - Nawigacja mobilna z pułapką fokusu, zamknięciem klawiszem `Escape`, blokadą przewijania i powrotem fokusu.
 - Zakładki z nawigacją strzałkami oraz akordeon FAQ sterowany atrybutem `aria-expanded`.
 - Animacje pojawiania się elementów oparte na `IntersectionObserver`, z awaryjnym ujawnieniem treści przy braku wsparcia.
 - Service Worker z wersjonowanymi cache'ami, strategią cache-first dla zasobów statycznych, network-first dla HTML i stroną `offline.html` jako zapasową.
 - Baner aktualizacji aplikacji, który aktywuje oczekującego Service Workera i przeładowuje stronę po zmianie kontrolera.
-- Zamykana informacja o projekcie z zapisem akceptacji w `localStorage`.
+- Stała informacja o fikcyjnym charakterze marki i autorze projektu w stopce każdej strony.
 
 ### Stack technologiczny
 
@@ -250,7 +250,7 @@ Poza porównaniem ładowania fontów w Chrome, na którym oparto wybór wskazów
 
 - Treść ofert i galerii jest utrzymywana w statycznych plikach `assets/data/tours.json` i `assets/data/gallery-data.json`, pobieranych przez `fetch()` w przeglądarce.
 - Projekt nie zawiera backendu, bazy danych, kont użytkowników ani synchronizacji między urządzeniami.
-- Dane trwałe ograniczają się do `localStorage` w przeglądarce: klucz `kp-travel-theme` (wybrany motyw) oraz `aurora-project-notice-accepted` (akceptacja informacji o projekcie). Odczyty i zapisy są zabezpieczone blokami `try/catch`.
+- Dane trwałe ograniczają się do `localStorage` w przeglądarce: klucz `kp-travel-theme` (wybrany motyw). Odczyty i zapisy są zabezpieczone blokami `try/catch`.
 - Service Worker przechowuje odpowiedzi w Cache Storage pod nazwami zależnymi od stałej `VERSION`.
 - Dane formularza kontaktowego opuszczają przeglądarkę wyłącznie przez obsługę formularzy hostingu statycznego; repozytorium nie zawiera kodu przetwarzającego te zgłoszenia.
 
@@ -279,9 +279,9 @@ Projekt jest objęty Własnościową Licencją Projektu KP_CODE w wersji 1.0, kt
 
 Aurora Travel is a multi-page static travel-agency website in Polish, built from hand-written HTML, modular CSS, and a bundled JavaScript entry point. The repository contains 12 pages in the project root: home, tour listing, tour detail, gallery, about, contact, thank-you, 404, offline, and three legal pages.
 
-The project has no backend and no database. Content is delivered as static HTML supplemented by two JSON files fetched in the browser, and the contact form relies on static-hosting form handling. User state (theme, project-notice acknowledgement) is stored only in the browser.
+The project has no backend and no database. Content is delivered as static HTML supplemented by two JSON files fetched in the browser, and the contact form relies on static-hosting form handling. User state (the theme) is stored only in the browser.
 
-According to the project notice rendered on the pages, the site is a demonstration project prepared by KP_Code Digital Studio as a sample implementation for the hospitality and travel sector.
+According to the footer of every page, Aurora Travel is a fictional travel agency and the site is a demonstration project prepared by KP_Code Digital Studio as a sample implementation for the hospitality and travel sector. The contact form and contact details belong to KP_Code Digital Studio as the project author.
 
 ### Live Version
 
@@ -296,13 +296,13 @@ This is the production address confirmed by the project owner and the canonical 
 - Gallery (`gallery.html`) rendered from `assets/data/gallery-data.json` with destination filtering (buttons carrying `aria-pressed`).
 - A shared lightbox for the gallery and the tour-detail gallery: opening with `Enter` or `Space`, arrow-key navigation, `Escape` to close, focus trapping, focus return to the triggering element, touch swiping, and fullscreen toggling.
 - Light/dark theme toggle persisted in `localStorage`, complemented by a `<head>` script that applies the stored preference or `prefers-color-scheme` before the stylesheet loads.
-- Client-side contact form validation: required fields, e-mail format, minimum phone length, start date not earlier than today, end date not earlier than the start date, participant count within 1–12, and the RODO consent checkbox. Messages are written into associated `aria-live` regions and fields receive `aria-invalid`.
+- Client-side validation of the project inquiry form: required fields, including the inquiry subject, e-mail format, minimum phone length, and the RODO consent checkbox. Messages are written into associated `aria-live` regions and fields receive `aria-invalid`.
 - Mobile navigation with focus trapping, `Escape` dismissal, scroll locking, and focus return.
 - Tabs with arrow-key navigation and an FAQ accordion driven by `aria-expanded`.
 - Reveal-on-scroll animations based on `IntersectionObserver`, with a fallback that reveals content when the API is unavailable.
 - Service Worker with versioned caches, cache-first delivery for static assets, network-first delivery for HTML, and `offline.html` as the fallback.
 - An application update banner that activates a waiting Service Worker and reloads the page once the controller changes.
-- A dismissible project notice whose acknowledgement is stored in `localStorage`.
+- A persistent footer disclosure of the fictional brand and the project author on every page.
 
 ### Tech Stack
 
@@ -523,7 +523,7 @@ Apart from the Chrome comparison of font loading that the preload selection is b
 
 - Tour and gallery content is maintained in the static files `assets/data/tours.json` and `assets/data/gallery-data.json`, fetched with `fetch()` in the browser.
 - The project contains no backend, no database, no user accounts, and no cross-device synchronization.
-- Persistent data is limited to browser `localStorage`: the `kp-travel-theme` key (selected theme) and `aurora-project-notice-accepted` (project-notice acknowledgement). Reads and writes are wrapped in `try/catch`.
+- Persistent data is limited to browser `localStorage`: the `kp-travel-theme` key (selected theme). Reads and writes are wrapped in `try/catch`.
 - The Service Worker stores responses in Cache Storage under names derived from the `VERSION` constant.
 - Contact form data leaves the browser only through the static host's form handling; the repository contains no code that processes those submissions.
 
