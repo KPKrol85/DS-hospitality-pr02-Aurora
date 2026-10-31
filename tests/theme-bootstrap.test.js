@@ -114,7 +114,9 @@ function loadPage(page, { stored = null, storage = "available", system = null })
   return state;
 }
 
-describe("theme bootstrap", () => {
+// The tests parse every maintained page and run each bootstrap variant in its own jsdom window,
+// which can take longer than Vitest's default 5 s on a loaded development machine.
+describe("theme bootstrap", { timeout: 15000 }, () => {
   it("is the one inline script of every page, in the head before any stylesheet or external script", () => {
     for (const page of pages) {
       const document = new DOMParser().parseFromString(readPage(page), "text/html");

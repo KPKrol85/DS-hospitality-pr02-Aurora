@@ -36,10 +36,10 @@
   - **Completion condition:** `npm run build` exits 0 on a clean checkout with the lockfile toolchain, and `check:sw-bundles` reports that both bundles match the recorded version
   - **Source:** `AUDIT.md` — P0-01
 
-- [ ] **PH1-02 — Make long-running tests independent of the default 5-second timeout**
-  - [ ] give `tests/csp.test.js`, `tests/theme-bootstrap.test.js` and `tests/typography-roles.test.js` explicit timeouts proportionate to their work, or reduce their per-test process spawning
-  - [ ] review the other process-spawning suites (`tests/asset-integrity.test.js`, `tests/build-stage.test.js`, `tests/font-preload.test.js`, `tests/tour-catalogue.test.js`) for the same exposure
-  - [ ] keep every assertion unchanged
+- [x] **PH1-02 — Make long-running tests independent of the default 5-second timeout**
+  - [x] give `tests/csp.test.js`, `tests/theme-bootstrap.test.js` and `tests/typography-roles.test.js` explicit timeouts proportionate to their work, or reduce their per-test process spawning
+  - [x] review the other process-spawning suites (`tests/asset-integrity.test.js`, `tests/build-stage.test.js`, `tests/font-preload.test.js`, `tests/tour-catalogue.test.js`) for the same exposure
+  - [x] keep every assertion unchanged
   - **Completion condition:** a full `npm test` passes without CLI timeout overrides on the development machine under normal load, and `npm run predeploy:check` completes
   - **Depends on:** `PH1-01` (for the `predeploy:check` part of the completion condition)
   - **Source:** `AUDIT.md` — P2-08

@@ -208,6 +208,9 @@ None detected.
 - **Impact:** `npm run predeploy:check` can stop a deployment for timing reasons unrelated to correctness, which erodes trust in the gate.
 - **Recommended direction:** Give the subprocess-spawning and full-page-parsing tests explicit timeouts proportionate to their work, or reduce their per-test process spawning, without relaxing their assertions.
 - **Verification criteria:** `npm test` passes repeatedly at default settings on the development machine under normal load, with no change to what the affected tests assert.
+- **Status:** COMPLETED — verified.
+- **Resolution:** Set suite timeouts at about four times the slowest test of a full baseline run: 20 s for `tests/csp.test.js` (5.1 s) and 15 s for `tests/asset-integrity.test.js`, `tests/theme-bootstrap.test.js` and the role-contract suite of `tests/typography-roles.test.js` (2.4–3.5 s). The global 5 s default and every assertion are unchanged, and `tests/build-stage.test.js`, `tests/font-preload.test.js` and `tests/tour-catalogue.test.js` (slowest 1.4–1.8 s) keep that default.
+- **Verification:** After the change, `npm test` passed 303/303 without timeout overrides. `npm run predeploy:check`, started at 96% CPU load, exited 0 with 303/303 tests and every build check passing.
 
 ### [P2-09] README contradicts the repository on font licences, structured data and CSS modules
 

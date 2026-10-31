@@ -211,7 +211,9 @@ afterEach(() => {
   rmSync(siteRoot, { recursive: true, force: true });
 });
 
-describe("check-asset-integrity.js", () => {
+// Each test spawns the checker once or twice, which can take longer than Vitest's default 5 s on a
+// loaded development machine.
+describe("check-asset-integrity.js", { timeout: 15000 }, () => {
   it("passes when every referenced file exists in the sources and in dist/", () => {
     const source = runChecker();
     expect(source.status).toBe(0);

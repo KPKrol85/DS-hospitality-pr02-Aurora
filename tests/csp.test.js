@@ -114,7 +114,9 @@ afterEach(() => {
   rmSync(siteRoot, { recursive: true, force: true });
 });
 
-describe("check-csp.js", () => {
+// Each test spawns the checker up to four times and parses the maintained pages with jsdom, which
+// can take longer than Vitest's default 5 s on a loaded development machine.
+describe("check-csp.js", { timeout: 20000 }, () => {
   it("accepts the bootstrap variants of the maintained pages in the sources and in dist/", () => {
     const counts = pages.map((page) => parsedScripts(read(page)));
     const total = (kind) => counts.reduce((sum, scripts) => sum + scripts[kind].length, 0);

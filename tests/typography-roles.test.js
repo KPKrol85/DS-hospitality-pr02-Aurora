@@ -117,7 +117,9 @@ function isTypeSelector(selector) {
   return /^[a-z][a-z0-9]*$/i.test(selector);
 }
 
-describe("typographic role contract", () => {
+// The contract tests parse every CSS module and maintained page, some of them several times per
+// test, which can take longer than Vitest's default 5 s on a loaded development machine.
+describe("typographic role contract", { timeout: 15000 }, () => {
   it("maps each role to one step of the fluid scale, one step apart from page title to small", () => {
     const tokens = tokenValues();
     const steps = roles.map(scaleStep);
