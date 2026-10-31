@@ -9,7 +9,7 @@
 
 At the time of the analysis, the build was explicit and largely self-enforcing: `npm run build` rebuilt `dist/` from an empty directory with fail-fast source, package, CSP and Service Worker bundle checks, deployment was intentionally manual, and the cache-version workflow needed no change. The remaining gaps lay around the build: a conditional rule for running tests, workflow facts restated across several documents, no local view of the deployed `_headers` and 404 contract, and unwritten report and changelog conventions.
 
-Five improvements were completed between 2026-10-09 and 2026-10-10 without CI, deployment automation, new dependencies or changes to the deployed site output, so no Service Worker cache-version update was required. IMP-WORKFLOW-04 and IMP-WORKFLOW-05 were completed under owner-approved revised scopes.
+Five improvements were completed between 2026-10-09 and 2026-10-10 without new dependencies or changes to the deployed site output, so no Service Worker cache-version update was required. IMP-WORKFLOW-04 and IMP-WORKFLOW-05 were completed under owner-approved revised scopes. CI or automated deployment, lint or format tooling, extending `check:sw-bundles` to the precached pages and a Node.js version declaration were considered but not selected.
 
 ## Completed improvements
 
@@ -55,13 +55,11 @@ Five improvements were completed between 2026-10-09 and 2026-10-10 without CI, d
 
 ## Excluded defects
 
-The original analysis recorded three defects outside the five improvements:
+The original analysis recorded three defects outside the five improvements; their later status is stated only where it was checked statically:
 
 - **Production domain:** `package.json` declared `homepage` as `https://ds-hospitality-pr02-aurora.netlify.app/`, while the canonical tags, `sitemap.xml`, `robots.txt` and `README.md` used `https://hospitality-pr02-aurora.netlify.app/`. A separate change after this cycle aligned all references on the `ds-hospitality-pr02-aurora` domain.
 - **`.gitignore` comments:** The "intentionally tracked" comment listed `LICENSE` and `_redirects`, which had been renamed and removed. Not addressed in this cycle; still present on 2026-10-10.
 - **Image bootstrap instruction:** `docs/settings.md` told a new checkout to run `npm run images:bootstrap` to populate `assets/img-src/`, although all 184 raster sources are tracked there, so the command copies nothing. Not addressed in this cycle; still present on 2026-10-10.
-
-These are historical observations from the original analysis; their current status was checked statically only as stated.
 
 ## Verification limitations
 

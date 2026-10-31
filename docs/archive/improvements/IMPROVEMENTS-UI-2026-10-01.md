@@ -9,7 +9,7 @@
 
 Five UI improvements were completed between 2026-09-29 and 2026-10-01. They moved presentation from browser defaults and per-component choices onto shared contracts: native control typography, layout-accurate responsive image `sizes`, a button size and variant contract, theme-aware keyboard focus and shared typographic roles.
 
-The existing visual identity, responsive architecture, light/dark themes, accessibility behavior and PWA contracts were preserved. Each change added a regression test and its own Service Worker cache-version update.
+The existing visual identity, responsive architecture, light/dark themes, accessibility behavior and PWA contracts were preserved. Each change added a regression test and its own Service Worker cache-version update. IMP-UI-03 followed IMP-UI-01 because button sizing depends on inherited control typography, and IMP-UI-04 followed both; IMP-UI-02 and IMP-UI-05 were independent.
 
 ## Completed improvements
 

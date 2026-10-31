@@ -9,7 +9,9 @@
 
 Five technical improvements were completed between 2026-10-04 and 2026-10-06. Each gave a single owner to a contract that had been duplicated or held by the wrong layer: catalogue picture generation, contact form constraints, post-load theme presentation, the Service Worker lifecycle and the maintained page inventory.
 
-Existing architecture, the theme bootstrap and its CSP hashes, and PWA contracts were preserved, and no dependency or framework was introduced. Two behavior changes were intentional: contact validation also reports an end date before today when no start date is selected, and the build rejects missing or undeclared root pages before staging `dist/`.
+Existing architecture, the theme bootstrap and its CSP hashes, and PWA contracts were preserved, and no dependency or framework was introduced. Two behavior changes were intentional: contact validation also reports an end date before today when no start date is selected, and the build rejects missing or undeclared root pages before staging `dist/`. A single theme bootstrap text instead of three whitespace variants, shared header and footer markup, a shared focus-trap helper and a common HTML attribute parser for the check scripts were considered but not selected.
+
+A later demonstration-content change on 2026-10-31 (Service Worker cache `aurora-1.45`) removed the contact form's date and participant fields together with their IMP-TECH-02 validation, `syncEndDateMin` and the end-date behavior change; phone validation still reads the native constraints. The records below describe the state at completion.
 
 ## Completed improvements
 
@@ -25,7 +27,7 @@ Existing architecture, the theme bootstrap and its CSP hashes, and PWA contracts
 
 - **Status:** COMPLETED — implemented and verified.
 - **Result:** Phone, date and participant validation in `js/features/form.js` now reads native validity states instead of restating the rules; participant messages use `field.min` and `field.max`, and `syncEndDateMin` maintains the end-date minimum. Messages, error handling, focus behavior and `contact.html` attributes were preserved; as an intentional change, an end date before today is reported even without a start date. Service Worker cache: `aurora-1.21`.
-- **Verification:** Source review confirmed removal of the duplicated phone-length check, participant-limit literals and manual date comparisons. Two regression cases were added: a participant maximum raised to 15 and a past end date without a start date. Existing form tests and the production build were part of the original completion verification.
+- **Verification:** Source review confirmed removal of the duplicated phone-length check, participant-limit literals and manual date comparisons. Two regression cases were added to `tests/form.test.js`: a participant maximum raised to 15 and a past end date without a start date. Existing form tests and the production build were part of the original completion verification.
 - **Impact:** Medium
 - **Effort:** Small
 
@@ -55,7 +57,7 @@ Existing architecture, the theme bootstrap and its CSP hashes, and PWA contracts
 
 ## Excluded defects
 
-- **Catalogue image alt text (content observation):** The original analysis found that `gallery-data.json` and `tours.json` describe the same 36 image files with different `alt` texts. Their accuracy was not evaluated and belongs to a content and accessibility audit, not to this report. A static comparison on 2026-10-10 found all 36 pairs still differing.
+- **Catalogue image alt text (content observation):** The original analysis found that `gallery-data.json` and `tours.json` describe the same 36 image files with different `alt` texts. Their accuracy was not evaluated and belongs to a content and accessibility audit, not to this report. A static comparison on 2026-10-10 found all 36 pairs still differing; the later revision is recorded under P-3 in the [design improvement archive](IMPROVEMENTS-DESIGN-2026-10-31.md#remaining-limitations).
 
 ## Verification limitations
 

@@ -9,7 +9,9 @@
 
 Five UX improvements were completed between 2026-10-07 and 2026-10-08 along the main visitor journey: recovering from empty filter results, enquiring directly about a viewed offer, distinguishing loading and unavailable data from a missing offer, clearing corrected form errors immediately and landing featured-offer links below the sticky header.
 
-Existing accessibility, responsive layout, filtering, form submission, no-JavaScript fallbacks and PWA contracts were preserved. Each improvement shipped as a separate change with its own Service Worker cache-version update.
+Existing accessibility, responsive layout, filtering, form submission, no-JavaScript fallbacks and PWA contracts were preserved. Each improvement shipped as a separate change with its own Service Worker cache-version update; IMP-UX-02 preceded IMP-UX-03, which also changed tour-detail rendering. Visible participant-count and phone-format hints in the contact form and a lightbox image-position indicator were considered but not selected.
+
+A later demonstration-content change on 2026-10-31 (Service Worker cache `aurora-1.45`) replaced the IMP-UX-02 "Zapytaj o ofertę" action and its `contact.html?tour=<id>` link with a static link to `contact.html` and removed the tour, date and participant fields, so the tour preselection and date handling described in IMP-UX-04 no longer apply; live error recovery remains. The records below describe the state at completion.
 
 ## Completed improvements
 
@@ -32,7 +34,7 @@ Existing accessibility, responsive layout, filtering, form submission, no-JavaSc
 ### IMP-UX-03 — Distinguish loading and unavailable data from "offer not found" in the JSON-driven views
 
 - **Status:** COMPLETED — implemented and verified.
-- **Result:** `tour.html` and `gallery.html` now have explicit loading, loaded and unavailable-data states. Tour details reserve "offer not found" for missing or unknown IDs and offer retry and listing actions when data is unavailable; the gallery keeps its filters hidden until images load and shows a dedicated failure message. State changes are announced through separate polite status regions rather than the content grids, and sanitization, image rendering, lightbox behavior and Service Worker JSON caching were unchanged. Service Worker cache: `aurora-1.26`.
+- **Result:** `tour.html` and `gallery.html` now have explicit loading, loaded and unavailable-data states: tour details reserve "offer not found" for missing or unknown IDs and offer retry and listing actions when data is unavailable, and the gallery keeps its filters hidden until images load and shows a dedicated failure message. State changes are announced through separate polite status regions rather than the content grids, and sanitization, image rendering, lightbox behavior and Service Worker JSON caching were unchanged. Service Worker cache: `aurora-1.26`.
 - **Verification:** `tests/tour-detail.test.js` and `tests/gallery.test.js` cover delayed requests, network failures, non-OK responses, invalid or structurally unsuitable JSON, recovery from loading, missing offers, filter visibility and polite announcements; tour retry is tested against the current document URL. Offline JSON availability through the Service Worker was outside scope.
 - **Impact:** Medium
 - **Effort:** Medium
@@ -40,7 +42,7 @@ Existing accessibility, responsive layout, filtering, form submission, no-JavaSc
 ### IMP-UX-04 — Clear a field's validation error as soon as the input becomes valid
 
 - **Status:** COMPLETED — implemented and verified.
-- **Result:** Previously flagged fields are revalidated on `input` and `change`, clearing the message and `aria-invalid` as soon as the value is corrected, while other fields still validate on blur and submit. Unchanged invalid values are not re-announced, a start-date change rechecks a flagged end date, and unchanged date minimums are no longer rewritten during editing. Native constraints, first-invalid-field focus, tour preselection and Netlify submission were unchanged. Service Worker cache: `aurora-1.27`.
+- **Result:** `js/features/form.js` now revalidates previously flagged fields on `input` and `change`, clearing the message and `aria-invalid` as soon as the value is corrected without re-announcing unchanged invalid values, while other fields still validate on blur and submit. A start-date change rechecks a flagged end date, unchanged date minimums are no longer rewritten during editing, and native constraints, first-invalid-field focus, tour preselection and Netlify submission were unchanged. Service Worker cache: `aurora-1.27`.
 - **Verification:** `tests/form.test.js` covers live recovery for text, email, phone, select, date, number, textarea and consent controls, plus persistent invalid values, unchanged messages, blur and submit behavior, focus handling and dependent date constraints.
 - **Impact:** Medium
 - **Effort:** Small
