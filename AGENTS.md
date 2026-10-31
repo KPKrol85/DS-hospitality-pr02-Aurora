@@ -1,6 +1,6 @@
-# Aurora Travel — Agent Instructions
+# Aurora — Agent Instructions
 
-This file defines a small set of stable project guardrails for coding agents working on Aurora Travel.
+This file defines a small set of stable project guardrails for coding agents working on Aurora.
 
 The current task and the current repository are the primary sources of truth. Do not treat this file as a substitute for inspecting the implementation.
 
@@ -15,14 +15,12 @@ The current task and the current repository are the primary sources of truth. Do
 
 ## Project safeguards
 
-- Edit canonical source files only. Never hand-edit generated `dist/` output.
+- Edit canonical source files only. Never hand-edit generated `dist/` output or minified assets.
 - Preserve existing functionality unless the task intentionally changes it.
-- Preserve accessibility behavior, responsive behavior, and light/dark/system theme support when affected by a change.
-- Preserve established ARIA, `data-*`, navigation, form, storage, and interaction contracts unless the approved task explicitly changes them.
-- Preserve existing PWA, offline, and Service Worker behavior unless the task intentionally changes it.
-- Inspect the current build pipeline and Service Worker cache-version contract before modifying production assets or PWA behavior.
+- Preserve accessibility, responsive behavior, SEO, and light/dark/system theme support when affected by a change.
+- Preserve established ARIA, `data-*`, navigation, form, storage, PWA, and interaction contracts unless the approved task explicitly changes them.
 - Keep public-facing site content in Polish unless the task explicitly requires otherwise.
-- Do not add or update dependencies unless they are technically justified and within the approved scope.
+- Do not add or update dependencies unless technically justified and within the approved scope.
 - Do not create additional process, workflow, architecture, or maintenance documentation unless the task requires it.
 
 ## Verification
@@ -33,12 +31,42 @@ Use verification appropriate to the scope and risk of the change.
 - Use existing project commands and current repository tooling.
 - Verify affected behavior directly when practical.
 - Do not weaken checks merely to obtain a passing result.
-- Never claim that a test, build, browser scenario, accessibility state, deployment, or other verification passed unless it was actually performed successfully.
+- Never claim verification passed unless it was actually performed successfully.
 
-## Task completion
+## Changelog conventions
 
-- Review `docs/CHANGELOG.md` after implementation and add a concise entry only when the change meets the project's established changelog criteria.
-- Do not modify unrelated planning, audit, or documentation files.
+Treat `docs/CHANGELOG.md` as the source of truth for changelog structure, entry policy, and categorization.
+
+- Write entries in concise, professional, technical English.
+- Use one short, factual sentence per entry, beginning with a past-tense action verb.
+- Describe meaningful changes and their impact, not implementation steps or individual file edits.
+- Avoid verbose explanations, repetitive descriptions, and unnecessary technical details.
+- Group entries under the appropriate existing headings.
+- Exclude routine documentation updates, audit tracking, temporary checks, and insignificant cosmetic changes.
+- Preserve significant project history when reorganizing existing entries.
+
+For implementation tasks, apply the entry policy in `docs/CHANGELOG.md` and determine `Changelog: yes` or `Changelog: no`.
+
+Edit the changelog only when explicitly authorized within the approved task scope.
+
+## Development plan lifecycle
+
+Treat the root `PLAN.md` as the current development plan and `docs/archive/plans/` as the historical plan archive.
+
+- Keep active tasks detailed enough to define scope, dependencies, and completion criteria.
+- At plan closure, reduce verified completed tasks to concise, single-line checklist entries.
+- Preserve original task identifiers, titles, phase structure, and historical relationships.
+- Do not mark incomplete or unverified tasks as completed.
+- Explicitly carry unresolved work into a subsequent plan when closing the current planning cycle.
+- Keep completed plans short, professional, technical, and factual.
+- Remove implementation narratives, repeated verification logs, and obsolete task instructions from completed plans.
+- Include a `Completion` section with the verified task count and links to relevant project documentation.
+
+Archived plans should follow a consistent structure: project heading, period, completion status, brief scope summary, completed task checklist grouped by phase, and completion references.
+
+Preserve historical records and archive completed plans under `docs/archive/plans/` using dated filenames.
+
+Update, close, or archive plans only within the explicitly approved task scope.
 
 ## Completed improvement records
 
@@ -46,6 +74,7 @@ When an approved improvement is implemented and verified, replace its detailed p
 
 Use this format in `IMPROVEMENTS-*.md`:
 
+```markdown
 ### IMP-CATEGORY-XX — Original improvement title
 
 - **Status:** COMPLETED — implemented and verified.
@@ -53,6 +82,7 @@ Use this format in `IMPROVEMENTS-*.md`:
 - **Verification:** Checks performed, actual results, and relevant limitations.
 - **Impact:** Original impact rating.
 - **Effort:** Original effort rating.
+```
 
 Keep completion records short, professional, and factual. Limit **Result** and **Verification** to 1–3 concise sentences each, covering only essential changes, actual checks, and relevant limitations. Avoid lengthy implementation narratives, repetition, and unnecessary technical details.
 
@@ -60,21 +90,54 @@ Preserve the original identifier, title, impact, and effort. Remove obsolete pro
 
 Keep open or incomplete proposals unchanged. Never claim completion or verification without evidence. Update improvement records only within the approved task scope.
 
-## Audit finding lifecycle
+## Audit and review lifecycle
 
-Preserve all original audit findings throughout remediation and archival, including `P0-*`, `P1-*`, `P2-*` and optional `O-*` items.
+The initial structure of `AUDIT.md`, `daily-AUDIT.md`, and `REVIEW.md` is defined by their respective audit and review prompts.
 
-- Never delete a finding solely because it has been resolved.
-- Preserve its original identifier, title, severity or optional category, and order.
-- After implementation and verification, replace the active finding description with a concise completion record containing **Status**, **Resolution** and **Verification**.
-- Retain a brief original issue description when necessary to explain the resolution.
-- Record actual verification results and relevant limitations. Never claim unperformed checks as passed.
-- Keep unresolved findings open until their completion is supported by evidence.
-- When closing an audit, archive all original findings, including completed items, without deleting their history.
+Preserve these original formats. The following rules apply only during approved remediation, closure, and archival.
 
-Keep completion records concise, professional, technical and factual. Avoid repeated implementation narratives and unnecessary verification details.
+Write completion records in concise, professional, technical English, preserving original terminology and document structure.
 
-A new root `AUDIT.md` is a separate current-state assessment. Historical findings remain in the archived audit and must not be copied into a new audit without current verification.
+### Finding completion
+
+- Preserve every original finding, including `P0-*`, `P1-*`, `P2-*`, and optional `O-*` items.
+- Retain original identifiers, titles, severity or category, and order.
+- Keep unresolved, blocked, or unverified findings open.
+- After implementation and verification, replace detailed proposals with concise completion records.
+
+Use this format:
+
+```markdown
+- **Status:** COMPLETED — verified.
+- **Resolution:** Brief description of the implemented result and preserved contracts.
+- **Verification:** Actual checks, results, and relevant limitations.
+```
+
+Keep Resolution and Verification to 1–2 concise, factual sentences each. Avoid repetitive implementation narratives, unnecessary technical details, and duplicated test logs.
+
+### Report closure
+
+- Preserve the original scope, findings, and significant verification evidence.
+- Remove obsolete implementation instructions and redundant descriptions after verified completion.
+- Distinguish historical verification from checks performed during closure.
+- Retain unresolved limitations without presenting them as completed work.
+- Do not treat review recommendations as implemented changes without verification.
+- Do not repeat completed verification solely for editorial closure.
+- Closing a review does not imply that every recommendation was implemented; unresolved actions must retain their status and remain traceable.
+
+For final audits, retain a concise scope and assessment, completed findings, final verification, limitations, and final assessment.
+
+For daily audits and reviews, preserve their original prompt-defined structure while applying the same completion-record standard.
+
+### Archival
+
+- Archive reports only after their closure criteria are satisfied.
+- Preserve all original findings and their final status.
+- Use dated filenames and the project's established archive structure.
+- Keep historical findings in archived reports; new reports assess the current repository state independently.
+- Update affected documentation references within the approved task scope.
+
+Never delete findings solely because they were resolved. Never claim completion or verification without supporting evidence.
 
 Apply these rules only within the explicitly approved documentation scope.
 
