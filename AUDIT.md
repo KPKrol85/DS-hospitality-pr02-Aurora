@@ -249,9 +249,9 @@ None detected.
 - **Impact:** Visible polish defects in the legal text and on the main form, an English tooltip on a Polish site, and an internal factual contradiction.
 - **Recommended direction:** Remove the whitespace between inline elements and the following punctuation. Localise or remove the tooltip. Make the founding year and the experience figure agree.
 - **Verification criteria:** No rendered text contains a space before punctuation after an inline element, no English `title` remains, and the two About figures are consistent.
-- **Status:** PARTIALLY COMPLETED — PH3-03 verified; contradictory About years remain open under PH3-04.
-- **Resolution:** Removed all 27 punctuation gaps, localized the theme-toggle title to "Zmień motyw" on all 12 pages, and refreshed precached HTML under `aurora-1.48` with unchanged bundle hashes.
-- **Verification:** Exact source comparisons confirmed that other content, link boundaries, ARIA attributes and legal revision dates were unchanged; Chrome 156 verified rendered text, theme toggles and the precache/offline fallback. All 50 focused theme and Service Worker tests, `npm run build` and `git diff --check` passed.
+- **Status:** COMPLETED — verified.
+- **Resolution:** PH3-03 removed all 27 punctuation gaps and localized all 12 theme-toggle tooltips to "Zmień motyw" under cache `aurora-1.48`. PH3-04 preserved "Od 2010 roku" and removed "14 lat doświadczenia" following owner approval, with the home precache refreshed under `aurora-1.49` and bundle hashes unchanged.
+- **Verification:** Historical PH3-03 source comparisons and Chrome 156 text/theme/precache/offline checks passed with all 50 focused theme and Service Worker tests, `npm run build` and `git diff --check`. PH3-04 source and catalogue checks, `npm run build` and Chrome 156 checks at 390, 768 and 1440 px in both themes passed, including corrected home precache; the full suite, other engines and real devices were not tested.
 
 ### [P2-11] Leftover undefined token and unreferenced published asset
 

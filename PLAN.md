@@ -95,13 +95,12 @@
   - **Completion condition:** no rendered text has a space before punctuation after an inline element, and no English `title` remains
   - **Source:** `AUDIT.md` — P2-10 (stray spaces, English tooltip)
 
-- [ ] **PH3-04 — Resolve the open About and offer content decisions** — **Status:** Blocked
-  - [ ] make "Od 2010 roku" and "14 lat doświadczenia" on `about.html` agree
-  - [ ] keep or revise the client-app and WhatsApp claims on `index.html` and `about.html`
-  - [ ] keep or revise the English offer names in `assets/data/tours.json`, keeping the listing and home cards consistent under `check:tour-catalogue`
-  - [ ] complete the cache-version update if `index.html` changes
-  - **Blocker:** no owner decision is recorded on the founding year or experience figure, the client-app and WhatsApp claims, or the offer names
-  - **Unblocks when:** the project owner confirms the values and wording to publish
+- [x] **PH3-04 — Resolve the open About and offer content decisions**
+  - [x] preserved "Od 2010 roku" and removed "14 lat doświadczenia" from `about.html`
+  - [x] removed the unverified client-app and WhatsApp claims from `index.html` and `about.html`
+  - [x] preserved the English offer names in `assets/data/tours.json` and verified the listing and home cards under `check:tour-catalogue`
+  - [x] refreshed precached HTML under `aurora-1.49` with unchanged CSS and JS bundle hashes
+  - **Verification:** Source comparisons confirmed only the approved copy changes, with contact details, catalogue data and contracts unchanged. `npm run check:tour-catalogue`, `npm run record:sw-bundles` and a clean `npm run build` passed; Chrome 156 verified both pages at 390, 768 and 1440 px in both themes, theme persistence and corrected home precache without overflow or runtime errors. The full regression suite, other browser engines and real devices were not tested.
   - **Source:** `AUDIT.md` — P2-10 (contradictory years); `docs/archive/improvements/IMPROVEMENTS-DESIGN-2026-10-31.md` — Remaining limitations
 
 ## Phase 4 — Accessibility and progressive enhancement

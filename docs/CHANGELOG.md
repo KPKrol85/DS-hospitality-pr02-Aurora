@@ -94,6 +94,7 @@ For each implementation task, determine `Changelog: yes` or `Changelog: no`. Add
 - Fixed the tour region filter to list the Maldives offer under Asia, matching its label, and removed the unused Oceania option.
 - Corrected the cookies policy to name Service Worker caches independently of the cache version and to state which pages are available offline.
 - Corrected 27 punctuation-spacing defects and localized all 12 theme-toggle tooltips to Polish, refreshing precached HTML under Service Worker cache `aurora-1.48`.
+- Removed the conflicting experience figure and unsupported client-app and WhatsApp claims while preserving the founding year and approved offer names.
 
 ### Security
 
