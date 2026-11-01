@@ -47,6 +47,29 @@ function choose(name, value) {
   select.dispatchEvent(new Event("change", { bubbles: true }));
 }
 
+// Region option text for the continent that opens a card's region label, such as "Azja" in
+// "Azja • Malediwy". Both Americas share one option.
+const REGION_OPTION_BY_CONTINENT = new Map([
+  ["Europa", "Europa"],
+  ["Azja", "Azja"],
+  ["Ameryka Północna", "Ameryki"],
+  ["Ameryka Południowa", "Ameryki"],
+  ["Afryka", "Afryka"],
+]);
+
+function regionOptions() {
+  return Array.from(filterSelect("region").options).filter((option) => option.value !== "all");
+}
+
+// Value of the region option that the card's visible region label names.
+function labelledRegion(card) {
+  const label = card.querySelector(".tour-card__region").textContent.trim();
+  const optionText = REGION_OPTION_BY_CONTINENT.get(label.split("•")[0].trim());
+  const option = regionOptions().find((candidate) => candidate.textContent.trim() === optionText);
+  expect(option, `#${card.id} region label "${label}" names no region option`).toBeDefined();
+  return option.value;
+}
+
 describe("initToursFilters", () => {
   beforeEach(() => {
     mountFromPage("tours.html", "[data-filters]", "[data-tours-list]", "[data-tours-empty]");
@@ -74,6 +97,25 @@ describe("initToursFilters", () => {
 
     expect(visibleIds()).toEqual(["nyc", "patagonia"]);
     expect(resultCount()).toBe("2");
+  });
+
+  it("lists the Maldives offer, labelled Asia, under Asia", () => {
+    choose("region", "azja");
+
+    expect(visibleIds()).toEqual(["malediwy", "tokio"]);
+    expect(resultCount()).toBe("2");
+  });
+
+  it("lists every offer under the region its label names and under no other region", () => {
+    const regionById = new Map(cards().map((card) => [card.id, labelledRegion(card)]));
+
+    for (const option of regionOptions()) {
+      choose("region", option.value);
+      const expected = [...regionById].filter(([, region]) => region === option.value).map(([id]) => id);
+
+      expect(expected, `region option "${option.textContent}" matches no offer label`).not.toHaveLength(0);
+      expect(visibleIds().sort(), `offers under "${option.textContent}"`).toEqual(expected.sort());
+    }
   });
 
   it("combines the type and region filters", () => {

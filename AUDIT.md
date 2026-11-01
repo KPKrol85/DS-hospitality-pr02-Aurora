@@ -157,6 +157,9 @@ None detected.
 - **Impact:** A user filtering by Asia misses an offer the site itself labels as Asian, so the filter contradicts the visible content.
 - **Recommended direction:** Align the Maldives filter value with its visible region, or relabel both consistently. Optionally, extend the catalogue check so that filter values agree with the visible region.
 - **Verification criteria:** Selecting the region shown on each card's label includes that card, and no card appears under a region its label contradicts.
+- **Status:** COMPLETED — verified.
+- **Resolution:** The `#malediwy` card in `tours.html` now uses `data-region="azja"`, and the "Oceania" option, which then matched no offer, was removed. `tests/tours-filters.test.js` checks that every region option lists exactly the cards whose labels name its region and none is empty; the filter logic and the catalogue check are unchanged.
+- **Verification:** `tests/tours-filters.test.js` passed 20/20, and its new tests failed against the HEAD markup, a restored "Oceania" option and a card filed under another region; `npm test` passed 313/313 and `npm run check:tour-catalogue` passed. Under `npm run preview:source` in the browser pane, "Azja" listed Malediwy and Tokio and every other option only the offers its label names, with no console errors.
 
 ### [P2-04] Overlay components lack complete dialog and focus semantics
 

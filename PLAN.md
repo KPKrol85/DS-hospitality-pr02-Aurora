@@ -72,11 +72,11 @@
 
 **Goal:** Make filters, legal statements and public copy agree with the catalogue, the runtime and each other.
 
-- [ ] **PH3-01 — Align the Maldives region filter with its visible region**
-  - [ ] set the `data-region` of the `#malediwy` card in `tours.html` to the region of its "Azja • Malediwy" label, which `assets/data/tours.json` and `index.html` share
-  - [ ] remove the "Oceania" option, which would then match no offer, or record why it stays
-  - [ ] extend `tests/tours-filters.test.js` so each card appears under the region its label names
-  - [ ] optional: extend `scripts/check-tour-catalogue.js` to compare each card's `data-region` with its visible region
+- [x] **PH3-01 — Align the Maldives region filter with its visible region**
+  - [x] set the `data-region` of the `#malediwy` card in `tours.html` to the region of its "Azja • Malediwy" label, which `assets/data/tours.json` and `index.html` share
+  - [x] remove the "Oceania" option, which would then match no offer, or record why it stays
+  - [x] extend `tests/tours-filters.test.js` so each card appears under the region its label names
+  - [ ] optional: extend `scripts/check-tour-catalogue.js` to compare each card's `data-region` with its visible region — not selected: `tests/tours-filters.test.js` already enforces this within `npm test` and `predeploy:check`, and the check would need its own label-to-option mapping and new fixtures
   - **Completion condition:** selecting the region named on each card's label includes that card, and no card appears under a region its label contradicts
   - **Source:** `AUDIT.md` — P2-03
 

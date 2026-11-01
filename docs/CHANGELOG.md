@@ -91,6 +91,7 @@ For each implementation task, determine `Changelog: yes` or `Changelog: no`. Add
 - Fixed the failing production build caused by a stale bundle record by releasing the current CSS bundle under Service Worker cache `aurora-1.46`.
 - Removed the unrequested page reload on the first production visit while keeping a single reload after an accepted Service Worker update, released under cache `aurora-1.47`.
 - Fixed the 404 page on nested unknown URLs by resolving its assets and navigation links from the site root.
+- Fixed the tour region filter to list the Maldives offer under Asia, matching its label, and removed the unused Oceania option.
 
 ### Security
 
