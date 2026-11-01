@@ -92,6 +92,7 @@ For each implementation task, determine `Changelog: yes` or `Changelog: no`. Add
 - Removed the unrequested page reload on the first production visit while keeping a single reload after an accepted Service Worker update, released under cache `aurora-1.47`.
 - Fixed the 404 page on nested unknown URLs by resolving its assets and navigation links from the site root.
 - Fixed the tour region filter to list the Maldives offer under Asia, matching its label, and removed the unused Oceania option.
+- Corrected the cookies policy to name Service Worker caches independently of the cache version and to state which pages are available offline.
 
 ### Security
 

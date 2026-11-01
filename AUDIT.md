@@ -197,6 +197,9 @@ None detected.
 - **Impact:** A public legal document dated 31.10.2026 misstates the names of the storage the site actually writes.
 - **Recommended direction:** Describe the cache names by their stable pattern, with the version as a variable part, or keep the table synchronised with `VERSION` as part of the cache-version procedure.
 - **Verification criteria:** The cache names in `cookies.html` match the names `service-worker.js` creates for the current and any future `VERSION`.
+- **Status:** COMPLETED — verified.
+- **Resolution:** The storage table in `cookies.html` now lists the caches as `<wersja>_static` and `<wersja>_html`, notes that the version part changes with each Service Worker release, and describes the HTML cache as holding only pages loaded under Service Worker control: the first page of a first visit is stored only after it is reopened online, and uncached pages fall back to the offline page. The policy date became 01.11.2026; `service-worker.js`, `VERSION` and the caching strategies are unchanged.
+- **Verification:** The text matches `service-worker.js`: both cache names derive from `VERSION`, HTML responses are stored network-first, and uncached pages receive `/offline.html`. `tests/service-worker.test.js` and `tests/csp.test.js` passed 53/53, `npm run check:csp` and `npm run check:assets` passed, and under `npm run preview:source` the table kept its six columns and row headers without page overflow at 375 px in both themes; the first-visit behaviour relies on the `PH2-01` Chromium check and was not re-run.
 
 ### [P2-07] Featured offer images on the home page lack intrinsic dimensions and lazy loading
 

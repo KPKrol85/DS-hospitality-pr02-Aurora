@@ -80,10 +80,10 @@
   - **Completion condition:** selecting the region named on each card's label includes that card, and no card appears under a region its label contradicts
   - **Source:** `AUDIT.md` — P2-03
 
-- [ ] **PH3-02 — Describe the cache names in the cookies policy independently of `VERSION`**
-  - [ ] replace `aurora-1.3_static` and `aurora-1.3_html` in the storage table of `cookies.html` with a description of the `<VERSION>_static` and `<VERSION>_html` names that `service-worker.js` creates
-  - [ ] clarify the purpose of the `<VERSION>_html` cache, now described as storing "ostatnio odwiedzonych podstron": it holds only pages loaded while the Service Worker controls the page, so since `PH2-01` the first page of a first visit is available offline only after it has been opened again online, and pages not stored in the HTML cache fall back to `offline.html`
-  - [ ] update the policy's last-updated date
+- [x] **PH3-02 — Describe the cache names in the cookies policy independently of `VERSION`**
+  - [x] replace `aurora-1.3_static` and `aurora-1.3_html` in the storage table of `cookies.html` with a description of the `<VERSION>_static` and `<VERSION>_html` names that `service-worker.js` creates
+  - [x] clarify the purpose of the `<VERSION>_html` cache, now described as storing "ostatnio odwiedzonych podstron": it holds only pages loaded while the Service Worker controls the page, so since `PH2-01` the first page of a first visit is available offline only after it has been opened again online, and pages not stored in the HTML cache fall back to `offline.html`
+  - [x] update the policy's last-updated date
   - **Completion condition:** the cache names in `cookies.html` remain correct for the current and any future `VERSION`, and the HTML cache description matches the pages the worker stores
   - **Source:** `AUDIT.md` — P2-06; owner decision of 2026-10-31 after the `PH2-01` offline check in Chromium
 

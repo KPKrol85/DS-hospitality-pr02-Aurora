@@ -344,7 +344,7 @@
                     <td>Do usunięcia przez Użytkownika.</td>
                   </tr>
                   <tr>
-                    <th scope="row"><code>aurora-1.3_static</code></th>
+                    <th scope="row"><code>&lt;wersja&gt;_static</code></th>
                     <td>Cache Storage</td>
                     <td>Operator</td>
                     <td>niezbędna</td>
@@ -352,11 +352,15 @@
                     <td>Do usunięcia przez Użytkownika lub do czasu publikacji nowej wersji pamięci podręcznej, przy której poprzednia wersja jest automatycznie usuwana.</td>
                   </tr>
                   <tr>
-                    <th scope="row"><code>aurora-1.3_html</code></th>
+                    <th scope="row"><code>&lt;wersja&gt;_html</code></th>
                     <td>Cache Storage</td>
                     <td>Operator</td>
                     <td>niezbędna</td>
-                    <td>Przechowywanie ostatnio odwiedzonych podstron w celu ich wyświetlenia przy braku połączenia z siecią.</td>
+                    <td>
+                      Przechowywanie podstron wczytanych z sieci, gdy Service Worker kontroluje już stronę, w celu ich wyświetlenia przy braku połączenia z siecią. Pierwsza strona otwarta podczas
+                      pierwszej wizyty nie jest zapisywana automatycznie – może zostać zapisana po ponownym otwarciu jej przy dostępie do sieci. Przy braku połączenia zamiast podstrony nieobecnej w tej
+                      pamięci wyświetlana jest strona zastępcza.
+                    </td>
                     <td>Do usunięcia przez Użytkownika lub do czasu publikacji nowej wersji pamięci podręcznej, przy której poprzednia wersja jest automatycznie usuwana.</td>
                   </tr>
                   <tr>
@@ -379,6 +383,11 @@
               </table>
             </div>
             <p class="legal__table-hint">Tabelę można przewijać w poziomie.</p>
+            <p>
+              W nazwach pamięci podręcznej Cache Storage człon
+              <code>&lt;wersja&gt;</code>
+              to oznaczenie bieżącej wersji Service Workera, które zmienia się wraz z publikacją jego nowej wersji.
+            </p>
 
             <div class="legal__note">
               <p>
@@ -559,7 +568,7 @@
           <!-- Data ostatniej aktualizacji -->
           <p class="legal__meta">
             Data ostatniej aktualizacji:
-            <time datetime="2026-10-31">31.10.2026</time>
+            <time datetime="2026-11-01">01.11.2026</time>
           </p>
         </div>
       </section>
