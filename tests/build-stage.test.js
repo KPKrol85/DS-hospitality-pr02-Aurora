@@ -9,7 +9,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 // directory, so no test changes a project page or reads the real dist/.
 const projectRoot = resolve(import.meta.dirname, "..");
 const stager = resolve(projectRoot, "scripts/build-dist.js");
-const { maintainedPages, assetReferences } = createRequire(import.meta.filename)("../scripts/site-build-contract.js");
+const { maintainedPages, pageAssetReferences } = createRequire(import.meta.filename)("../scripts/site-build-contract.js");
 const inventoryMismatch = "Root HTML pages do not match maintainedPages in scripts/site-build-contract.js:";
 
 let siteRoot;
@@ -62,7 +62,7 @@ describe("build-dist.js page inventory", () => {
     expect(status, stderr).toBe(0);
     expect(htmlFiles("dist")).toEqual([...maintainedPages].sort());
     for (const page of maintainedPages) {
-      const expected = assetReferences.reduce((html, { source, production }) => html.replace(source.tag, production.tag), read(page));
+      const expected = pageAssetReferences(page).reduce((html, { source, production }) => html.replace(source.tag, production.tag), read(page));
       expect(read(`dist/${page}`), page).toBe(expected);
     }
   });

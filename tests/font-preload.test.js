@@ -1,5 +1,6 @@
 import { spawnSync } from "node:child_process";
 import { copyFileSync, cpSync, existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync } from "node:fs";
+import { createRequire } from "node:module";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
@@ -20,8 +21,16 @@ const inter = "assets/fonts/Inter-VariableFont.woff2";
 const manrope = "assets/fonts/Manrope-VariableFont.woff2";
 const interPreloadPages = new Set(["index.html"]);
 
+// The pages that write their URLs root-relative, because the host also serves them at nested paths.
+const { rootRelativePages } = createRequire(import.meta.filename)("../scripts/site-build-contract.js");
+
 function expectedPreloads(page) {
   return interPreloadPages.has(page) ? [inter, manrope] : [manrope];
+}
+
+// The href with which a page names a site file.
+function hrefOn(page, file) {
+  return rootRelativePages.includes(page) ? `/${file}` : file;
 }
 
 // Resolves a reference the way the browser does for a file at the given site path.
@@ -60,8 +69,8 @@ function bootstrapToStylesheet(document) {
 function expectedHead(page, stylesheet) {
   return [
     "theme bootstrap",
-    ...expectedPreloads(page).map((href) => `<link rel="preload" href="${href}">`),
-    `<link rel="stylesheet" href="${stylesheet}">`,
+    ...expectedPreloads(page).map((file) => `<link rel="preload" href="${hrefOn(page, file)}">`),
+    `<link rel="stylesheet" href="${hrefOn(page, stylesheet)}">`,
   ];
 }
 
@@ -84,7 +93,7 @@ describe("font preload hints", () => {
 
     for (const page of pages) {
       const hrefs = preloadsOf(readPage(page)).map((link) => link.getAttribute("href"));
-      expect(hrefs, page).toEqual(expectedPreloads(page));
+      expect(hrefs, page).toEqual(expectedPreloads(page).map((file) => hrefOn(page, file)));
       expect(hrefs.map((href) => sitePath(href, page)), page).toEqual(expectedPreloads(page).map((href) => `/${href}`));
     }
   });

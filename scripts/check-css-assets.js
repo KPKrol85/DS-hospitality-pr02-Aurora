@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { maintainedPages, assetReferences } = require('./site-build-contract');
+const { maintainedPages, assetReferences, pageAssetReferences } = require('./site-build-contract');
 
 const projectRoot = process.cwd();
 const distRoot = path.join(projectRoot, 'dist');
@@ -9,6 +9,7 @@ const distRoot = path.join(projectRoot, 'dist');
 // - maintained pages load the canonical sources: css/style.css and js/script.js (ES module)
 // - npm run build publishes copies of them to dist/ that load the generated bundles
 //   dist/css/style.min.css and dist/js/script.min.js
+// - the tags of rootRelativePages (404.html) use root-relative URLs on both sides
 // - minified bundles are generated only in dist/, never in the source directories
 const sourceAssets = assetReferences.map(({ source }) => source);
 const productionAssets = assetReferences.map(({ production }) => production);
@@ -55,7 +56,8 @@ function checkSources() {
       continue;
     }
 
-    checkPage(page, fs.readFileSync(htmlPath, 'utf8'), sourceAssets, productionAssets);
+    const pageSourceAssets = pageAssetReferences(page).map(({ source }) => source);
+    checkPage(page, fs.readFileSync(htmlPath, 'utf8'), pageSourceAssets, productionAssets);
   }
 }
 
@@ -84,7 +86,8 @@ function checkProduction() {
       continue;
     }
 
-    checkPage(`dist/${page}`, fs.readFileSync(htmlPath, 'utf8'), productionAssets, sourceAssets);
+    const pageProductionAssets = pageAssetReferences(page).map(({ production }) => production);
+    checkPage(`dist/${page}`, fs.readFileSync(htmlPath, 'utf8'), pageProductionAssets, sourceAssets);
   }
 }
 

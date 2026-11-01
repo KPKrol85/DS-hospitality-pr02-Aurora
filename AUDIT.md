@@ -144,6 +144,9 @@ None detected.
 - **Impact:** Mistyped or outdated multi-segment URLs show an unstyled error page whose recovery links lead to further errors.
 - **Recommended direction:** Make `404.html` resolve its assets and links from the site root. The project already requires deployment at the domain root, and `base-uri 'self'` permits that approach. Keep the build's asset-reference contract consistent with the change.
 - **Verification criteria:** Under `npm run preview:dist`, a two- or three-segment unknown path renders the styled 404 page with status 404, no failed asset requests and working home and offers links.
+- **Status:** COMPLETED — verified.
+- **Resolution:** `404.html` now names its stylesheet, script, font preload, manifest, icons, logos and 17 page links from the site root and keeps the `#main-content` skip link. `scripts/site-build-contract.js` declares it in `rootRelativePages`, so `build:stage`, `check:css-assets` and the test fixtures use its root-relative entry tags, and `tests/root-relative-pages.test.js` guards the URLs; the bundles and the `aurora-1.47` cache are unchanged.
+- **Verification:** Under `npm run preview:dist` in headless Chrome 156, `/nieznana-strona`, `/oferty/malediwy` and `/oferty/malediwy/2026` returned 404 and rendered identically to the single-segment page before the change, with no failed requests or console errors, a working skip link, and home, offers and logo links that loaded with 200, also under the activated Service Worker. `npm run build` exited 0 with every asset, CSP and bundle check passing, and `npm test` passed 311/311.
 
 ### [P2-03] Maldives offer is labelled Asia but filtered as Oceania
 

@@ -15,8 +15,8 @@ const pages = readdirSync(projectRoot)
   .filter((entry) => entry.endsWith(".html"))
   .sort();
 
-// The two source references that build:stage rewrites in the dist/ copies of the pages.
-const { assetReferences } = createRequire(import.meta.filename)("../scripts/site-build-contract.js");
+// The two source references of each page that build:stage rewrites in the dist/ copies of the pages.
+const { pageAssetReferences } = createRequire(import.meta.filename)("../scripts/site-build-contract.js");
 
 let siteRoot;
 
@@ -29,7 +29,7 @@ function createSite() {
     writeFileSync(join(root, page), html);
     writeFileSync(
       join(root, "dist", page),
-      assetReferences.reduce((copy, { source, production }) => copy.replace(source.tag, production.tag), html)
+      pageAssetReferences(page).reduce((copy, { source, production }) => copy.replace(source.tag, production.tag), html)
     );
   }
   copyFileSync(join(projectRoot, "_headers"), join(root, "_headers"));

@@ -58,12 +58,12 @@
   - **Depends on:** `PH1-01`
   - **Source:** `AUDIT.md` — P2-01
 
-- [ ] **PH2-02 — Resolve 404 page assets and links from the site root**
-  - [ ] make the stylesheet, script, font preload, manifest, icons, images and navigation links of `404.html` resolve from the site root
-  - [ ] keep the in-page skip link (`#main-content`) working
-  - [ ] keep the entry-tag contract (`assetReferences` in `scripts/site-build-contract.js`, applied by `build:stage` and verified by `check:css-assets` and `tests/csp.test.js`) consistent with the chosen approach
-  - [ ] keep `check:assets` and `check:assets:dist` passing
-  - [ ] update the asset-reference description in `docs/pipeline-notes.md`
+- [x] **PH2-02 — Resolve 404 page assets and links from the site root**
+  - [x] make the stylesheet, script, font preload, manifest, icons, images and navigation links of `404.html` resolve from the site root
+  - [x] keep the in-page skip link (`#main-content`) working
+  - [x] keep the entry-tag contract (`assetReferences` in `scripts/site-build-contract.js`, applied by `build:stage` and verified by `check:css-assets` and `tests/csp.test.js`) consistent with the chosen approach
+  - [x] keep `check:assets` and `check:assets:dist` passing
+  - [x] update the asset-reference description in `docs/pipeline-notes.md`
   - **Verification:** under `npm run preview:dist`, two- and three-segment unknown paths render the styled 404 page with status 404, no failed asset requests and working home and offers links; a single-segment path still renders correctly
   - **Depends on:** `PH1-01`
   - **Source:** `AUDIT.md` — P2-02

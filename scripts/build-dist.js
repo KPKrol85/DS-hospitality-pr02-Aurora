@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const { maintainedPages, assetReferences } = require("./site-build-contract");
+const { maintainedPages, assetReferences, pageAssetReferences } = require("./site-build-contract");
 
 const projectRoot = process.cwd();
 const distRoot = path.join(projectRoot, "dist");
@@ -85,7 +85,7 @@ function checkPageInventory() {
 function toProductionHtml(htmlFile) {
   let html = fs.readFileSync(path.join(projectRoot, htmlFile), "utf8");
 
-  for (const { source, production } of assetReferences) {
+  for (const { source, production } of pageAssetReferences(htmlFile)) {
     const parts = html.split(source.tag);
     if (parts.length !== 2) {
       fail(`${htmlFile}: expected exactly one ${source.tag}, found ${parts.length - 1}`);
