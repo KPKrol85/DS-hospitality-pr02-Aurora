@@ -87,10 +87,11 @@
   - **Completion condition:** the cache names in `cookies.html` remain correct for the current and any future `VERSION`, and the HTML cache description matches the pages the worker stores
   - **Source:** `AUDIT.md` — P2-06; owner decision of 2026-10-31 after the `PH2-01` offline check in Chromium
 
-- [ ] **PH3-03 — Correct punctuation spacing and the English theme-toggle tooltip**
-  - [ ] remove the line break between inline elements and the following punctuation: 27 occurrences, in `regulamin.html` (10), `cookies.html` (10), `polityka-prywatnosci.html` (6) and the consent label of `contact.html` (1)
-  - [ ] localize or remove `title="Toggle theme"` on the theme toggle of all 12 pages; its `aria-label` is already Polish
-  - [ ] complete the cache-version update for the changed `index.html` and `offline.html`
+- [x] **PH3-03 — Correct punctuation spacing and the English theme-toggle tooltip**
+  - [x] remove the line break between inline elements and the following punctuation: 27 occurrences, in `regulamin.html` (10), `cookies.html` (10), `polityka-prywatnosci.html` (6) and the consent label of `contact.html` (1)
+  - [x] localize or remove `title="Toggle theme"` on the theme toggle of all 12 pages; its `aria-label` is already Polish
+  - [x] complete the cache-version update for the changed `index.html` and `offline.html`
+  - **Verification:** Source checks confirmed all 27 spacing corrections and Polish tooltips on all 12 pages; Chrome 156 verified rendered text, theme switching, refreshed precache and offline fallback. All 50 focused theme and Service Worker tests and `npm run build` passed with matching bundle hashes for `aurora-1.48`.
   - **Completion condition:** no rendered text has a space before punctuation after an inline element, and no English `title` remains
   - **Source:** `AUDIT.md` — P2-10 (stray spaces, English tooltip)
 

@@ -93,6 +93,7 @@ For each implementation task, determine `Changelog: yes` or `Changelog: no`. Add
 - Fixed the 404 page on nested unknown URLs by resolving its assets and navigation links from the site root.
 - Fixed the tour region filter to list the Maldives offer under Asia, matching its label, and removed the unused Oceania option.
 - Corrected the cookies policy to name Service Worker caches independently of the cache version and to state which pages are available offline.
+- Corrected 27 punctuation-spacing defects and localized all 12 theme-toggle tooltips to Polish, refreshing precached HTML under Service Worker cache `aurora-1.48`.
 
 ### Security
 
