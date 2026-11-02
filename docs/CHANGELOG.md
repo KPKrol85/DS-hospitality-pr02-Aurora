@@ -96,6 +96,7 @@ For each implementation task, determine `Changelog: yes` or `Changelog: no`. Add
 - Corrected 27 punctuation-spacing defects and localized all 12 theme-toggle tooltips to Polish, refreshing precached HTML under Service Worker cache `aurora-1.48`.
 - Removed the conflicting experience figure and unsupported client-app and WhatsApp claims while preserving the founding year and approved offer names.
 - Exposed the gallery and tour-detail lightbox to assistive technologies as a modal dialog named "Podgląd zdjęcia".
+- Made the visible close control of the open mobile navigation reachable with Tab and Shift+Tab, released under Service Worker cache `aurora-1.50`.
 
 ### Security
 

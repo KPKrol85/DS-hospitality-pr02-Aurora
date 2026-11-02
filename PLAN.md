@@ -114,11 +114,12 @@
   - **Verification:** Headless Chrome 156 exposed both open lightboxes as a modal `dialog` named "Podgląd zdjęcia" and the closed overlay as ignored (`notRendered`); Tab and Shift+Tab wrapping, Escape and close-button focus restoration, arrow navigation and all six gallery filters behaved as before, with identical computed styles and no console errors. `tests/lightbox.test.js` passed 15/15, its two new tests failed against the HEAD markup, and `npm test` passed 315/315.
   - **Source:** `AUDIT.md` — P2-04 (lightbox)
 
-- [ ] **PH4-02 — Include the navigation toggle in the open-menu focus cycle**
-  - [ ] let Tab and Shift+Tab in the open mobile navigation reach the toggle (`js/features/nav.js`)
-  - [ ] keep closing by Escape and by link activation, and the focus return on close
-  - [ ] extend `tests/nav.test.js` to cover Tab and Shift+Tab through the toggle and closing by toggle activation
-  - [ ] complete the cache-version update for the changed JS bundle
+- [x] **PH4-02 — Include the navigation toggle in the open-menu focus cycle**
+  - [x] let Tab and Shift+Tab in the open mobile navigation reach the toggle (`js/features/nav.js`)
+  - [x] keep closing by Escape and by link activation, and the focus return on close
+  - [x] extend `tests/nav.test.js` to cover Tab and Shift+Tab through the toggle and closing by toggle activation
+  - [x] complete the cache-version update for the changed JS bundle
+  - **Verification:** Headless Chrome 156 confirmed below 900 px on `index.html` and `tours.html`, and on the built `index.html`, that Tab runs from the last link to the toggle and then the first link and Shift+Tab reverses it, and that Enter, Space, Escape, link activation and a pointer click close the menu with focus on the toggle; crossing 900 px still closes the menu, and the desktop Tab order is unchanged, with no console errors. `tests/nav.test.js` passed 7/7, its two new traversal tests failed against the HEAD module, `npm test` passed 316/316, and `npm run build` passed with matching bundle hashes for `aurora-1.50`.
   - **Completion condition:** with the mobile menu open, Tab and Shift+Tab reach the toggle, and activating it closes the menu and restores focus
   - **Source:** `AUDIT.md` — P2-04 (mobile navigation)
 

@@ -9,7 +9,8 @@ describe("mobile navigation", () => {
   let documentListeners;
 
   beforeEach(() => {
-    mountFromPage("index.html", "[data-nav-toggle]", "[data-nav]");
+    // The whole header, so the focus order around the toggle is the page's own.
+    mountFromPage("index.html", "[data-header]");
     toggle = document.querySelector("[data-nav-toggle]");
     links = Array.from(document.querySelectorAll("[data-nav] a[href]"));
     mediaQuery = new EventTarget();
@@ -39,6 +40,17 @@ describe("mobile navigation", () => {
     return event;
   }
 
+  // jsdom has no sequential focus navigation, so a Tab the module leaves alone moves focus here
+  // as a browser would: to the adjacent link or button of the header.
+  function pressTab(shiftKey = false) {
+    const event = pressKey("Tab", shiftKey);
+    if (!event.defaultPrevented) {
+      const order = Array.from(document.querySelectorAll("[data-header] a[href], [data-header] button"));
+      order[order.indexOf(document.activeElement) + (shiftKey ? -1 : 1)]?.focus();
+    }
+    return event;
+  }
+
   function expectClosed() {
     expect(toggle.getAttribute("aria-expanded")).toBe("false");
     expect(document.body.style.overflow).toBe("");
@@ -54,17 +66,38 @@ describe("mobile navigation", () => {
     expect(document.body.style.overflow).toBe("hidden");
   });
 
-  it.each([false, true])("wraps focus at the Tab boundary (shiftKey=%s)", (shiftKey) => {
+  // The prevented steps are the module's focus trap; the others are emulated by pressTab().
+  it("moves focus on Tab from the last link to the toggle and then to the first link", () => {
     openNav();
-    const first = links[0];
-    const last = links.at(-1);
-    (shiftKey ? first : last).focus();
+    links.at(-1).focus();
 
-    // Only the explicit focus trap is tested, not native browser Tab traversal.
-    const event = pressKey("Tab", shiftKey);
+    expect(pressTab().defaultPrevented).toBe(true);
+    expect(document.activeElement).toBe(toggle);
 
-    expect(event.defaultPrevented).toBe(true);
-    expect(document.activeElement).toBe(shiftKey ? last : first);
+    expect(pressTab().defaultPrevented).toBe(false);
+    expect(document.activeElement).toBe(links[0]);
+  });
+
+  it("moves focus on Shift+Tab from the first link to the toggle and then to the last link", () => {
+    openNav();
+
+    expect(pressTab(true).defaultPrevented).toBe(false);
+    expect(document.activeElement).toBe(toggle);
+
+    expect(pressTab(true).defaultPrevented).toBe(true);
+    expect(document.activeElement).toBe(links.at(-1));
+  });
+
+  it("closes on toggle activation from the focus cycle and keeps focus on the toggle", () => {
+    openNav();
+    links.at(-1).focus();
+    pressTab();
+
+    // Enter and Space on the native button arrive as a click.
+    toggle.click();
+
+    expectClosed();
+    expect(document.activeElement).toBe(toggle);
   });
 
   it("closes on Escape, unlocks scrolling and restores focus to the toggle", () => {

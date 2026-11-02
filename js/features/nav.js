@@ -60,7 +60,9 @@ export function initNav() {
       return;
     }
     if (event.key === "Tab" && focusable.length) {
-      const first = focusable[0];
+      // The cycle starts at the toggle, which closes the menu. It directly precedes the
+      // navigation in the header, so the browser moves focus between it and the first link.
+      const first = toggle;
       const last = focusable[focusable.length - 1];
       if (event.shiftKey && document.activeElement === first) {
         event.preventDefault();
