@@ -107,11 +107,11 @@
 
 **Goal:** Give overlays complete dialog and focus semantics, and make the no-JavaScript baseline follow the project's own enhancement pattern.
 
-- [ ] **PH4-01 — Expose the lightbox as a named modal dialog**
-  - [ ] give the lightbox overlay in `gallery.html` and `tour.html` a dialog role, `aria-modal` and a Polish accessible name
-  - [ ] preserve the focus trap, Escape closing, focus restoration and filter-aware navigation of `js/features/lightbox.js`
-  - [ ] extend `tests/lightbox.test.js` to cover the dialog role and name
-  - **Verification:** with the lightbox open, the Chromium accessibility tree exposes a named modal dialog
+- [x] **PH4-01 — Expose the lightbox as a named modal dialog**
+  - [x] give the lightbox overlay in `gallery.html` and `tour.html` a dialog role, `aria-modal` and a Polish accessible name
+  - [x] preserve the focus trap, Escape closing, focus restoration and filter-aware navigation of `js/features/lightbox.js`
+  - [x] extend `tests/lightbox.test.js` to cover the dialog role and name
+  - **Verification:** Headless Chrome 156 exposed both open lightboxes as a modal `dialog` named "Podgląd zdjęcia" and the closed overlay as ignored (`notRendered`); Tab and Shift+Tab wrapping, Escape and close-button focus restoration, arrow navigation and all six gallery filters behaved as before, with identical computed styles and no console errors. `tests/lightbox.test.js` passed 15/15, its two new tests failed against the HEAD markup, and `npm test` passed 315/315.
   - **Source:** `AUDIT.md` — P2-04 (lightbox)
 
 - [ ] **PH4-02 — Include the navigation toggle in the open-menu focus cycle**

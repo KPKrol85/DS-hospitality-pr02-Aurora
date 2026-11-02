@@ -34,6 +34,25 @@ function expectPreview(img) {
   expect(document.querySelector("[data-lightbox-caption]").textContent).toBe(img.dataset.caption);
 }
 
+// The overlay is a modal dialog named in Polish. While closed, the hidden attribute keeps it
+// out of the accessibility tree; jsdom loads no CSS, so the browser check covers rendering.
+function expectDialogLifecycle(overlay, open, close) {
+  expect(overlay.getAttribute("role")).toBe("dialog");
+  expect(overlay.getAttribute("aria-modal")).toBe("true");
+  expect(overlay.getAttribute("aria-label")).toBe("Podgląd zdjęcia");
+  expect(overlay.hidden).toBe(true);
+
+  open();
+
+  expect(overlay.hidden).toBe(false);
+  expect(overlay.contains(document.activeElement)).toBe(true);
+
+  close();
+
+  expect(overlay.hidden).toBe(true);
+  expect(overlay.contains(document.activeElement)).toBe(false);
+}
+
 describe("lightbox on gallery.html", () => {
   let overlay;
   let close;
@@ -72,6 +91,11 @@ describe("lightbox on gallery.html", () => {
     expect(overlay.hidden).toBe(true);
     expect(document.body.style.overflow).toBe(overflow);
     expect(document.activeElement).toBe(trigger);
+  });
+
+  it("is a named modal dialog that is hidden while closed", () => {
+    trigger.focus();
+    expectDialogLifecycle(overlay, () => trigger.click(), () => pressKey("Escape"));
   });
 
   it("closes on Escape and returns focus to the activating button", () => {
@@ -155,13 +179,26 @@ describe("lightbox across the gallery chapters", () => {
 });
 
 describe("lightbox on tour.html", () => {
-  it("excludes the main image from activation and the gallery sequence", async () => {
+  async function mountTour() {
     mountFromPage("tour.html", "main", "[data-lightbox]");
     setUrl("/tour.html?id=maroko");
     stubFetchJson(tours);
     initTourDetail();
     initLightbox();
     await flushPromises();
+  }
+
+  it("is a named modal dialog that is hidden while closed", async () => {
+    await mountTour();
+    const overlay = document.querySelector("[data-lightbox]");
+    const thumbnail = document.querySelector("[data-tour-gallery] [data-lightbox-trigger]");
+    thumbnail.focus();
+
+    expectDialogLifecycle(overlay, () => thumbnail.click(), () => overlay.querySelector("[data-lightbox-close]").click());
+  });
+
+  it("excludes the main image from activation and the gallery sequence", async () => {
+    await mountTour();
 
     const overlay = document.querySelector("[data-lightbox]");
     const mainImage = document.querySelector("[data-tour-main-image] img");

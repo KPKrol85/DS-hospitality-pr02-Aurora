@@ -172,6 +172,9 @@ None detected.
 - **Impact:** Screen-reader users get no announcement that a modal opened or what it contains. Keyboard users cannot reach the visible control that closes the menu.
 - **Recommended direction:** Give the lightbox overlay dialog semantics and an accessible name. Include the navigation toggle in the open-menu focus cycle.
 - **Verification criteria:** With the lightbox open, the accessibility tree exposes a named modal dialog. With the mobile menu open, Tab and Shift+Tab reach the toggle, and activating it closes the menu and restores focus.
+- **Status:** PARTIALLY COMPLETED — PH4-01 (lightbox) verified; the mobile navigation focus cycle remains open under PH4-02.
+- **Resolution:** The lightbox overlay in `gallery.html` and `tour.html` now has `role="dialog"`, `aria-modal="true"` and `aria-label="Podgląd zdjęcia"`, and the `hidden` attribute still removes it while closed. `js/features/lightbox.js` and the lightbox CSS are unchanged, and `tests/lightbox.test.js` covers the dialog semantics on both pages.
+- **Verification:** Under `npm run preview:source` in headless Chrome 156, both open lightboxes were exposed as a modal `dialog` named "Podgląd zdjęcia" and the closed overlay as ignored; the focus trap, Escape and close-button focus restoration, arrow and filter-aware navigation were unchanged, with no console errors. `tests/lightbox.test.js` passed 15/15, and `npm test` passed 315/315.
 
 ### [P2-05] No-JavaScript baseline hides FAQ answers and shows inert gallery filters
 
