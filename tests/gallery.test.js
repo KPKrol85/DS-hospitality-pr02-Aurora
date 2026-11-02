@@ -8,6 +8,7 @@ const tours = readJson("assets/data/tours.json");
 
 const loadingMessage = "Ładowanie galerii…";
 const unavailableMessage = "Nie udało się wczytać galerii. Sprawdź połączenie z internetem i odśwież stronę.";
+const noScriptMessage = "Galeria zdjęć wymaga włączonej obsługi JavaScript. Włącz JavaScript, aby przeglądać fotografie.";
 
 function galleryEl() {
   return document.querySelector("[data-gallery]");
@@ -298,6 +299,15 @@ describe("initGallery", () => {
     expect(withoutText.querySelector("figcaption").textContent).toBe("");
   });
 
+  it("starts with the filters hidden in the page markup, before any data is requested", () => {
+    // gallery.html serves the filters hidden, so they never show above an empty gallery: without
+    // JavaScript, before initGallery() runs, or after it fails.
+    expect(isShown(filtersSection())).toBe(false);
+    expect(filterButtons()).toHaveLength(7);
+    expect(filterButtons().every((button) => !isShown(button))).toBe(true);
+    expect(galleryEl().children).toHaveLength(0);
+  });
+
   it("shows a loading state with the filters hidden until the data arrives", async () => {
     const request = stubFetchDeferred();
 
@@ -379,6 +389,33 @@ describe("initGallery", () => {
     expect(galleryEl().closest('[role="status"], [aria-live]')).toBeNull();
     expect(statusEl().children).toHaveLength(0);
     expect(galleryEl().contains(statusEl())).toBe(false);
+  });
+});
+
+describe("gallery.html without JavaScript", () => {
+  beforeEach(() => {
+    // The main content and the lightbox as served, before any script runs.
+    document.body.replaceChildren();
+    mountFromPage("gallery.html", "main", "[data-lightbox]");
+  });
+
+  it("exposes no control while the gallery is not rendered", () => {
+    const controls = Array.from(document.querySelectorAll("button, input, select, textarea"));
+
+    expect(controls.length).toBeGreaterThan(0);
+    expect(controls.filter(isShown)).toEqual([]);
+  });
+
+  it("shows a Polish message in place of the gallery when scripting is disabled", () => {
+    const noscripts = document.querySelectorAll("noscript");
+
+    expect(noscripts).toHaveLength(1);
+    const [noscript] = noscripts;
+    expect(noscript.parentElement).toBe(galleryEl().parentElement);
+    // A DOMParser document has scripting disabled, so the fallback is parsed as markup, as in a
+    // browser without JavaScript.
+    expect(noscript.querySelector(".data-state__message").textContent).toBe(noScriptMessage);
+    expect(noscript.querySelector("a, button, input, select, textarea, [tabindex]")).toBeNull();
   });
 });
 

@@ -1,3 +1,6 @@
+// Every panel is visible in the markup and CSS hides the tab list until data-tabs-ready, so the
+// panels stay readable without JavaScript or when this fails. The initial tab is selected, hiding
+// the other panels, only once every tab has its handlers.
 export function initTabs() {
   const tabGroups = document.querySelectorAll("[data-tabs]");
   if (!tabGroups.length) return;
@@ -6,11 +9,6 @@ export function initTabs() {
     const tabs = group.querySelectorAll('[role="tab"]');
     const panels = group.querySelectorAll('[role="tabpanel"]');
     if (!tabs.length || !panels.length) return;
-
-    const initial = group.querySelector('[role="tab"][aria-selected="true"]') || tabs[0];
-    if (initial) {
-      activateTab(initial, tabs, panels);
-    }
 
     tabs.forEach((tab) => {
       tab.addEventListener("click", () => activateTab(tab, tabs, panels));
@@ -25,6 +23,10 @@ export function initTabs() {
         }
       });
     });
+
+    const initial = group.querySelector('[role="tab"][aria-selected="true"]') || tabs[0];
+    activateTab(initial, tabs, panels);
+    group.setAttribute("data-tabs-ready", "");
   });
 }
 

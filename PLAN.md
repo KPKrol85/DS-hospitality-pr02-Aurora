@@ -123,14 +123,14 @@
   - **Completion condition:** with the mobile menu open, Tab and Shift+Tab reach the toggle, and activating it closes the menu and restores focus
   - **Source:** `AUDIT.md` — P2-04 (mobile navigation)
 
-- [ ] **PH4-03 — Make FAQ answers, testimonials and the gallery usable without JavaScript**
-  - [ ] serve the FAQ answers in `about.html` and all testimonial panels in `index.html` readable without JavaScript, and collapse them only after `js/features/accordion-faq.js` and `js/features/tabs.js` initialize, following the `reveal-ready` and `data-nav-ready` pattern
-  - [ ] hide the gallery filters in `gallery.html` until the gallery renders, and give the no-JS state no other inert controls
-  - [ ] show a short Polish message in place of the data-driven gallery when JavaScript is unavailable
-  - [ ] preserve the ARIA contracts (`aria-expanded`, `aria-controls`, tab roles) and the behavior with JavaScript
-  - [ ] add focused tests for the initialized FAQ and tab states; no current test covers these modules
-  - [ ] complete the cache-version update for the changed bundles and `index.html`
-  - **Verification:** with JavaScript disabled, FAQ answers and testimonials are readable and `gallery.html` shows no non-functional controls; with JavaScript enabled, behavior is unchanged
+- [x] **PH4-03 — Make FAQ answers, testimonials and the gallery usable without JavaScript**
+  - [x] serve the FAQ answers in `about.html` and all testimonial panels in `index.html` readable without JavaScript, and collapse them only after `js/features/accordion-faq.js` and `js/features/tabs.js` initialize, following the `reveal-ready` and `data-nav-ready` pattern
+  - [x] hide the gallery filters in `gallery.html` until the gallery renders, and give the no-JS state no other inert controls
+  - [x] show a short Polish message in place of the data-driven gallery when JavaScript is unavailable
+  - [x] preserve the ARIA contracts (`aria-expanded`, `aria-controls`, tab roles) and the behavior with JavaScript
+  - [x] add focused tests for the initialized FAQ and tab states; no current test covers these modules
+  - [x] complete the cache-version update for the changed bundles and `index.html`
+  - **Verification:** Headless Chrome 156 confirmed on source and built pages at 390 and 1440 px that without JavaScript all four FAQ answers (`aria-expanded="true"`, no expand indicator) and all three testimonials are readable without a tab list, and that `gallery.html` shows the Polish message with no control in its content or lightbox; with JavaScript, FAQ toggling by Enter, Space and pointer, arrow-key and pointer tab selection with roving `tabindex`, gallery filtering, the loading and unavailable states and the lightbox behaved as before in both themes, with no console errors. 11 of the 17 new tests in `tests/accordion-faq.test.js`, `tests/tabs.test.js` and `tests/gallery.test.js` failed against the HEAD sources, `npm test` passed 333/333, and `npm run build` passed with matching bundle hashes for `aurora-1.51`; `npm run predeploy:check` stopped at one environmental 5 s timeout in `tests/font-preload.test.js`, which passed alone. The header theme toggle shared by all pages stays visible and inert without JavaScript; it is outside this task and was left unchanged.
   - **Source:** `AUDIT.md` — P2-05
 
 ## Phase 5 — Image and styling contracts

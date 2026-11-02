@@ -190,6 +190,9 @@ None detected.
 - **Impact:** Content is unreachable, and controls look interactive but do nothing, which is inconsistent with the project's own enhancement pattern.
 - **Recommended direction:** Ship expanded or visible static states and collapse them only after initialization, as the reveal and navigation features do. Hide the gallery filters until the gallery renders, and provide a short no-JS message for the data-driven gallery.
 - **Verification criteria:** With JavaScript disabled, FAQ answers and testimonials are readable, and `gallery.html` shows no non-functional controls. With JavaScript enabled, behaviour is unchanged.
+- **Status:** COMPLETED — verified.
+- **Resolution:** PH4-03 serves all four FAQ answers in `about.html` open (`aria-expanded="true"`) and all three testimonial panels in `index.html` visible; `js/features/accordion-faq.js` and `js/features/tabs.js` collapse or select them only after attaching their handlers and then set `data-accordion-ready` and `data-tabs-ready`, which enable the expand indicator, hover state and tab list in CSS. `gallery.html` serves its filters hidden until the gallery renders and shows a Polish `<noscript>` message in place of the gallery, and the changed bundles were released under `aurora-1.51`.
+- **Verification:** Headless Chrome 156 confirmed on source and built pages at 390 and 1440 px that the no-JS pages show every answer and testimonial without tab or filter controls and that keyboard and pointer behaviour, the gallery data states and the lightbox are unchanged with JavaScript, with no console errors; 11 of the 17 new tests failed against the HEAD sources, `npm test` passed 333/333 and `npm run build` passed. The header theme toggle shared by all pages remains visible and inert without JavaScript; it lies outside this finding and was left unchanged.
 
 ### [P2-06] Cookies policy names Cache Storage keys that the site does not use
 

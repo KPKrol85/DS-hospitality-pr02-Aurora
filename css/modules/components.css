@@ -156,6 +156,14 @@
 .tabs__panel {
   animation: testimonial-fade 200ms ease-out;
 }
+/* Until initTabs() sets data-tabs-ready, the tab list stays hidden and every testimonial shows, one
+   below another, so the quotations stay readable without JavaScript and no inert tab is offered. */
+[data-tabs]:not([data-tabs-ready]) .tabs__list {
+  display: none;
+}
+[data-tabs]:not([data-tabs-ready]) .tabs__panel + .tabs__panel {
+  margin-top: var(--space-6);
+}
 .testimonials__quote {
   margin: 0;
   padding-left: var(--space-5);
@@ -375,8 +383,16 @@ html[data-theme="dark"] .filters__select {
   content: "–";
   color: var(--primary);
 }
-.accordion button:hover {
+.accordion[data-accordion-ready] button:hover {
   color: var(--primary);
+}
+/* Until initAccordionFaq() sets data-accordion-ready, every answer is open and stays open, so the
+   questions read as headings: no expand indicator, pointer cursor or hover colour. */
+.accordion:not([data-accordion-ready]) button {
+  cursor: default;
+}
+.accordion:not([data-accordion-ready]) button::after {
+  content: none;
 }
 .accordion [role="region"] {
   padding: 0 0 var(--space-3);

@@ -177,8 +177,8 @@
         </div>
       </div>
 
-      <!-- Gallery filters -->
-      <section class="gallery-filters" aria-label="Filtruj galerię wyjazdów" data-gallery-filters>
+      <!-- Gallery filters: hidden until initGallery() renders the photographs -->
+      <section class="gallery-filters" aria-label="Filtruj galerię wyjazdów" data-gallery-filters hidden>
         <div class="container">
           <div class="gallery-filters__inner">
             <button type="button" class="gallery-filter is-active" data-gallery-filter="all">Wszystkie</button>
@@ -194,6 +194,12 @@
 
       <!-- Gallery -->
       <section class="section" aria-label="Galeria zdjęć">
+        <!-- no JavaScript: the photographs are rendered from assets/data/gallery-data.json -->
+        <noscript>
+          <div class="container data-state">
+            <p class="data-state__message">Galeria zdjęć wymaga włączonej obsługi JavaScript. Włącz JavaScript, aby przeglądać fotografie.</p>
+          </div>
+        </noscript>
         <!-- data state: loading and unavailable data (JavaScript only) -->
         <div class="container data-state" data-gallery-state hidden>
           <p class="data-state__message" role="status" data-gallery-status></p>

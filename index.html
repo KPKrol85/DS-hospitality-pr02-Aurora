@@ -396,7 +396,7 @@
             <h2 class="section__title type-section-title heading-divider" id="testimonials-heading">Historie podróży, które inspirują</h2>
             <p class="testimonials__note type-small">Cytaty mają charakter ilustracyjny — to przykładowe treści serwisu demonstracyjnego.</p>
           </div>
-          <!-- testimonial tabs -->
+          <!-- testimonial tabs: every panel shows, without the tab list, until initTabs() selects one -->
           <div class="testimonials reveal" data-tabs>
             <div class="tabs__list" role="tablist" aria-label="Opinie klientów">
               <button role="tab" aria-selected="true" id="tab-1" aria-controls="panel-1">City break</button>
@@ -411,14 +411,14 @@
               </figure>
             </div>
             <!-- item 2 -->
-            <div id="panel-2" class="tabs__panel" role="tabpanel" tabindex="0" aria-labelledby="tab-2" hidden>
+            <div id="panel-2" class="tabs__panel" role="tabpanel" tabindex="0" aria-labelledby="tab-2">
               <figure class="testimonials__quote">
                 <blockquote class="testimonials__text">„Aurora Travel zadbało o każdy detal wyprawy na Kostarykę – od ekologicznych lodge po spotkania z lokalnymi przewodnikami. Czuliśmy się w pełni zaopiekowani.”</blockquote>
                 <figcaption class="testimonials__author">Marta</figcaption>
               </figure>
             </div>
             <!-- item 3 -->
-            <div id="panel-3" class="tabs__panel" role="tabpanel" tabindex="0" aria-labelledby="tab-3" hidden>
+            <div id="panel-3" class="tabs__panel" role="tabpanel" tabindex="0" aria-labelledby="tab-3">
               <figure class="testimonials__quote">
                 <blockquote class="testimonials__text">„Rodzinny road trip po Kalifornii z indywidualnym scenariuszem i atrakcjami dla dzieci – najlepsze wakacje ever.”</blockquote>
                 <figcaption class="testimonials__author">Rodzina Kowalskich</figcaption>
