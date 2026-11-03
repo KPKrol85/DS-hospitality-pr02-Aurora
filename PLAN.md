@@ -137,11 +137,12 @@
 
 **Goal:** Bring the remaining image markup and token usage in line with the documented contracts, and stop publishing dead assets.
 
-- [ ] **PH5-01 — Give the featured offer images intrinsic dimensions and lazy loading**
-  - [ ] add `width` and `height` matching each `src`, and `loading="lazy"`, to the three featured-offer images in `index.html`
-  - [ ] confirm that the `.cards-grid .tour-card picture` rules in `css/modules/sections.css` let these attributes reserve space
-  - [ ] cover the attributes in an existing image contract test, such as `tests/responsive-images.test.js`
-  - [ ] complete the cache-version update for the changed `index.html`
+- [x] **PH5-01 — Give the featured offer images intrinsic dimensions and lazy loading**
+  - [x] add `width` and `height` matching each `src`, and `loading="lazy"`, to the three featured-offer images in `index.html`
+  - [x] confirm that the `.cards-grid .tour-card picture` rules in `css/modules/sections.css` let these attributes reserve space
+  - [x] cover the attributes in an existing image contract test, such as `tests/responsive-images.test.js`
+  - [x] complete the cache-version update for the changed `index.html`
+  - **Verification:** Headless Chrome 156 held the image requests on source and built pages at 390 px (DPR 1–3), 768, 1024 and 1440 px: with the unchanged CSS (`width: 100%`, `height: auto`) the `700 / 460` ratio reserved each box, the cards grid no longer grew by up to 701 px on load, and it kept its height wherever a 700 × 460 or 1400 × 920 candidate loaded. The 400 × 260 and 1000 × 600 candidates, whose ratios differ from the `src`, still shortened it by 5–7 px and 40–61 px; the assets were left unchanged. 6 of the 9 new tests failed against the HEAD markup, `npm test` passed 342/342, and `npm run build` passed with matching bundle hashes for `aurora-1.52`.
   - **Completion condition:** every content image in `index.html` other than the hero declares `width`, `height` and `loading="lazy"`, as `README.md` states
   - **Source:** `AUDIT.md` — P2-07
 
@@ -151,6 +152,15 @@
   - [ ] complete the cache-version update for the changed CSS bundle
   - **Completion condition:** no `var()` in `css/modules/` references an undefined custom property, and `camera.svg` is absent from the repository and from `dist/`
   - **Source:** `AUDIT.md` — P2-11
+
+- [ ] **PH5-03 — Give the featured offer image variants the aspect ratio of their `src`**
+  - [ ] replace the 400 × 260 (20:13) and 1000 × 600 (5:3) sources of `maledivy`, `tokyo` and `manhatan` in `assets/img-src/tour-index/` with variants in the 35:23 ratio of the 700 × 460 and 1400 × 920 files, for example 400 × 263 and 1000 × 657 downscaled from the 1400 × 920 source, with the framing approved by the owner
+  - [ ] regenerate the AVIF, WebP and JPEG outputs with `npm run build:images`, remove the superseded files from `assets/img/tour-index/`, and update the nine `srcset` lists of the featured offers in `index.html`
+  - [ ] keep the `sizes` slots, the `src`, `width`, `height` and `loading` attributes and the uncropped presentation (`aspect-ratio: auto`) unchanged
+  - [ ] extend `tests/responsive-images.test.js` so that every width candidate of the featured pictures has the aspect ratio of its `src`
+  - [ ] complete the cache-version update for the changed `index.html` and runtime-cached images
+  - **Completion condition:** every candidate of the three featured pictures has the 35:23 ratio of the `src`, and the cards grid keeps its height when the images load at 390 px (DPR 2) and 768 px (DPR 1)
+  - **Source:** `PH5-01` verification; `AUDIT.md` — P2-07 (residual layout shift)
 
 ## Phase 6 — Documentation and audit closure
 

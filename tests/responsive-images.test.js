@@ -47,6 +47,19 @@ function label(element) {
   return `<${element.localName}${element.type ? ` type="${element.type}"` : ""}> ${firstCandidate}`;
 }
 
+// Pixel size from the frame header (SOF0 to SOF15 except DHT, JPG and DAC) of a JPEG file.
+function jpegSize(path) {
+  const bytes = readFileSync(path);
+  for (let offset = 2; offset + 9 < bytes.length; offset += 2 + bytes.readUInt16BE(offset + 2)) {
+    if (bytes[offset] !== 0xff) break;
+    const marker = bytes[offset + 1];
+    if (marker >= 0xc0 && marker <= 0xcf && ![0xc4, 0xc8, 0xcc].includes(marker)) {
+      return [bytes.readUInt16BE(offset + 7), bytes.readUInt16BE(offset + 5)];
+    }
+  }
+  throw new Error(`${path} has no JPEG frame header`);
+}
+
 describe("responsive image sizes", () => {
   it.each(pages)("%s declares one sizes value on every width-described candidate list of a picture", (page) => {
     readPage(page)
@@ -73,5 +86,36 @@ describe("responsive image sizes", () => {
         expect(element.getAttribute("sizes"), `${page}: ${label(element)}`).toBe(sizes);
       });
     });
+  });
+});
+
+// The home hero loads eagerly at high priority and every other content image lazily. Width and
+// height describe the fallback src file, so the box is reserved before any candidate loads.
+describe("home page image loading", () => {
+  const home = readPage("index.html");
+  const images = Array.from(home.querySelectorAll("main img")).map((img) => [img.getAttribute("src"), img]);
+  const contentImages = images.filter(([, img]) => !img.closest(".hero__media"));
+
+  it("index.html treats the three featured offers as content images", () => {
+    const featured = Array.from(home.querySelectorAll(".cards-grid .tour-card picture img"));
+
+    expect(featured).toHaveLength(3);
+    expect(featured.every((img) => contentImages.some(([, content]) => content === img))).toBe(true);
+  });
+
+  it("index.html loads the hero image eagerly at high priority", () => {
+    const hero = images.filter(([, img]) => img.closest(".hero__media"));
+
+    expect(hero).toHaveLength(1);
+    expect(hero[0][1].getAttribute("loading")).toBe("eager");
+    expect(hero[0][1].getAttribute("fetchpriority")).toBe("high");
+  });
+
+  it.each(contentImages)("index.html loads %s lazily", (src, img) => {
+    expect(img.getAttribute("loading")).toBe("lazy");
+  });
+
+  it.each(images)("index.html declares the pixel size of %s", (src, img) => {
+    expect([img.getAttribute("width"), img.getAttribute("height")]).toEqual(jpegSize(join(projectRoot, src)).map(String));
   });
 });

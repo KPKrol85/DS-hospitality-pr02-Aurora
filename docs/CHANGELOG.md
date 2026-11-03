@@ -98,6 +98,7 @@ For each implementation task, determine `Changelog: yes` or `Changelog: no`. Add
 - Exposed the gallery and tour-detail lightbox to assistive technologies as a modal dialog named "Podgląd zdjęcia".
 - Made the visible close control of the open mobile navigation reachable with Tab and Shift+Tab, released under Service Worker cache `aurora-1.50`.
 - Made FAQ answers and testimonials readable without JavaScript and replaced the inert gallery filters with a Polish no-JavaScript message, released under Service Worker cache `aurora-1.51`.
+- Reserved layout space for the three featured-offer images on the home page and deferred their loading, released under Service Worker cache `aurora-1.52`.
 
 ### Security
 

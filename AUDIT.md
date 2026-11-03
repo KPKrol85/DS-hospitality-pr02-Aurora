@@ -216,6 +216,9 @@ None detected.
 - **Impact:** This is a source-visible layout-shift and eager-download risk on the home page, contrary to the documented image contract. It was not measured.
 - **Recommended direction:** Give these images the same intrinsic `width`/`height` and lazy-loading treatment as the other non-hero images.
 - **Verification criteria:** Every content `<img>` in `index.html` other than the hero declares `width`, `height` and `loading="lazy"`, matching the README.
+- **Status:** COMPLETED — verified.
+- **Resolution:** PH5-01 gave the three featured-offer images `width="700"`, `height="460"`, the measured size of each `src`, and `loading="lazy"`, leaving their `srcset`, `sizes`, `alt`, the hero and the CSS unchanged; `width: 100%` and `height: auto` let the attributes' ratio reserve the box. `tests/responsive-images.test.js` covers the hero's eager, high-priority loading and the size and lazy loading of every other content image, and `index.html` was released under `aurora-1.52`.
+- **Verification:** With the image requests held, headless Chrome 156 showed on source and built pages at 390–1440 px that the cards grid no longer grew by up to 701 px on load and kept its height wherever a candidate in the `src` ratio loaded; the 400 × 260 and 1000 × 600 variants, whose ratios differ, still shortened it by 5–7 px and 40–61 px. 6 of the 9 new tests failed against the HEAD markup, `npm test` passed 342/342, and `npm run build` passed with matching bundle hashes for `aurora-1.52`.
 
 ### [P2-08] Deployment gate depends on default 5-second test timeouts
 
