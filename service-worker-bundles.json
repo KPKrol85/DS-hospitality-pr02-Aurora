@@ -1,5 +1,5 @@
 {
-  "version": "aurora-1.53",
+  "version": "aurora-1.54",
   "sha256": {
     "dist/css/style.min.css": "cea3827cf6a21995a00ae330c5cc043913a421914bcde1d1e5388eb74902b951",
     "dist/js/script.min.js": "4ac0a529567712023768a32c9f9dbf80d5e87ea99891d22b4f6bed6b26e476c8"

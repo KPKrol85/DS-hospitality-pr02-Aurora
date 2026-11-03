@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
@@ -60,6 +60,44 @@ function jpegSize(path) {
   throw new Error(`${path} has no JPEG frame header`);
 }
 
+// Pixel size from the first chunk of a WebP file: the VP8X canvas, or the frame header of a
+// lossy (VP8) or lossless (VP8L) bitstream.
+function webpSize(path) {
+  const bytes = readFileSync(path);
+  if (bytes.toString("latin1", 0, 4) !== "RIFF" || bytes.toString("latin1", 8, 12) !== "WEBP") {
+    throw new Error(`${path} is not a WebP file`);
+  }
+  const chunk = bytes.toString("latin1", 12, 16);
+  if (chunk === "VP8X") return [bytes.readUIntLE(24, 3) + 1, bytes.readUIntLE(27, 3) + 1];
+  if (chunk === "VP8 ") return [bytes.readUInt16LE(26) & 0x3fff, bytes.readUInt16LE(28) & 0x3fff];
+  if (chunk === "VP8L") {
+    const bits = bytes.readUInt32LE(21);
+    return [(bits & 0x3fff) + 1, ((bits >>> 14) & 0x3fff) + 1];
+  }
+  throw new Error(`${path} starts with an unknown WebP chunk "${chunk}"`);
+}
+
+// Pixel size from the image spatial extents property (meta > iprp > ipco > ispe) of an AVIF file.
+function avifSize(path) {
+  const bytes = readFileSync(path);
+  const box = (type, start, end) => {
+    for (let offset = start, size; offset + 8 <= end; offset += size) {
+      size = bytes.readUInt32BE(offset);
+      if (size < 8) break;
+      if (bytes.toString("latin1", offset + 4, offset + 8) === type) return [offset + 8, offset + size];
+    }
+    throw new Error(`${path} has no ${type} box`);
+  };
+  const [metaStart, metaEnd] = box("meta", 0, bytes.length);
+  // meta and ispe are full boxes: a 4-byte version and flags field precedes their content.
+  const [iprpStart, iprpEnd] = box("iprp", metaStart + 4, metaEnd);
+  const [ipcoStart, ipcoEnd] = box("ipco", iprpStart, iprpEnd);
+  const [ispe] = box("ispe", ipcoStart, ipcoEnd);
+  return [bytes.readUInt32BE(ispe + 4), bytes.readUInt32BE(ispe + 8)];
+}
+
+const imageSize = { "image/avif": avifSize, "image/webp": webpSize, "image/jpeg": jpegSize };
+
 describe("responsive image sizes", () => {
   it.each(pages)("%s declares one sizes value on every width-described candidate list of a picture", (page) => {
     readPage(page)
@@ -117,5 +155,38 @@ describe("home page image loading", () => {
 
   it.each(images)("index.html declares the pixel size of %s", (src, img) => {
     expect([img.getAttribute("width"), img.getAttribute("height")]).toEqual(jpegSize(join(projectRoot, src)).map(String));
+  });
+});
+
+// The featured pictures keep aspect-ratio: auto, so the loaded candidate's own ratio replaces the
+// box that width and height reserved, and any other ratio moves the cards when it loads. Every
+// candidate of every format therefore has the ratio of the src file, with the height rounded to
+// the nearest whole pixel: 400 x 263 and 1000 x 657 for a 700 x 460 src.
+describe("featured offer image candidates", () => {
+  const pictures = Array.from(readPage("index.html").querySelectorAll(".cards-grid .tour-card picture"));
+  const lists = pictures.flatMap((picture) => {
+    const [srcWidth, srcHeight] = jpegSize(join(projectRoot, picture.querySelector("img").getAttribute("src")));
+    return widthDescribed(picture).map((element) => ({
+      type: element.getAttribute("type") ?? "image/jpeg",
+      candidates: element.getAttribute("srcset").trim().split(/\s*,\s*/).map((candidate) => candidate.split(/\s+/)),
+      srcWidth,
+      srcHeight,
+    }));
+  });
+  const candidates = lists.flatMap(({ type, candidates, srcWidth, srcHeight }) =>
+    candidates.map(([url, descriptor]) => [url, descriptor, type, srcWidth, srcHeight])
+  );
+
+  it("index.html lists four width candidates in each of the nine featured candidate lists", () => {
+    expect(pictures).toHaveLength(3);
+    expect(lists.map(({ candidates }) => candidates.length)).toEqual(Array(9).fill(4));
+  });
+
+  it.each(candidates)("index.html lists %s at %s in the ratio of its src", (url, descriptor, type, srcWidth, srcHeight) => {
+    const path = join(projectRoot, url);
+    expect(existsSync(path), `${url} is missing`).toBe(true);
+    const [width, height] = imageSize[type](path);
+    expect(width, `${url} width`).toBe(Number.parseInt(descriptor, 10));
+    expect(height, `${url} height`).toBe(Math.round((width * srcHeight) / srcWidth));
   });
 });

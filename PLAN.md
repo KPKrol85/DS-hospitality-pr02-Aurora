@@ -154,12 +154,13 @@
   - **Completion condition:** no `var()` in `css/modules/` references an undefined custom property, and `camera.svg` is absent from the repository and from `dist/`
   - **Source:** `AUDIT.md` — P2-11
 
-- [ ] **PH5-03 — Give the featured offer image variants the aspect ratio of their `src`**
-  - [ ] replace the 400 × 260 (20:13) and 1000 × 600 (5:3) sources of `maledivy`, `tokyo` and `manhatan` in `assets/img-src/tour-index/` with variants in the 35:23 ratio of the 700 × 460 and 1400 × 920 files, for example 400 × 263 and 1000 × 657 downscaled from the 1400 × 920 source, with the framing approved by the owner
-  - [ ] regenerate the AVIF, WebP and JPEG outputs with `npm run build:images`, remove the superseded files from `assets/img/tour-index/`, and update the nine `srcset` lists of the featured offers in `index.html`
-  - [ ] keep the `sizes` slots, the `src`, `width`, `height` and `loading` attributes and the uncropped presentation (`aspect-ratio: auto`) unchanged
-  - [ ] extend `tests/responsive-images.test.js` so that every width candidate of the featured pictures has the aspect ratio of its `src`
-  - [ ] complete the cache-version update for the changed `index.html` and runtime-cached images
+- [x] **PH5-03 — Give the featured offer image variants the aspect ratio of their `src`**
+  - [x] replace the 400 × 260 (20:13) and 1000 × 600 (5:3) sources of `maledivy`, `tokyo` and `manhatan` in `assets/img-src/tour-index/` with variants in the 35:23 ratio of the 700 × 460 and 1400 × 920 files, for example 400 × 263 and 1000 × 657 downscaled from the 1400 × 920 source, with the framing approved by the owner
+  - [x] regenerate the AVIF, WebP and JPEG outputs with `npm run build:images`, remove the superseded files from `assets/img/tour-index/`, and update the nine `srcset` lists of the featured offers in `index.html`
+  - [x] keep the `sizes` slots, the `src`, `width`, `height` and `loading` attributes and the uncropped presentation (`aspect-ratio: auto`) unchanged
+  - [x] extend `tests/responsive-images.test.js` so that every width candidate of the featured pictures has the aspect ratio of its `src`
+  - [x] complete the cache-version update for the changed `index.html` and runtime-cached images
+  - **Verification:** The six new sources and their 18 AVIF, WebP and JPEG outputs measure 400 × 263 and 1000 × 657; `npm run build:images` regenerated all 520 outputs, changed only these 18 and removed the 18 superseded files. With the image requests held, headless Chrome 156 showed on source and built pages that the cards grid kept its height on load at 390 px (DPR 2) and 768 px (DPR 1), where the HEAD markup shortened it by 61 and 39 px; no image box changed by more than 0.14 px, also at 390 px (DPR 1) and 1440 px. 18 of the 37 new tests failed against the HEAD markup and images, `npm test` passed 379/379, and `npm run build` passed with matching bundle hashes for `aurora-1.54`.
   - **Completion condition:** every candidate of the three featured pictures has the 35:23 ratio of the `src`, and the cards grid keeps its height when the images load at 390 px (DPR 2) and 768 px (DPR 1)
   - **Source:** `PH5-01` verification; `AUDIT.md` — P2-07 (residual layout shift)
 
