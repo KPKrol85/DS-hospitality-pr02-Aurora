@@ -646,7 +646,7 @@
   font-weight: var(--fw-bold);
   letter-spacing: var(--ls-wide);
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--muted);
   opacity: 0.9;
 }
 .contact-details__value {

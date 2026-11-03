@@ -146,10 +146,11 @@
   - **Completion condition:** every content image in `index.html` other than the hero declares `width`, `height` and `loading="lazy"`, as `README.md` states
   - **Source:** `AUDIT.md` — P2-07
 
-- [ ] **PH5-02 — Remove the undefined `--text-muted` token and the unreferenced `camera.svg`**
-  - [ ] point `.contact-details__label` in `css/modules/subpages.css` at an existing semantic text token defined for both themes
-  - [ ] delete `assets/img/gallery/camera.svg` (1.9 MB, referenced nowhere), so that `build:stage` no longer publishes it
-  - [ ] complete the cache-version update for the changed CSS bundle
+- [x] **PH5-02 — Remove the undefined `--text-muted` token and the unreferenced `camera.svg`**
+  - [x] point `.contact-details__label` in `css/modules/subpages.css` at an existing semantic text token defined for both themes
+  - [x] delete `assets/img/gallery/camera.svg` (1.9 MB, referenced nowhere), so that `build:stage` no longer publishes it
+  - [x] complete the cache-version update for the changed CSS bundle
+  - **Verification:** A scan of 714 `var()` references in `css/modules/` found `--text-muted` as the only undefined custom property before the change and none afterward. Chromium 152 confirmed that all four contact labels use `--muted` in both stored and system light/dark themes, with contrast ratios of 4.67:1 and 6.79:1 and no console errors. `npm run build` passed with matching bundle hashes for `aurora-1.53` (CSS changed, JS unchanged), and neither `camera.svg` nor its directory remains in the repository or `dist/`. The full `npm test` run did not pass: 341/342 tests passed, while one test in `tests/button-contract.test.js` timed out under load and subsequently passed 5/5 in a focused rerun.
   - **Completion condition:** no `var()` in `css/modules/` references an undefined custom property, and `camera.svg` is absent from the repository and from `dist/`
   - **Source:** `AUDIT.md` — P2-11
 

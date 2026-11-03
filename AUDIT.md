@@ -275,6 +275,9 @@ None detected.
 - **Impact:** The intended label styling silently does not apply, and a dead 1.9 MB file ships with each deployment.
 - **Recommended direction:** Point the label at an existing semantic token and remove the unreferenced SVG.
 - **Verification criteria:** No `var()` in `css/modules/` references an undefined custom property, and `camera.svg` is absent from the repository and from `dist/`.
+- **Status:** COMPLETED — verified.
+- **Resolution:** PH5-02 pointed `.contact-details__label` at `--muted`, the muted text token of both themes that `.tour-detail__label` also uses, and deleted `assets/img/gallery/camera.svg`, whose only references were in the reports; the changed CSS bundle was released under `aurora-1.53`.
+- **Verification:** No undefined custom property remains among the 714 `var()` references in `css/modules/`, and Chromium 152 confirmed the contact labels use the muted colour in both themes, with contrast ratios of 4.67:1 (light) and 6.79:1 (dark). `npm run build` passed with matching bundle hashes for `aurora-1.53`, and the production package no longer contains `camera.svg`. The full `npm test` run did not pass: 341/342 tests passed; one test in `tests/button-contract.test.js` timed out under load and subsequently passed 5/5 in a focused rerun.
 
 ## 7. Extra quality improvements
 
