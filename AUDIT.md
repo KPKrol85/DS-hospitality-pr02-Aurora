@@ -245,6 +245,9 @@ None detected.
 - **Impact:** The README misrepresents the project's licence compliance for third-party fonts and its public structured data.
 - **Recommended direction:** Align these README statements with the current files in both language sections.
 - **Verification criteria:** The README's attribution, JSON-LD and CSS-module statements match `assets/fonts/`, the JSON-LD blocks and `css/style.css`.
+- **Status:** COMPLETED — verified.
+- **Resolution:** Aligned both README sections with the published font licence files, current JSON-LD types and nine CSS modules. Added `AUDIT.md` and `PLAN.md` to both project trees.
+- **Verification:** Source comparisons confirmed both language sections against the font packaging contract, maintained HTML pages, `css/style.css` and Git root inventory. `git diff --check` passed.
 
 ### [P2-10] Public copy contains visible typographic and consistency errors
 

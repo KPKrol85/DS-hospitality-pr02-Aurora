@@ -168,11 +168,12 @@
 
 **Goal:** Align the README with the repository, and close the 2026-10-31 audit with verified evidence.
 
-- [ ] **PH6-01 — Correct the README statements on font licences, structured data and CSS modules**
-  - [ ] state in both language sections that `assets/fonts/Inter-OFL.txt` and `assets/fonts/Manrope-OFL.txt` are tracked and published
-  - [ ] list the JSON-LD types the pages use, which include `Brand` and `Organization` and no longer `TravelAgency`
-  - [ ] list nine CSS modules, including `legal`, in the architecture description of both language sections
-  - [ ] reconcile both project trees, which omit the root `AUDIT.md` and `PLAN.md`, with their statement that the tree covers the tracked files
+- [x] **PH6-01 — Correct the README statements on font licences, structured data and CSS modules**
+  - [x] state in both language sections that `assets/fonts/Inter-OFL.txt` and `assets/fonts/Manrope-OFL.txt` are tracked and published
+  - [x] list the JSON-LD types the pages use, which include `Brand` and `Organization` and no longer `TravelAgency`
+  - [x] list nine CSS modules, including `legal`, in the architecture description of both language sections
+  - [x] reconcile both project trees, which omit the root `AUDIT.md` and `PLAN.md`, with their statement that the tree covers the tracked files
+  - **Verification:** Both README sections match the tracked OFL files and production asset-copy contract, 10 JSON-LD types across 12 maintained pages, nine CSS imports and all 35 tracked root entries. `git diff --check` passed.
   - **Completion condition:** the README's attribution, JSON-LD and CSS-module statements match `assets/fonts/`, the JSON-LD blocks and `css/style.css` in both languages
   - **Source:** `AUDIT.md` — P2-09
 

@@ -61,7 +61,7 @@ Projekt nie posiada zależności runtime; wszystkie pakiety są zadeklarowane ja
 ### Architektura
 
 - **Strony.** Każda strona w katalogu głównym jest samodzielnym dokumentem HTML, który ładuje źródła kanoniczne: `css/style.css` oraz `js/script.js` jako moduł ES (`<script type="module">`). Kopie stron publikowane w `dist/` odwołują się do wygenerowanych plików `css/style.min.css` i `js/script.min.js`. Oba zestawy odwołań są wymuszane przez `scripts/check-css-assets.js`.
-- **CSS.** `css/style.css` jest jedynym punktem wejścia i importuje osiem modułów z `css/modules/` (`tokens`, `base`, `layout`, `components`, `sections`, `fonts`, `subpages`, `utilities`). Podczas developmentu przeglądarka rozwiązuje te importy natywnie. PostCSS wstawia importy w miejscu, dodaje prefiksy i minifikuje wynik do `dist/css/style.min.css`.
+- **CSS.** `css/style.css` jest jedynym punktem wejścia i importuje dziewięć modułów z `css/modules/` (`tokens`, `base`, `layout`, `components`, `sections`, `fonts`, `subpages`, `legal`, `utilities`). Podczas developmentu przeglądarka rozwiązuje te importy natywnie. PostCSS wstawia importy w miejscu, dodaje prefiksy i minifikuje wynik do `dist/css/style.min.css`.
 - **JavaScript.** `js/script.js` składa 14 modułów funkcjonalnych z `js/features/`. Każdy z nich eksportuje funkcję `init*`, która kończy działanie, gdy nie znajdzie swojego elementu w DOM, dzięki czemu ten sam kod obsługuje wszystkie strony. Pomocniczy moduł `catalogue-picture.js` eksportuje `createCataloguePicture`, z którego korzystają `gallery.js` i `tour-detail.js`. Podczas developmentu przeglądarka ładuje te moduły bezpośrednio; esbuild buduje z nich bundle `dist/js/script.min.js`.
 - **Dane.** `assets/data/tours.json` zawiera 6 wycieczek i jest pobierany przez `js/features/tour-detail.js`; `assets/data/gallery-data.json` zawiera 36 pozycji i jest pobierany przez `js/features/gallery.js`. Lista ofert na `tours.html` pozostaje statycznym HTML-em.
 - **Obrazy.** `assets/img-src/` jest źródłem, `assets/img/` wynikiem generowanym przez `scripts/build-images.js`. Skrypt tworzy warianty szerokości według profilu katalogu oraz pliki `webp` i `avif` obok formatu zapasowego.
@@ -115,8 +115,10 @@ Projekt nie posiada zależności runtime; wszystkie pakiety są zadeklarowane ja
 ├─ vitest.config.mjs
 ├─ .gitignore
 ├─ AGENTS.md
+├─ AUDIT.md
 ├─ CLAUDE.md
 ├─ LICENSE.md
+├─ PLAN.md
 ├─ README.md
 ├─ package.json
 └─ package-lock.json
@@ -218,7 +220,7 @@ Nie przeprowadzono formalnego audytu zgodności, dlatego dokumentacja nie deklar
 - Znaczniki `canonical` na stronach indeksowanych.
 - `robots` z wartością `index,follow` na ośmiu stronach oraz `noindex,follow` na `tour.html`, `dziekuje.html`, `404.html` i `offline.html`.
 - Open Graph oraz Twitter Cards (`summary_large_image`) z bezwzględnymi adresami obrazu podglądu.
-- Dane strukturalne JSON-LD: `WebSite`, `WebPage`, `TravelAgency`, `PostalAddress`, `CollectionPage`, `AboutPage`, `ContactPage`, `BreadcrumbList` i `ListItem`.
+- Dane strukturalne JSON-LD: `WebSite`, `WebPage`, `Brand`, `Organization`, `PostalAddress`, `CollectionPage`, `AboutPage`, `ContactPage`, `BreadcrumbList` i `ListItem`.
 - `robots.txt` ze wskazaniem mapy witryny oraz `sitemap.xml` z ośmioma adresami.
 
 ### PWA i obsługa offline
@@ -270,7 +272,7 @@ Projekt jest objęty Własnościową Licencją Projektu KP_CODE w wersji 1.0, kt
 
 ### Atrybucje
 
-- Kroje pisma: samodzielnie hostowane pliki zmienne `Inter-VariableFont.woff2` i `Manrope-VariableFont.woff2` w `assets/fonts/`. Repozytorium nie zawiera plików licencyjnych tych krojów.
+- Kroje pisma: samodzielnie hostowane pliki zmienne `Inter-VariableFont.woff2` i `Manrope-VariableFont.woff2` w `assets/fonts/`. Pliki licencji `assets/fonts/Inter-OFL.txt` i `assets/fonts/Manrope-OFL.txt` są wersjonowane w Git i publikowane wraz z fontami w paczce produkcyjnej.
 - Mapa na stronie `contact.html` jest osadzona jako ramka Map Google i uwzględniona w dyrektywie `frame-src` w `_headers`.
 
 ## EN
@@ -334,7 +336,7 @@ The project has no runtime dependencies; every package is declared under `devDep
 ### Architecture
 
 - **Pages.** Each root-level page is a standalone HTML document that loads the canonical sources: `css/style.css` and `js/script.js` as an ES module (`<script type="module">`). The copies published to `dist/` reference the generated `css/style.min.css` and `js/script.min.js`. Both sets of references are enforced by `scripts/check-css-assets.js`.
-- **CSS.** `css/style.css` is the single entry point and imports eight modules from `css/modules/` (`tokens`, `base`, `layout`, `components`, `sections`, `fonts`, `subpages`, `utilities`). During development the browser resolves these imports natively. PostCSS inlines the imports, adds prefixes, and minifies the result into `dist/css/style.min.css`.
+- **CSS.** `css/style.css` is the single entry point and imports nine modules from `css/modules/` (`tokens`, `base`, `layout`, `components`, `sections`, `fonts`, `subpages`, `legal`, `utilities`). During development the browser resolves these imports natively. PostCSS inlines the imports, adds prefixes, and minifies the result into `dist/css/style.min.css`.
 - **JavaScript.** `js/script.js` composes 14 feature modules from `js/features/`. Each of them exports an `init*` function that returns early when its element is not present in the DOM, so the same code serves every page. The shared helper module `catalogue-picture.js` exports `createCataloguePicture`, which `gallery.js` and `tour-detail.js` use. During development the browser loads these modules directly; esbuild bundles them into `dist/js/script.min.js`.
 - **Data.** `assets/data/tours.json` holds 6 tours and is fetched by `js/features/tour-detail.js`; `assets/data/gallery-data.json` holds 36 entries and is fetched by `js/features/gallery.js`. The offer list on `tours.html` remains static HTML.
 - **Images.** `assets/img-src/` is the source tree and `assets/img/` is the output generated by `scripts/build-images.js`. The script produces width variants according to a per-directory profile plus `webp` and `avif` files alongside the fallback format.
@@ -388,8 +390,10 @@ The project has no runtime dependencies; every package is declared under `devDep
 ├─ vitest.config.mjs
 ├─ .gitignore
 ├─ AGENTS.md
+├─ AUDIT.md
 ├─ CLAUDE.md
 ├─ LICENSE.md
+├─ PLAN.md
 ├─ README.md
 ├─ package.json
 └─ package-lock.json
@@ -491,7 +495,7 @@ No formal conformance audit was carried out, so this documentation makes no WCAG
 - `canonical` tags on the indexable pages.
 - `robots` set to `index,follow` on eight pages and to `noindex,follow` on `tour.html`, `dziekuje.html`, `404.html`, and `offline.html`.
 - Open Graph and Twitter Cards (`summary_large_image`) with absolute preview-image URLs.
-- JSON-LD structured data: `WebSite`, `WebPage`, `TravelAgency`, `PostalAddress`, `CollectionPage`, `AboutPage`, `ContactPage`, `BreadcrumbList`, and `ListItem`.
+- JSON-LD structured data: `WebSite`, `WebPage`, `Brand`, `Organization`, `PostalAddress`, `CollectionPage`, `AboutPage`, `ContactPage`, `BreadcrumbList`, and `ListItem`.
 - `robots.txt` pointing to the sitemap, and `sitemap.xml` listing eight URLs.
 
 ### PWA and Offline Support
@@ -543,5 +547,5 @@ The project is covered by the KP_CODE Proprietary Project License, version 1.0, 
 
 ### Attributions
 
-- Typefaces: the self-hosted variable font files `Inter-VariableFont.woff2` and `Manrope-VariableFont.woff2` in `assets/fonts/`. The repository includes no license files for these typefaces.
+- Typefaces: the self-hosted variable font files `Inter-VariableFont.woff2` and `Manrope-VariableFont.woff2` in `assets/fonts/`. The license files `assets/fonts/Inter-OFL.txt` and `assets/fonts/Manrope-OFL.txt` are tracked in Git and published with the fonts in the production package.
 - The map on `contact.html` is embedded as a Google Maps frame and is accounted for by the `frame-src` directive in `_headers`.
