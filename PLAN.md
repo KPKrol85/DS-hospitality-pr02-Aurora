@@ -193,9 +193,9 @@
   - **Verification:** `npm run build` passed. Two consecutive `npm run smoke:dist` runs passed on Windows with Node.js 22.23.3 and Chrome 156.0.8078.81, covering 12 maintained pages, one first-visit load after Service Worker activation, and nested HTTP 404 rendering, assets, and links.
   - **Source:** `AUDIT.md` — Extra quality improvements
 
-- [ ] **O-02 — Load the tour-detail main image without lazy deferral if measurement supports it**
-  - **Value:** `js/features/catalogue-picture.js` marks every catalogue image lazy, including the main image that `js/features/tour-detail.js` places at the top of `tour.html`
-  - **Scope boundary:** non-blocking; only after a measurement shows it is the largest above-the-fold image, since no loading problem has been measured
+- [x] **O-02 — Load the tour-detail main image without lazy deferral if measurement supports it**
+  - **Decision — NOT SELECTED.** Retain lazy loading for the main image.
+  - **Verification.** Across 210 Chromium measurements, eager loading started the main image request sooner after DOM insertion. LCP gains were inconsistent across viewports.
   - **Source:** `AUDIT.md` — Extra quality improvements
 
 - [ ] **O-03 — Record photograph provenance and licensing**
