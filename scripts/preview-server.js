@@ -86,8 +86,8 @@ function parseArguments(args) {
   }
 
   const port = /^\d{1,5}$/.test(options[1]) ? Number(options[1]) : NaN;
-  if (!(port >= 1 && port <= 65535)) {
-    fail(`Invalid port: ${options[1]}. Use a whole number from 1 to 65535, for example npm run preview:${modeName} -- --port 8282`);
+  if (!(port >= 0 && port <= 65535)) {
+    fail(`Invalid port: ${options[1]}. Use a whole number from 0 to 65535 (0 lets the system assign a free port).`);
   }
   return { modeName, mode, port };
 }
@@ -294,7 +294,7 @@ function main() {
   });
 
   server.listen(port, host, () => {
-    console.log(`Aurora ${mode.label} preview of ${mode.production ? "dist/" : "the project root"}: http://${host}:${port}/`);
+    console.log(`Aurora ${mode.label} preview of ${mode.production ? "dist/" : "the project root"}: http://${host}:${server.address().port}/`);
     console.log("Press Ctrl+C to stop.");
   });
 }

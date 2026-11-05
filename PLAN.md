@@ -187,9 +187,10 @@
 
 ## Optional future improvements
 
-- [ ] **O-01 — Add a scripted browser smoke check of `dist/`**
+- [x] **O-01 — Add a scripted browser smoke check of `dist/`**
   - **Value:** repeatable detection over `npm run preview:dist` of console and CSP errors, the first-visit load count and nested-path 404 rendering, which the jsdom suite cannot observe; Node's built-in `WebSocket` and an installed Chrome make it possible without new dependencies
   - **Scope boundary:** non-blocking; complements and does not replace `npm run predeploy:check`
+  - **Verification:** `npm run build` passed. Two consecutive `npm run smoke:dist` runs passed on Windows with Node.js 22.23.3 and Chrome 156.0.8078.81, covering 12 maintained pages, one first-visit load after Service Worker activation, and nested HTTP 404 rendering, assets, and links.
   - **Source:** `AUDIT.md` — Extra quality improvements
 
 - [ ] **O-02 — Load the tour-detail main image without lazy deferral if measurement supports it**

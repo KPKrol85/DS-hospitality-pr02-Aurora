@@ -13,6 +13,7 @@
   "scripts": {
     "preview:source": "node scripts/preview-server.js source",
     "preview:dist": "node scripts/preview-server.js dist",
+    "smoke:dist": "node scripts/smoke-dist.js",
     "test": "vitest run",
     "predeploy:check": "npm test && npm run build",
     "build": "npm run clean && npm run build:stage && npm run build:css && npm run build:js && npm run check:css-assets && npm run check:assets && npm run check:assets:dist && npm run check:csp && npm run check:csp:dist && npm run check:tour-catalogue && npm run check:sw-bundles",
