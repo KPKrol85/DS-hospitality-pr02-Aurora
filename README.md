@@ -272,6 +272,7 @@ Projekt jest objęty Własnościową Licencją Projektu KP_CODE w wersji 1.0, kt
 
 ### Atrybucje
 
+- Fotografie: właściciel projektu deklaruje, że opracował i wyeksportował w Canva Pro kompozycje fotograficzne z oznaczeniami Aurora Travel. Prawa do wykorzystanych materiałów podmiotów trzecich pozostają przy ich właścicielach. Korzystanie z materiałów z biblioteki Canva podlega warunkom [Canva Content License Agreement](https://www.canva.com/policies/content-license-agreement/).
 - Kroje pisma: samodzielnie hostowane pliki zmienne `Inter-VariableFont.woff2` i `Manrope-VariableFont.woff2` w `assets/fonts/`. Pliki licencji `assets/fonts/Inter-OFL.txt` i `assets/fonts/Manrope-OFL.txt` są wersjonowane w Git i publikowane wraz z fontami w paczce produkcyjnej.
 - Mapa na stronie `contact.html` jest osadzona jako ramka Map Google i uwzględniona w dyrektywie `frame-src` w `_headers`.
 
@@ -547,5 +548,6 @@ The project is covered by the KP_CODE Proprietary Project License, version 1.0, 
 
 ### Attributions
 
+- Photographs: the project owner states that they composed and exported the photographs in Canva Pro with Aurora Travel branding. Rights to the third-party materials used in these designs remain with their respective owners. Use of Canva library content is subject to the [Canva Content License Agreement](https://www.canva.com/policies/content-license-agreement/).
 - Typefaces: the self-hosted variable font files `Inter-VariableFont.woff2` and `Manrope-VariableFont.woff2` in `assets/fonts/`. The license files `assets/fonts/Inter-OFL.txt` and `assets/fonts/Manrope-OFL.txt` are tracked in Git and published with the fonts in the production package.
 - The map on `contact.html` is embedded as a Google Maps frame and is accounted for by the `frame-src` directive in `_headers`.

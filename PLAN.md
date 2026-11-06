@@ -198,7 +198,7 @@
   - **Verification.** Across 210 Chromium measurements, eager loading started the main image request sooner after DOM insertion. LCP gains were inconsistent across viewports.
   - **Source:** `AUDIT.md` — Extra quality improvements
 
-- [ ] **O-03 — Record photograph provenance and licensing**
-  - **Value:** substantiates the right to publish the photographs in `assets/img-src/` and `assets/img/`, for which no per-image source or licence record exists
-  - **Scope boundary:** non-blocking documentation; whether attribution is required has not been determined
+- [x] **O-03 — Record photograph provenance and licensing**
+  - **Result:** Recorded the owner's Canva Pro provenance declaration and linked Canva's content licence in both README attribution sections.
+  - **Verification:** Compared the photographic file inventories in `assets/img-src/` and `assets/img/` and inspected representative exports for Aurora branding. Individual asset licences remain unverified.
   - **Source:** `AUDIT.md` — Extra quality improvements; `docs/archive/improvements/IMPROVEMENTS-DESIGN-2026-10-31.md` — Remaining limitations (P-4)
