@@ -125,6 +125,7 @@ For each implementation task, determine `Changelog: yes` or `Changelog: no`. Add
 - Centralized the maintained HTML page inventory and source-to-production asset contracts.
 - Added build guards for missing, undeclared, or incorrectly referenced project pages and assets.
 - Added `predeploy:check` to require the complete regression suite before production builds.
+- Added GitHub Actions CI to run the release verification pipeline automatically for changes to `main` and pull requests targeting it.
 - Added dependency-free source and production preview servers with separate origins and production-header simulation.
 - Preserved manual Netlify CLI deployment as the project release workflow.
 
