@@ -15,14 +15,14 @@
 ## 1. GitHub Actions — CI
 
 - [x] GitHub correctly detects the CI workflow.
-- [ ] The workflow runs automatically after a `push` to the primary branch.
-- [ ] Dependency installation succeeds in CI.
-- [ ] Quality checks and linting pass.
-- [ ] All configured automated tests pass.
-- [ ] Source reference checks pass, if available.
-- [ ] The production build completes successfully.
-- [ ] Production reference checks pass, if available.
-- [ ] The entire workflow reports **SUCCESS**.
+- [x] The workflow runs automatically after a `push` to the primary branch.
+- [x] Dependency installation succeeds in CI.
+- [x] Quality and integrity checks pass (linting: N/A — no lint script configured).
+- [x] All configured automated tests pass.
+- [x] Source reference checks pass, if available.
+- [x] The production build completes successfully.
+- [x] Production reference checks pass, if available.
+- [x] The entire workflow reports **SUCCESS**.
 
 ## 2. PWA — Manifest
 
