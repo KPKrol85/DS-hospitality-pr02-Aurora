@@ -37,13 +37,13 @@
     {
       "src": "/assets/img/screenshots/desktop.jpg",
       "sizes": "1280x720",
-      "type": "image/jpg",
+      "type": "image/jpeg",
       "form_factor": "wide"
     },
     {
       "src": "/assets/img/screenshots/mobile.jpg",
       "sizes": "720x1280",
-      "type": "image/jpg",
+      "type": "image/jpeg",
       "form_factor": "narrow"
     }
   ],

@@ -26,7 +26,7 @@
 
 ## 2. PWA — Manifest
 
-- [ ] The manifest is valid, if the project provides a PWA.
+- [x] The manifest is valid, if the project provides a PWA.
 - [ ] `name` and `short_name` are correct.
 - [ ] `start_url` points to the intended page.
 - [ ] `scope` matches the application's structure.
