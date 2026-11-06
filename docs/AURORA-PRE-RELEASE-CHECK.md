@@ -27,14 +27,14 @@
 ## 2. PWA — Manifest
 
 - [x] The manifest is valid, if the project provides a PWA.
-- [ ] `name` and `short_name` are correct.
-- [ ] `start_url` points to the intended page.
-- [ ] `scope` matches the application's structure.
-- [ ] `display` is configured appropriately.
-- [ ] `theme_color` and `background_color` are appropriate.
-- [ ] All icons exist and render correctly.
-- [ ] PWA installation works on a mobile device.
-- [ ] The installed application launches correctly.
+- [x] `name` and `short_name` are correct.
+- [x] `start_url` points to the intended page.
+- [x] `scope` matches the application's structure.
+- [x] `display` is configured appropriately.
+- [x] `theme_color` and `background_color` are appropriate.
+- [x] All icons exist and render correctly.
+- [x] PWA installation works on a mobile device.
+- [x] The installed application launches correctly.
 
 ## 3. PWA — Shortcuts
 
