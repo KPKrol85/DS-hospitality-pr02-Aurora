@@ -14,7 +14,7 @@
 
 ## 1. GitHub Actions — CI
 
-- [ ] GitHub correctly detects the CI workflow.
+- [x] GitHub correctly detects the CI workflow.
 - [ ] The workflow runs automatically after a `push` to the primary branch.
 - [ ] Dependency installation succeeds in CI.
 - [ ] Quality checks and linting pass.
