@@ -2,7 +2,7 @@
 
 **Project:** DS-hospitality-pr02-Aurora
 **Version:** 1.0.0
-**Owner:** Kamil Król — KP_Code Digital Studio
+**Owner:** KP_Code Digital Studio
 **Verification date:** 2026-11-07
 **Production URL:** https://ds-hospitality-pr02-aurora.netlify.app/
 **Status:** IN PROGRESS
