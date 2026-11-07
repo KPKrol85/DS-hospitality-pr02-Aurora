@@ -22,22 +22,22 @@
 
 ## 2. Frontend, UX & Responsiveness
 
-- [ ] The homepage, key subpages, navigation, and internal links function correctly.
-- [ ] Calls to action, galleries, menus, dialogs, FAQ sections, and other implemented interactions behave as intended.
-- [ ] Layouts display correctly on mobile, tablet, and desktop viewports.
-- [ ] Images, icons, fonts, and other visual assets load and display correctly.
-- [ ] Supported light, dark, and system themes function consistently, where applicable.
-- [ ] No significant layout defects, unwanted horizontal scrolling, or visual regressions remain.
-- [ ] No critical JavaScript errors appear in the browser console.
+- [x] The homepage, key subpages, navigation, and internal links function correctly.
+- [x] Calls to action, galleries, menus, dialogs, FAQ sections, and other implemented interactions behave as intended.
+- [x] Layouts display correctly on mobile, tablet, and desktop viewports.
+- [x] Images, icons, fonts, and other visual assets load and display correctly.
+- [x] Supported light, dark, and system themes function consistently, where applicable.
+- [x] No significant layout defects, unwanted horizontal scrolling, or visual regressions remain.
+- [x] No critical JavaScript errors appear in the browser console.
 
 ## 3. Accessibility & Performance
 
-- [ ] Keyboard navigation and visible focus indicators function correctly.
-- [ ] Interactive elements have accessible names, labels, and appropriate states.
-- [ ] Headings, landmarks, image alternatives, and form feedback are accessible.
-- [ ] Text contrast and reduced-motion behavior meet the project's accessibility requirements.
-- [ ] Available accessibility checks pass without unresolved critical findings.
-- [ ] Performance results and Core Web Vitals meet the project's accepted release criteria.
+- [x] Keyboard navigation and visible focus indicators function correctly.
+- [x] Interactive elements have accessible names, labels, and appropriate states.
+- [x] Headings, landmarks, image alternatives, and form feedback are accessible.
+- [x] Text contrast and reduced-motion behavior meet the project's accessibility requirements.
+- [x] Available accessibility checks pass without unresolved critical findings.
+- [x] Performance results and Core Web Vitals meet the project's accepted release criteria.
 
 ## 4. Content & KP_Code Standards
 
