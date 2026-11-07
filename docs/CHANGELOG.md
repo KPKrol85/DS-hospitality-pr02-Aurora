@@ -102,6 +102,7 @@ For each implementation task, determine `Changelog: yes` or `Changelog: no`. Add
 - Applied the intended muted color to the contact detail labels in both themes and removed an unreferenced 1.9 MB SVG from the production package, released under Service Worker cache `aurora-1.53`.
 - Removed the residual layout shift of the featured-offer images by re-exporting their 400w and 1000w variants uncropped in the aspect ratio of the fallback image, released under Service Worker cache `aurora-1.54`.
 - Corrected the homepage contact CTA and Maldives itinerary to align with the demonstration purpose and seven-day, six-night offer.
+- Corrected social-preview images and page metadata for the demonstration project, refreshing cached HTML under Service Worker cache `aurora-1.55`.
 
 ### Security
 
