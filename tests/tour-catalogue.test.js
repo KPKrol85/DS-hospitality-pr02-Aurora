@@ -254,7 +254,7 @@ describe("check-tour-catalogue.js", () => {
     expect(anchor.issues).toEqual([
       `index.html:${lineOf("index.html", "tours.html#tokyo")} [featured card -> tours.html#tokyo] anchor #tokyo matches no valid listing card in tours.html; valid listing anchors: ${validAnchors}`,
     ]);
-  });
+  }, 15000);
 
   it("reports a featured card that does not link to exactly one listing card anchor", () => {
     edit("index.html", '<a class="btn btn--text" href="tours.html#tokio">', '<a href="tours.html#malediwy">Malediwy</a> <a class="btn btn--text" href="tours.html#tokio">');

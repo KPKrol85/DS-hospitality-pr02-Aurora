@@ -10,6 +10,7 @@ export default defineConfig({
   },
   test: {
     environment: "jsdom",
+    fileParallelism: false,
     include: ["tests/**/*.test.js"],
     setupFiles: ["tests/setup.js"],
     restoreMocks: true,
