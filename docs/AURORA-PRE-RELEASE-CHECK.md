@@ -50,12 +50,12 @@
 
 ## 5. Forms & Integrations
 
-- [ ] Implemented forms contain the required fields, labels, and validation rules.
-- [ ] Form submission, error handling, and success feedback behave correctly.
-- [ ] Required privacy acknowledgements, spam protection, and anti-bot mechanisms are configured correctly.
-- [ ] Forms direct submissions to the intended recipient or service.
-- [ ] Required external integrations, APIs, and third-party services are configured and functional.
-- [ ] No unintended data collection, inactive integration references, or misleading submission behavior remains.
+- [x] Implemented forms contain the required fields, labels, and validation rules.
+- [x] Form submission, error handling, and success feedback behave correctly.
+- [x] Required privacy acknowledgements, spam protection, and anti-bot mechanisms are configured correctly.
+- [x] Forms direct submissions to the intended recipient or service.
+- [x] Required external integrations, APIs, and third-party services are configured and functional.
+- [x] No unintended data collection, inactive integration references, or misleading submission behavior remains.
 
 ## 6. SEO & Discoverability
 
