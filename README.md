@@ -272,9 +272,10 @@ Projekt jest objęty Własnościową Licencją Projektu KP_CODE w wersji 1.0, kt
 
 ### Atrybucje
 
-- Fotografie: właściciel projektu deklaruje, że opracował i wyeksportował w Canva Pro kompozycje fotograficzne z oznaczeniami Aurora Travel. Prawa do wykorzystanych materiałów podmiotów trzecich pozostają przy ich właścicielach. Korzystanie z materiałów z biblioteki Canva podlega warunkom [Canva Content License Agreement](https://www.canva.com/policies/content-license-agreement/).
-- Kroje pisma: samodzielnie hostowane pliki zmienne `Inter-VariableFont.woff2` i `Manrope-VariableFont.woff2` w `assets/fonts/`. Pliki licencji `assets/fonts/Inter-OFL.txt` i `assets/fonts/Manrope-OFL.txt` są wersjonowane w Git i publikowane wraz z fontami w paczce produkcyjnej.
-- Mapa na stronie `contact.html` jest uruchamiana przyciskiem „Wyświetl mapę” po informacji o zewnętrznej usłudze. Przed aktywacją nie powstaje iframe ani żądanie do Google Maps; bez JavaScriptu pozostaje dostępny adres i komunikat. Ramka zachowuje obsługę przez `frame-src` w `_headers`.
+- Źródła i odrębne warunki materiałów zewnętrznych opisuje [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md). Ich prawa pozostają przy właściwych autorach i licencjodawcach.
+- Właściciel potwierdza przygotowanie i eksport kompozycji fotograficznych w Canva Pro. Demonstracyjne logo Aurora Travel powstało na bazie projektu/szablonu Canva, uzupełnionego własnymi elementami i zmianami, bez roszczeń do wyłącznych praw do elementów zewnętrznych ani wynikających z nich praw do zarejestrowanego znaku towarowego.
+- Samodzielnie hostowane fonty Inter i Manrope podlegają OFL 1.1, a ikony SVG Heroicons i Tabler — MIT. Pełne teksty licencji są zachowane w repozytorium i publikowane z zasobami.
+- Google Maps i Netlify Forms są usługami zewnętrznymi. Mapa na `contact.html` ładuje się w iframe dopiero po wybraniu „Wyświetl mapę”; bez JavaScriptu pozostają adres i komunikat.
 
 ## EN
 
@@ -548,6 +549,7 @@ The project is covered by the KP_CODE Proprietary Project License, version 1.0, 
 
 ### Attributions
 
-- Photographs: the project owner states that they composed and exported the photographs in Canva Pro with Aurora Travel branding. Rights to the third-party materials used in these designs remain with their respective owners. Use of Canva library content is subject to the [Canva Content License Agreement](https://www.canva.com/policies/content-license-agreement/).
-- Typefaces: the self-hosted variable font files `Inter-VariableFont.woff2` and `Manrope-VariableFont.woff2` in `assets/fonts/`. The license files `assets/fonts/Inter-OFL.txt` and `assets/fonts/Manrope-OFL.txt` are tracked in Git and published with the fonts in the production package.
-- The map on `contact.html` loads through the “Wyświetl mapę” button after an external-service notice. No iframe or Google Maps request is created before activation; the address and fallback message remain available without JavaScript. The frame remains covered by `frame-src` in `_headers`.
+- Sources and separate terms for third-party materials are documented in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md). Their rights remain with the respective authors and licensors.
+- The owner confirms that the photographic compositions were prepared and exported using Canva Pro. The Aurora Travel demonstration logo was based on a Canva design/template, supplemented by the owner's visual elements and changes, without claiming exclusive rights to third-party elements or registered trademark rights derived from them.
+- The self-hosted Inter and Manrope fonts are licensed under OFL 1.1, and the Heroicons and Tabler SVG icons under MIT. Complete license texts are preserved in the repository and published with the assets.
+- Google Maps and Netlify Forms are external services. The map on `contact.html` loads in an iframe only after selecting “Wyświetl mapę”; the address and fallback message remain available without JavaScript.
