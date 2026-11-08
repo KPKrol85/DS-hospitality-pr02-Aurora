@@ -12,7 +12,6 @@ const VALID_VALUES = {
   phone: "+48 600 900 700",
   subject: "podobna-strona",
   message: "Chcę zapytać o podobną stronę dla mojego biura podróży.",
-  rodo: true,
 };
 
 function form() {
@@ -29,12 +28,7 @@ function errorFor(id) {
 
 function fill(values) {
   Object.entries(values).forEach(([id, value]) => {
-    const element = control(id);
-    if (element.type === "checkbox") {
-      element.checked = value;
-    } else {
-      element.value = value;
-    }
+    control(id).value = value;
   });
 }
 
@@ -81,13 +75,37 @@ describe("inquiry form contract", () => {
   it("submits the project inquiry fields through the static Netlify form", () => {
     const names = Array.from(form().elements, (element) => element.name).filter(Boolean);
 
-    expect(names).toEqual(["form-name", "bot-field", "name", "email", "phone", "subject", "message", "rodo"]);
+    expect(names).toEqual(["form-name", "bot-field", "name", "email", "phone", "subject", "message"]);
     expect(form().getAttribute("name")).toBe("zapytanie");
     expect(form().elements.namedItem("form-name").value).toBe("zapytanie");
     expect(form().getAttribute("method")).toBe("POST");
     expect(form().getAttribute("action")).toBe("dziekuje.html");
     expect(form().getAttribute("data-netlify")).toBe("true");
     expect(form().getAttribute("netlify-honeypot")).toBe("bot-field");
+  });
+
+  it("provides a static privacy notice next to submission without a consent control", () => {
+    const link = form().querySelector('a[href="polityka-prywatnosci.html"]');
+    const notice = link?.closest("p");
+
+    expect(notice).not.toBeNull();
+    expect(notice.textContent).toContain("KP_Code Digital Studio");
+    expect(notice.textContent).toContain("art. 6 ust. 1 lit. f RODO");
+    expect(notice.nextElementSibling).toBe(form().querySelector('button[type="submit"]'));
+    expect(form().querySelector('[name="rodo"], #rodo, #error-rodo, input[type="checkbox"]')).toBeNull();
+    expect(form().querySelector('[aria-describedby~="error-rodo"], label[for="rodo"]')).toBeNull();
+  });
+
+  it("accepts and serializes the inquiry without JavaScript or a consent field", () => {
+    fill(VALID_VALUES);
+
+    expect(form().hasAttribute("novalidate")).toBe(false);
+    expect(form().checkValidity()).toBe(true);
+    expect(Object.fromEntries(new FormData(form()))).toEqual({
+      "form-name": "zapytanie",
+      "bot-field": "",
+      ...VALID_VALUES,
+    });
   });
 
   it("offers the inquiry subjects after an empty required placeholder", () => {
@@ -126,13 +144,6 @@ describe("field validation on blur", () => {
     blurWith("name", "Anna Kowalska");
     expect(errorFor("name")).toBe("");
     expect(control("name").hasAttribute("aria-invalid")).toBe(false);
-  });
-
-  it("flags the unchecked consent checkbox", () => {
-    blurWith("rodo", false);
-
-    expect(errorFor("rodo")).toBe(REQUIRED);
-    expect(control("rodo").getAttribute("aria-invalid")).toBe("true");
   });
 
   it("requires an inquiry subject and accepts each listed subject", () => {
@@ -208,7 +219,7 @@ describe("submission", () => {
   it("blocks an empty form, flags every required field and focuses the first", () => {
     expect(submit()).toBe("prevented");
 
-    const required = ["name", "email", "subject", "message", "rodo"];
+    const required = ["name", "email", "subject", "message"];
     expect(invalidFields()).toEqual(required);
     required.forEach((id) => expect(errorFor(id)).toBe(REQUIRED));
     expect(errorFor("phone")).toBe("");
@@ -289,19 +300,6 @@ describe("error recovery while editing", () => {
     expect(document.activeElement).toBe(control(id));
   });
 
-  it("clears the consent error once the checkbox is checked", () => {
-    blurWith("rodo", false);
-    expect(errorFor("rodo")).toBe(REQUIRED);
-
-    control("rodo").focus();
-    control("rodo").click();
-
-    expect(control("rodo").checked).toBe(true);
-    expect(errorFor("rodo")).toBe("");
-    expect(control("rodo").hasAttribute("aria-invalid")).toBe(false);
-    expect(document.activeElement).toBe(control("rodo"));
-  });
-
   it("keeps the error of a field whose edited value is still invalid", () => {
     blurWith("phone", "600 90");
     control("phone").focus();
@@ -342,7 +340,6 @@ describe("error recovery while editing", () => {
       phone: "600 90",
       subject: "",
       message: "",
-      rodo: false,
     };
 
     Object.entries(invalidValues).forEach(([id, value]) => {
@@ -376,7 +373,7 @@ describe("error recovery while editing", () => {
     editWith("name", "Anna Kowalska");
 
     expect(errorFor("name")).toBe("");
-    expect(invalidFields()).toEqual(["email", "subject", "message", "rodo"]);
+    expect(invalidFields()).toEqual(["email", "subject", "message"]);
     expect(document.activeElement).toBe(control("name"));
 
     expect(submit()).toBe("prevented");

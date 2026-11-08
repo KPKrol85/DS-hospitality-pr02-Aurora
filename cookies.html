@@ -300,7 +300,7 @@
             </ul>
 
             <h4 class="legal__subtitle">Technologie funkcjonalne</h4>
-            <p>Pozwalają zapamiętać ustawienia wybrane przez Użytkownika. W Serwisie dotyczy to wyłącznie wyboru motywu jasnego lub ciemnego.</p>
+            <p>Pozwalają zapamiętać ustawienia wybrane przez Użytkownika lub uruchomić dodatkową funkcję. W Serwisie obejmują wybór motywu jasnego lub ciemnego oraz mapę Google Maps uruchamianą przyciskiem „Wyświetl mapę”.</p>
             <p>
               Ustawienie to jest zapisywane dopiero po samodzielnym przełączeniu motywu przez Użytkownika, a więc w ramach funkcji wyraźnie przez niego żądanej. Serwis nie zapisuje ustawień
               funkcjonalnych bez takiego działania Użytkownika.
@@ -348,7 +348,7 @@
                     <td>Operator</td>
                     <td>funkcjonalna</td>
                     <td>Zapamiętanie motywu jasnego lub ciemnego wybranego przez Użytkownika.</td>
-                    <td>Do usunięcia przez Użytkownika.</td>
+                    <td>Do zmiany lub usunięcia ustawienia. Aktualizacja Service Workera nie usuwa preferencji motywu.</td>
                   </tr>
                   <tr>
                     <th scope="row"><code>&lt;wersja&gt;_static</code></th>
@@ -356,7 +356,7 @@
                     <td>Operator</td>
                     <td>niezbędna</td>
                     <td>Przechowywanie statycznych zasobów Serwisu (arkusz stylów, skrypt, obrazy, czcionki, manifest) w celu zapewnienia działania strony w trybie offline.</td>
-                    <td>Do usunięcia przez Użytkownika lub do czasu publikacji nowej wersji pamięci podręcznej, przy której poprzednia wersja jest automatycznie usuwana.</td>
+                    <td>Do usunięcia przez Użytkownika lub przeglądarkę albo do aktywacji zaktualizowanego Service Workera w przeglądarce Użytkownika, która usuwa cache poprzednich wersji.</td>
                   </tr>
                   <tr>
                     <th scope="row"><code>&lt;wersja&gt;_html</code></th>
@@ -368,7 +368,7 @@
                       pierwszej wizyty nie jest zapisywana automatycznie – może zostać zapisana po ponownym otwarciu jej przy dostępie do sieci. Przy braku połączenia zamiast podstrony nieobecnej w tej
                       pamięci wyświetlana jest strona zastępcza.
                     </td>
-                    <td>Do usunięcia przez Użytkownika lub do czasu publikacji nowej wersji pamięci podręcznej, przy której poprzednia wersja jest automatycznie usuwana.</td>
+                    <td>Do usunięcia przez Użytkownika lub przeglądarkę albo do aktywacji zaktualizowanego Service Workera w przeglądarce Użytkownika, która usuwa cache poprzednich wersji.</td>
                   </tr>
                   <tr>
                     <th scope="row"><code>service-worker.js</code></th>
@@ -383,7 +383,7 @@
                     <td>Pliki cookies oraz pamięć przeglądarki zapisywane w kontekście dostawcy</td>
                     <td>Google</td>
                     <td>funkcjonalna</td>
-                    <td>Wyświetlenie osadzonej mapy z lokalizacją biura autora projektu na podstronie „Kontakt”. Mechanizm jest uruchamiany wyłącznie na tej podstronie, wraz z wczytaniem mapy.</td>
+                    <td>Wyświetlenie mapy z lokalizacją biura autora projektu na podstronie „Kontakt”, dopiero po wybraniu przycisku „Wyświetl mapę”. Przed aktywacją mapa i jej zasoby nie są pobierane z Google.</td>
                     <td>Nazwy oraz okresy przechowywania są ustalane przez dostawcę i nie są definiowane w kodzie Serwisu.</td>
                   </tr>
                 </tbody>
@@ -393,7 +393,8 @@
             <p>
               W nazwach pamięci podręcznej Cache Storage człon
               <code>&lt;wersja&gt;</code>
-              to oznaczenie bieżącej wersji Service Workera, które zmienia się wraz z publikacją jego nowej wersji.
+              to oznaczenie wersji Service Workera. Sama publikacja aktualizacji nie usuwa danych w przeglądarce Użytkownika; cache poprzednich wersji są usuwane dopiero przy aktywacji
+              zaktualizowanego Service Workera. Preferencja motywu w <code>localStorage</code> jest przechowywana niezależnie od tych cache.
             </p>
 
             <div class="legal__note">
@@ -468,9 +469,8 @@
             </p>
             <p>
               Osadzona mapa, o której mowa w
-              <a href="#cookies-section-7">punkcie 7</a>, jest wczytywana wraz z podstroną „Kontakt”. W Serwisie nie wdrożono mechanizmu zarządzania zgodą, dlatego Użytkownik może kontrolować działanie tej integracji za pomocą ustawień
-              przeglądarki, w sposób opisany w
-              <a href="#cookies-section-6">punkcie 6</a>.
+              <a href="#cookies-section-7">punkcie 7</a>, jest wczytywana dopiero po wybraniu przycisku „Wyświetl mapę”. Wcześniej Użytkownik widzi informację o połączeniu z Google i możliwym
+              przetwarzaniu danych technicznych oraz zapisie danych w przeglądarce. Przycisk służy uruchomieniu usługi; sam mechanizm nie rozstrzyga podstawy przetwarzania danych ani odrębnych wymogów prawnych dotyczących zgody.
             </p>
             <p>Użytkownik może w dowolnym momencie wycofać udzieloną zgodę. Cofnięcie zgody nie wpływa na zgodność z prawem działań wykonanych przed jej wycofaniem.</p>
           </section>
@@ -525,14 +525,14 @@
               urządzeniu Użytkownika przed wybraniem tego odnośnika.
             </p>
             <p>
-              Inaczej jest w przypadku osadzonej mapy. Jest ona wczytywana z serwerów dostawcy wraz z wyświetleniem podstrony „Kontakt”, w związku z czym dostawca może wówczas otrzymać informacje
-              techniczne dotyczące urządzenia Użytkownika albo zapisać na nim informacje we własnym kontekście. Nazwy oraz okresy przechowywania takich danych są ustalane przez dostawcę i nie są
+              Mapa Google Maps jest wczytywana z serwerów dostawcy dopiero po wybraniu przycisku „Wyświetl mapę” na podstronie „Kontakt”. Przed aktywacją Serwis nie wysyła żądań do Google Maps
+              ani nie pobiera zasobów mapy. Po aktywacji dostawca może otrzymać informacje techniczne dotyczące urządzenia Użytkownika albo zapisać na nim informacje we własnym kontekście. Nazwy oraz okresy przechowywania takich danych są ustalane przez dostawcę i nie są
               definiowane w kodzie Serwisu.
             </p>
             <p>Szczegółowe zasady działania usług podmiotów trzecich są określane w dokumentach publikowanych przez ich dostawców.</p>
             <p>
-              Użytkownik, który nie chce, aby osadzona mapa była wczytywana, może zablokować pliki cookies i inne dane witryn podmiotów trzecich w ustawieniach przeglądarki albo nie odwiedzać
-              podstrony „Kontakt”.
+              Użytkownik może korzystać z danych kontaktowych i formularza bez uruchamiania mapy. Blokowanie cookies podmiotów trzecich nie jest równoznaczne z blokowaniem żądań sieciowych
+              iframe. Bez JavaScriptu mapa nie jest uruchamiana, a adres biura pozostaje dostępny.
             </p>
           </section>
           <!-- 8. Zmiany Polityki cookies -->
@@ -568,7 +568,7 @@
           <!-- Data ostatniej aktualizacji -->
           <p class="legal__meta">
             Data ostatniej aktualizacji:
-            <time datetime="2026-11-01">01.11.2026</time>
+            <time datetime="2026-11-08">08.11.2026</time>
           </p>
         </div>
       </section>

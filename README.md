@@ -23,7 +23,7 @@ Jest to adres produkcyjny potwierdzony przez właściciela projektu i adres kano
 - Galeria (`gallery.html`) renderowana z `assets/data/gallery-data.json` wraz z filtrowaniem po kierunku (przyciski z `aria-pressed`).
 - Wspólny lightbox dla galerii i galerii w widoku wycieczki: otwieranie klawiszem `Enter` lub `Space`, nawigacja strzałkami, zamknięcie klawiszem `Escape`, pułapka fokusu, powrót fokusu do elementu wyzwalającego, przesunięcie dotykiem oraz przełączanie trybu pełnoekranowego.
 - Przełącznik motywu jasny/ciemny zapisywany w `localStorage`, uzupełniony skryptem w `<head>`, który ustawia motyw z zapisanej preferencji lub `prefers-color-scheme` przed załadowaniem arkusza stylów.
-- Walidacja formularza zapytań o projekt po stronie klienta: pola wymagane, w tym temat zapytania, format e-mail, minimalna długość numeru telefonu oraz zgoda RODO. Komunikaty trafiają do powiązanych obszarów `aria-live`, a pola otrzymują `aria-invalid`.
+- Walidacja formularza zapytań o projekt po stronie klienta: pola wymagane, w tym temat zapytania, format e-mail oraz minimalna długość opcjonalnego numeru telefonu. Komunikaty trafiają do powiązanych obszarów `aria-live`, a pola otrzymują `aria-invalid`. Przy przycisku wysyłki znajduje się informacja o przetwarzaniu danych z linkiem do polityki prywatności, bez wymaganego potwierdzenia.
 - Nawigacja mobilna z pułapką fokusu, zamknięciem klawiszem `Escape`, blokadą przewijania i powrotem fokusu.
 - Zakładki z nawigacją strzałkami oraz akordeon FAQ sterowany atrybutem `aria-expanded`.
 - Animacje pojawiania się elementów oparte na `IntersectionObserver`, z awaryjnym ujawnieniem treści przy braku wsparcia.
@@ -62,7 +62,7 @@ Projekt nie posiada zależności runtime; wszystkie pakiety są zadeklarowane ja
 
 - **Strony.** Każda strona w katalogu głównym jest samodzielnym dokumentem HTML, który ładuje źródła kanoniczne: `css/style.css` oraz `js/script.js` jako moduł ES (`<script type="module">`). Kopie stron publikowane w `dist/` odwołują się do wygenerowanych plików `css/style.min.css` i `js/script.min.js`. Oba zestawy odwołań są wymuszane przez `scripts/check-css-assets.js`.
 - **CSS.** `css/style.css` jest jedynym punktem wejścia i importuje dziewięć modułów z `css/modules/` (`tokens`, `base`, `layout`, `components`, `sections`, `fonts`, `subpages`, `legal`, `utilities`). Podczas developmentu przeglądarka rozwiązuje te importy natywnie. PostCSS wstawia importy w miejscu, dodaje prefiksy i minifikuje wynik do `dist/css/style.min.css`.
-- **JavaScript.** `js/script.js` składa 14 modułów funkcjonalnych z `js/features/`. Każdy z nich eksportuje funkcję `init*`, która kończy działanie, gdy nie znajdzie swojego elementu w DOM, dzięki czemu ten sam kod obsługuje wszystkie strony. Pomocniczy moduł `catalogue-picture.js` eksportuje `createCataloguePicture`, z którego korzystają `gallery.js` i `tour-detail.js`. Podczas developmentu przeglądarka ładuje te moduły bezpośrednio; esbuild buduje z nich bundle `dist/js/script.min.js`.
+- **JavaScript.** `js/script.js` składa 15 modułów funkcjonalnych z `js/features/`. Każdy z nich eksportuje funkcję `init*`, która kończy działanie, gdy nie znajdzie swojego elementu w DOM, dzięki czemu ten sam kod obsługuje wszystkie strony. Pomocniczy moduł `catalogue-picture.js` eksportuje `createCataloguePicture`, z którego korzystają `gallery.js` i `tour-detail.js`. Podczas developmentu przeglądarka ładuje te moduły bezpośrednio; esbuild buduje z nich bundle `dist/js/script.min.js`.
 - **Dane.** `assets/data/tours.json` zawiera 6 wycieczek i jest pobierany przez `js/features/tour-detail.js`; `assets/data/gallery-data.json` zawiera 36 pozycji i jest pobierany przez `js/features/gallery.js`. Lista ofert na `tours.html` pozostaje statycznym HTML-em.
 - **Obrazy.** `assets/img-src/` jest źródłem, `assets/img/` wynikiem generowanym przez `scripts/build-images.js`. Skrypt tworzy warianty szerokości według profilu katalogu oraz pliki `webp` i `avif` obok formatu zapasowego.
 - **Service Worker.** `service-worker.js` leży w katalogu głównym, jest kopiowany do katalogu głównego `dist/` i rejestrowany po zdarzeniu `load` wyłącznie przez produkcyjny bundle, który esbuild buduje z flagą `--define:__AURORA_PRODUCTION__=true`. Źródła ładowane podczas developmentu go nie rejestrują, a Service Workera pozostawionego na tym samym originie przez wersję produkcyjną wyrejestrowują.
@@ -239,7 +239,7 @@ Instalowalność aplikacji nie była weryfikowana w przeglądarce.
 
 - Obrazy responsywne w `picture` z `srcset` i `sizes` w formatach `avif`, `webp` i `jpg`, generowane przez pipeline w szerokościach zdefiniowanych per katalog.
 - Jawne atrybuty `width` i `height` na obrazach generowanych i osadzonych w HTML.
-- `loading="eager"` i `fetchpriority="high"` na obrazie hero strony głównej; `loading="lazy"` na pozostałych obrazach oraz na ramce mapy w `contact.html`.
+- `loading="eager"` i `fetchpriority="high"` na obrazie hero strony głównej; `loading="lazy"` na pozostałych obrazach oraz na ramce mapy tworzonej dopiero po aktywacji w `contact.html`.
 - Samodzielnie hostowane kroje zmienne w formacie `woff2` z `font-display: swap`.
 - Wskazówki `<link rel="preload">` między bootstrapem motywu a arkuszem stylów: krój Manrope (logo i nagłówki) na wszystkich stronach, krój Inter (tekst) tylko na `index.html`. Przeglądarka pobiera te fonty równolegle z arkuszem stylów, zamiast odkrywać je dopiero po jego przetworzeniu. Na pozostałych stronach Inter jest nadal odkrywany przez arkusz, ponieważ jego wstępne pobieranie opóźniało arkusz i pierwsze renderowanie przy wolnym łączu.
 - Minifikacja CSS (`cssnano`) i JS (esbuild) w paczce produkcyjnej `dist/`.
@@ -274,7 +274,7 @@ Projekt jest objęty Własnościową Licencją Projektu KP_CODE w wersji 1.0, kt
 
 - Fotografie: właściciel projektu deklaruje, że opracował i wyeksportował w Canva Pro kompozycje fotograficzne z oznaczeniami Aurora Travel. Prawa do wykorzystanych materiałów podmiotów trzecich pozostają przy ich właścicielach. Korzystanie z materiałów z biblioteki Canva podlega warunkom [Canva Content License Agreement](https://www.canva.com/policies/content-license-agreement/).
 - Kroje pisma: samodzielnie hostowane pliki zmienne `Inter-VariableFont.woff2` i `Manrope-VariableFont.woff2` w `assets/fonts/`. Pliki licencji `assets/fonts/Inter-OFL.txt` i `assets/fonts/Manrope-OFL.txt` są wersjonowane w Git i publikowane wraz z fontami w paczce produkcyjnej.
-- Mapa na stronie `contact.html` jest osadzona jako ramka Map Google i uwzględniona w dyrektywie `frame-src` w `_headers`.
+- Mapa na stronie `contact.html` jest uruchamiana przyciskiem „Wyświetl mapę” po informacji o zewnętrznej usłudze. Przed aktywacją nie powstaje iframe ani żądanie do Google Maps; bez JavaScriptu pozostaje dostępny adres i komunikat. Ramka zachowuje obsługę przez `frame-src` w `_headers`.
 
 ## EN
 
@@ -299,7 +299,7 @@ This is the production address confirmed by the project owner and the canonical 
 - Gallery (`gallery.html`) rendered from `assets/data/gallery-data.json` with destination filtering (buttons carrying `aria-pressed`).
 - A shared lightbox for the gallery and the tour-detail gallery: opening with `Enter` or `Space`, arrow-key navigation, `Escape` to close, focus trapping, focus return to the triggering element, touch swiping, and fullscreen toggling.
 - Light/dark theme toggle persisted in `localStorage`, complemented by a `<head>` script that applies the stored preference or `prefers-color-scheme` before the stylesheet loads.
-- Client-side validation of the project inquiry form: required fields, including the inquiry subject, e-mail format, minimum phone length, and the RODO consent checkbox. Messages are written into associated `aria-live` regions and fields receive `aria-invalid`.
+- Client-side validation of the project inquiry form: required fields, including the inquiry subject, e-mail format, and minimum length of the optional phone number. Messages are written into associated `aria-live` regions and fields receive `aria-invalid`. A privacy notice beside the submit button links to the privacy policy without requiring acknowledgement.
 - Mobile navigation with focus trapping, `Escape` dismissal, scroll locking, and focus return.
 - Tabs with arrow-key navigation and an FAQ accordion driven by `aria-expanded`.
 - Reveal-on-scroll animations based on `IntersectionObserver`, with a fallback that reveals content when the API is unavailable.
@@ -338,7 +338,7 @@ The project has no runtime dependencies; every package is declared under `devDep
 
 - **Pages.** Each root-level page is a standalone HTML document that loads the canonical sources: `css/style.css` and `js/script.js` as an ES module (`<script type="module">`). The copies published to `dist/` reference the generated `css/style.min.css` and `js/script.min.js`. Both sets of references are enforced by `scripts/check-css-assets.js`.
 - **CSS.** `css/style.css` is the single entry point and imports nine modules from `css/modules/` (`tokens`, `base`, `layout`, `components`, `sections`, `fonts`, `subpages`, `legal`, `utilities`). During development the browser resolves these imports natively. PostCSS inlines the imports, adds prefixes, and minifies the result into `dist/css/style.min.css`.
-- **JavaScript.** `js/script.js` composes 14 feature modules from `js/features/`. Each of them exports an `init*` function that returns early when its element is not present in the DOM, so the same code serves every page. The shared helper module `catalogue-picture.js` exports `createCataloguePicture`, which `gallery.js` and `tour-detail.js` use. During development the browser loads these modules directly; esbuild bundles them into `dist/js/script.min.js`.
+- **JavaScript.** `js/script.js` composes 15 feature modules from `js/features/`. Each of them exports an `init*` function that returns early when its element is not present in the DOM, so the same code serves every page. The shared helper module `catalogue-picture.js` exports `createCataloguePicture`, which `gallery.js` and `tour-detail.js` use. During development the browser loads these modules directly; esbuild bundles them into `dist/js/script.min.js`.
 - **Data.** `assets/data/tours.json` holds 6 tours and is fetched by `js/features/tour-detail.js`; `assets/data/gallery-data.json` holds 36 entries and is fetched by `js/features/gallery.js`. The offer list on `tours.html` remains static HTML.
 - **Images.** `assets/img-src/` is the source tree and `assets/img/` is the output generated by `scripts/build-images.js`. The script produces width variants according to a per-directory profile plus `webp` and `avif` files alongside the fallback format.
 - **Service Worker.** `service-worker.js` lives in the project root, is copied to the root of `dist/`, and is registered after the `load` event only by the production bundle, which esbuild builds with `--define:__AURORA_PRODUCTION__=true`. The sources loaded during development do not register it, and they unregister a worker left on the same origin by a production build.
@@ -515,7 +515,7 @@ Installability was not verified in a browser.
 
 - Responsive images in `picture` with `srcset` and `sizes` in the `avif`, `webp`, and `jpg` formats, generated by the pipeline at per-directory widths.
 - Explicit `width` and `height` attributes on generated and inline HTML images.
-- `loading="eager"` and `fetchpriority="high"` on the home-page hero image; `loading="lazy"` on the remaining images and on the map iframe in `contact.html`.
+- `loading="eager"` and `fetchpriority="high"` on the home-page hero image; `loading="lazy"` on the remaining images and on the map iframe created only after activation in `contact.html`.
 - Self-hosted variable fonts in `woff2` with `font-display: swap`.
 - `<link rel="preload">` hints between the theme bootstrap and the stylesheet: the Manrope typeface (logo and headings) on every page, the Inter typeface (body text) on `index.html` only. The browser downloads these fonts in parallel with the stylesheet instead of discovering them only after processing it. On the other pages Inter is still discovered through the stylesheet, because preloading it delayed the stylesheet and the first paint on a slow connection.
 - CSS minification (`cssnano`) and JS minification (esbuild) in the `dist/` production package.
@@ -550,4 +550,4 @@ The project is covered by the KP_CODE Proprietary Project License, version 1.0, 
 
 - Photographs: the project owner states that they composed and exported the photographs in Canva Pro with Aurora Travel branding. Rights to the third-party materials used in these designs remain with their respective owners. Use of Canva library content is subject to the [Canva Content License Agreement](https://www.canva.com/policies/content-license-agreement/).
 - Typefaces: the self-hosted variable font files `Inter-VariableFont.woff2` and `Manrope-VariableFont.woff2` in `assets/fonts/`. The license files `assets/fonts/Inter-OFL.txt` and `assets/fonts/Manrope-OFL.txt` are tracked in Git and published with the fonts in the production package.
-- The map on `contact.html` is embedded as a Google Maps frame and is accounted for by the `frame-src` directive in `_headers`.
+- The map on `contact.html` loads through the “Wyświetl mapę” button after an external-service notice. No iframe or Google Maps request is created before activation; the address and fallback message remain available without JavaScript. The frame remains covered by `frame-src` in `_headers`.

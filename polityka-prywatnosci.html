@@ -227,7 +227,7 @@
               <a class="legal__back-link" href="#privacy-toc-heading" aria-label="Wróć do spisu treści">↑</a>
             </div>
             <p>
-              Administratorem danych osobowych przetwarzanych w związku z funkcjonowaniem Serwisu jest
+              Administratorem danych osobowych przetwarzanych w związku z funkcjonowaniem Serwisu jest Kamil Król, działający pod marką
               <a href="https://kp-code.pl" target="_blank" rel="noopener noreferrer"><strong>KP_Code Digital Studio</strong></a>
               (dalej: „Administrator”).
             </p>
@@ -367,10 +367,13 @@
             </div>
             <p>Podanie danych osobowych za pośrednictwem formularza kontaktowego jest dobrowolne.</p>
             <p>
-              Podanie danych oznaczonych w formularzu jako wymagane może być konieczne do przesłania zapytania oraz udzielenia odpowiedzi przez Administratora. Niepodanie tych danych może
-              uniemożliwić wysłanie formularza.
+              Wysłanie formularza wymaga podania imienia i nazwiska, adresu e-mail, tematu zapytania oraz treści wiadomości. Niepodanie wymaganych danych uniemożliwia wysłanie formularza.
             </p>
             <p>Podanie danych niewymaganych, w tym numeru telefonu, jest dobrowolne i nie wpływa na możliwość skorzystania z podstawowej funkcjonalności formularza.</p>
+            <p>
+              Przy przycisku wysyłki znajduje się informacja o przetwarzaniu danych z odnośnikiem do niniejszej Polityki. Formularz nie wymaga zaznaczenia potwierdzenia ani zgody;
+              podstawę przetwarzania danych w celu obsługi zapytania wskazano w punkcie 4.
+            </p>
           </section>
           <!-- 6. Odbiorcy danych -->
           <section class="legal__block" id="privacy-section-6" aria-labelledby="privacy-section-6-heading">
@@ -384,7 +387,7 @@
             </p>
             <ul>
               <li>dostawca usług hostingowych, obsługujący jednocześnie przesyłanie wiadomości z formularza kontaktowego,</li>
-              <li>dostawca osadzonej mapy prezentowanej na podstronie „Kontakt”,</li>
+              <li>dostawca osadzonej mapy na podstronie „Kontakt”, po jej uruchomieniu przez Użytkownika przyciskiem „Wyświetl mapę”,</li>
               <li>podmioty uprawnione do otrzymania danych na podstawie obowiązujących przepisów prawa.</li>
             </ul>
             <h4 class="legal__subtitle" id="privacy-providers-heading">Wykaz dostawców</h4>
@@ -414,7 +417,7 @@
                   <tr>
                     <th scope="row">Google LLC</th>
                     <td>Osadzona mapa Google Maps na podstronie „Kontakt”</td>
-                    <td>Dane techniczne urządzenia Użytkownika, przekazywane bezpośrednio dostawcy wraz z wczytaniem mapy</td>
+                    <td>Dane techniczne urządzenia Użytkownika, przekazywane bezpośrednio dostawcy po uruchomieniu mapy przyciskiem „Wyświetl mapę”</td>
                     <td>Odrębny administrator danych w zakresie działania mapy</td>
                   </tr>
                 </tbody>
@@ -494,8 +497,11 @@
               </li>
               <li>dane przetwarzane w celu realizacji obowiązku prawnego są przechowywane przez okres wynikający z właściwych przepisów prawa,</li>
               <li>
-                dane zapisane wyłącznie lokalnie w przeglądarce Użytkownika pozostają na jego urządzeniu do momentu ich usunięcia przez Użytkownika lub do czasu publikacji nowej wersji pamięci
-                podręcznej, zgodnie z opisem w dokumencie Polityka cookies.
+                preferencja motywu zapisana w <code>localStorage</code> pozostaje do jej zmiany lub usunięcia; aktualizacja Service Workera jej nie usuwa,
+              </li>
+              <li>
+                zasoby w Cache Storage pozostają do ich usunięcia przez Użytkownika lub przeglądarkę albo do aktywacji zaktualizowanego Service Workera w przeglądarce Użytkownika,
+                podczas której usuwane są cache poprzednich wersji. Sama publikacja aktualizacji nie usuwa lokalnych danych. Szczegóły opisuje Polityka cookies.
               </li>
             </ul>
             <p>Po upływie wskazanych okresów dane są usuwane lub poddawane anonimizacji.</p>
@@ -553,7 +559,7 @@
               <h3 id="privacy-section-11-heading" class="legal__block-title type-subsection-title">Pliki cookies i podobne technologie</h3>
               <a class="legal__back-link" href="#privacy-toc-heading" aria-label="Wróć do spisu treści">↑</a>
             </div>
-            <p>Serwis może wykorzystywać pliki cookies lub podobne technologie wyłącznie w zakresie odpowiadającym jego rzeczywistemu działaniu. W aktualnej wersji Serwisu obejmuje to wyłącznie:</p>
+            <p>Serwis może wykorzystywać pliki cookies lub podobne technologie wyłącznie w zakresie odpowiadającym jego rzeczywistemu działaniu. Kod Serwisu wykorzystuje następujące mechanizmy:</p>
             <ul>
               <li>
                 <code>localStorage</code>
@@ -562,6 +568,10 @@
               <li>Cache Storage oraz Service Worker – zapewnienie działania wybranych zasobów Serwisu w trybie offline.</li>
             </ul>
             <p>Serwis nie ustawia własnych, klasycznych plików cookies i nie wykorzystuje technologii analitycznych ani marketingowych.</p>
+            <p>
+              Mapa Google Maps na podstronie „Kontakt” jest ładowana wyłącznie po wybraniu przycisku „Wyświetl mapę”, poprzedzonym informacją o zewnętrznej usłudze. Przed aktywacją mapa nie
+              nawiązuje połączenia z Google. Po aktywacji dostawca może przetwarzać dane techniczne oraz korzystać z cookies lub innych mechanizmów pamięci przeglądarki we własnym kontekście.
+            </p>
             <p>
               Szczegółowy wykaz technologii, ich cele, dostawców i okresy przechowywania znajdują się w dokumencie
               <a href="cookies.html"><strong>Polityka cookies</strong></a>.
@@ -617,7 +627,7 @@
           <!-- Data ostatniej aktualizacji -->
           <p class="legal__meta">
             Data ostatniej aktualizacji:
-            <time datetime="2026-10-31">31.10.2026</time>
+            <time datetime="2026-11-08">08.11.2026</time>
           </p>
         </div>
       </section>

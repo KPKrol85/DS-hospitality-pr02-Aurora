@@ -6,6 +6,7 @@ import { initToursFilters } from "./features/tours-filters.js";
 import { initTabs } from "./features/tabs.js";
 import { initAccordionFaq } from "./features/accordion-faq.js";
 import { initForm } from "./features/form.js";
+import { initMap } from "./features/map.js";
 import { initAriaCurrent } from "./features/aria-current.js";
 import { initLightbox } from "./features/lightbox.js";
 import { initTourDetail } from "./features/tour-detail.js";
@@ -21,6 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
   runInitializer("initTabs", initTabs);
   runInitializer("initAccordionFaq", initAccordionFaq);
   runInitializer("initForm", initForm);
+  runInitializer("initMap", initMap);
   runInitializer("initAriaCurrent", initAriaCurrent);
 
   if (document.body.dataset.page === "gallery") {

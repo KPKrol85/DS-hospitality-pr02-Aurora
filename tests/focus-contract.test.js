@@ -176,7 +176,7 @@ describe("keyboard focus contract", () => {
     expect(css).not.toContain("rgba(15,109,140,0.22)");
   });
 
-  it("gives the bordered form controls the ring variant and the checkbox the global outline", () => {
+  it("gives the bordered form controls the ring variant and the privacy link the global outline", () => {
     const rules = focusRules().filter(({ name, rule }) => !isGlobalIndicator(name, rule));
     const focusDeclarationsFor = (element) => {
       const props = new Set();
@@ -191,22 +191,19 @@ describe("keyboard focus contract", () => {
     };
 
     const controls = [];
-    let checkboxes = 0;
     for (const page of ["contact.html", "tours.html"]) {
       const document = pageDocument(page);
       document.querySelectorAll(".form__field :is(input, select, textarea):not([type='hidden']), .filters__select").forEach((element) => {
         const name = `${page} ${element.tagName.toLowerCase()}[${element.getAttribute("type") || element.className}]`;
-        if (element.matches("[type='checkbox']")) {
-          checkboxes += 1;
-          expect(focusDeclarationsFor(element), `${name} keeps the global outline`).toEqual([]);
-        } else {
-          controls.push(name);
-          expect(focusDeclarationsFor(element), `${name} uses the ring variant`).toEqual(["border-color", "box-shadow", "outline-color"]);
-        }
+        controls.push(name);
+        expect(focusDeclarationsFor(element), `${name} uses the ring variant`).toEqual(["border-color", "box-shadow", "outline-color"]);
       });
     }
     expect(controls.length).toBeGreaterThan(0);
-    expect(checkboxes).toBeGreaterThan(0);
+    const privacyLink = pageDocument("contact.html").querySelector('[data-form] a[href="polityka-prywatnosci.html"]');
+    expect(privacyLink).not.toBeNull();
+    expect(privacyLink.tabIndex).toBe(0);
+    expect(focusDeclarationsFor(privacyLink), "the privacy link only changes decoration and keeps the global outline").toEqual(["text-decoration"]);
   });
 
   it("keeps the hover lift of buttons off keyboard focus", () => {

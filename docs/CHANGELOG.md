@@ -48,6 +48,8 @@ For each implementation task, determine `Changelog: yes` or `Changelog: no`. Add
 - Replaced the dismissible project notice with persistent demonstration disclosures in the footer.
 - Attributed real contact details, including the corrected `12/31` address, to KP_Code Digital Studio.
 - Converted the contact form, FAQ, and contact CTAs from fictional travel enquiries to inquiries about the website project.
+- Replaced mandatory contact-form consent with an informational privacy notice and aligned the related legal content.
+- Deferred Google Maps loading until explicit user activation and aligned the related privacy disclosures.
 - Aligned public content, metadata, structured data, and legal information with Aurora Travel's fictional character.
 - Updated contact shortcuts and confirmation messaging to identify KP_Code Digital Studio as the recipient.
 - Localized the Service Worker update notice and integrated it with the theme and layering system.
@@ -103,6 +105,7 @@ For each implementation task, determine `Changelog: yes` or `Changelog: no`. Add
 - Removed the residual layout shift of the featured-offer images by re-exporting their 400w and 1000w variants uncropped in the aspect ratio of the fallback image, released under Service Worker cache `aurora-1.54`.
 - Corrected the homepage contact CTA and Maldives itinerary to align with the demonstration purpose and seven-day, six-night offer.
 - Corrected social-preview images and page metadata for the demonstration project, refreshing cached HTML under Service Worker cache `aurora-1.55`.
+- Clarified that obsolete caches are removed on Service Worker activation while theme preferences remain independent.
 
 ### Security
 

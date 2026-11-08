@@ -258,12 +258,18 @@
               </p>
             </address>
             <!--             map -->
-            <div class="map">
-              <iframe
-                title="Mapa biura autora projektu, KP_Code Digital Studio"
-                src="https://www.google.com/maps?q=ul.+Marynarki+Wojennej+12%2F31,+33-100+Tarnów&output=embed"
-                loading="lazy"
-                referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <div
+              class="map"
+              data-map
+              data-map-src="https://www.google.com/maps?q=ul.+Marynarki+Wojennej+12%2F31,+33-100+Tarnów&output=embed"
+              data-map-title="Mapa biura autora projektu, KP_Code Digital Studio">
+              <div class="map__placeholder">
+                <p id="map-info">
+                  Wyświetlenie mapy połączy Twoją przeglądarkę z Google Maps. Dostawca może przetwarzać dane techniczne oraz zapisywać cookies lub inne dane w przeglądarce.
+                </p>
+                <button class="btn" type="button" data-map-load aria-describedby="map-info" hidden>Wyświetl mapę</button>
+                <p data-map-fallback>Do wyświetlenia mapy potrzebny jest JavaScript. Adres biura znajdziesz powyżej.</p>
+              </div>
             </div>
           </article>
 
@@ -315,14 +321,11 @@
                 <textarea id="message" name="message" rows="4" required aria-describedby="error-message"></textarea>
                 <p id="error-message" class="form__error" aria-live="polite"></p>
               </div>
-              <div class="form__field form__field--checkbox">
-                <input id="rodo" name="rodo" type="checkbox" required aria-describedby="error-rodo" />
-                <label for="rodo">
-                  Wyrażam zgodę na przetwarzanie danych osobowych zgodnie z
-                  <a href="polityka-prywatnosci.html">polityką prywatności</a>.
-                </label>
-                <p id="error-rodo" class="form__error" aria-live="polite"></p>
-              </div>
+              <p>
+                Administratorem danych jest Kamil Król, działający pod marką KP_Code Digital Studio. Dane z formularza przetwarza w celu obsługi zapytania na podstawie prawnie uzasadnionego
+                interesu (art. 6 ust. 1 lit. f RODO). Szczegóły dotyczące przetwarzania danych i Twoich praw znajdziesz w
+                <a href="polityka-prywatnosci.html">polityce prywatności</a>.
+              </p>
               <button class="btn btn--lg" type="submit">Wyślij zapytanie</button>
             </form>
           </article>

@@ -10,6 +10,7 @@ const initializers = vi.hoisted(() => ({
   initTabs: vi.fn(),
   initAccordionFaq: vi.fn(),
   initForm: vi.fn(),
+  initMap: vi.fn(),
   initAriaCurrent: vi.fn(),
   initLightbox: vi.fn(),
   initTourDetail: vi.fn(),
@@ -25,6 +26,7 @@ vi.mock("../js/features/tours-filters.js", () => ({ initToursFilters: initialize
 vi.mock("../js/features/tabs.js", () => ({ initTabs: initializers.initTabs }));
 vi.mock("../js/features/accordion-faq.js", () => ({ initAccordionFaq: initializers.initAccordionFaq }));
 vi.mock("../js/features/form.js", () => ({ initForm: initializers.initForm }));
+vi.mock("../js/features/map.js", () => ({ initMap: initializers.initMap }));
 vi.mock("../js/features/aria-current.js", () => ({ initAriaCurrent: initializers.initAriaCurrent }));
 vi.mock("../js/features/lightbox.js", () => ({ initLightbox: initializers.initLightbox }));
 vi.mock("../js/features/tour-detail.js", () => ({ initTourDetail: initializers.initTourDetail }));
