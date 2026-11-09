@@ -46,7 +46,7 @@ Their copies in `dist/` (production):
 
 ## Font preload
 
-`css/modules/fonts.css` declares the two self-hosted variable fonts with `font-display: swap`: Manrope (`--font-heading`, the logo text and the headings, 37 KB) and Inter (`--font-base`, the body text, 139 KB). Both files are the official OFL releases from the `google/fonts` repository, subset with fontTools to Latin and Latin Extended (including every Polish letter) with all OpenType features and the `wght` axis kept; Inter's optical-size axis is fixed at its default text size of 14. Their licences are `assets/fonts/Manrope-OFL.txt` and `assets/fonts/Inter-OFL.txt`, published with the fonts. Every page uses both in its initial view, but without a hint the browser requests them only after it has downloaded and applied the stylesheet. The maintained pages therefore preload them between the theme bootstrap and the stylesheet:
+`css/modules/fonts.css` declares the two self-hosted variable fonts with `font-display: swap`: Manrope (`--font-heading`, the logo text and the headings, 37 KB) and Inter (`--font-base`, the body text, 139 KB). Both files are the official OFL releases from the `google/fonts` repository, subset with fontTools to Latin and Latin Extended (including every Polish letter) with all OpenType features and the `wght` axis kept; Inter's optical-size axis is fixed at its default text size of 14. Their licences are `assets/fonts/Manrope-OFL.txt` and `assets/fonts/Inter-OFL.txt`, published with the fonts. Every page uses both in its initial view, but without a hint the browser requests them only after it has downloaded and applied the stylesheet. The maintained pages therefore preload Manrope, and `index.html` also Inter, between the theme bootstrap and the stylesheet:
 
 ```html
 <!-- index.html only -->
@@ -179,5 +179,5 @@ A change to `_headers` alone leaves the pages and bundles unchanged, so `check:s
 
 ## Deployment
 
-- Hosting is Netlify with manual deployment: `dist/` is the complete site root and the only directory to publish. The repository contains no `netlify.toml` and no CI configuration.
+- Hosting is Netlify with manual deployment: `dist/` is the complete site root and the only directory to publish. The repository contains no `netlify.toml` and no deployment configuration; the GitHub Actions workflow `.github/workflows/ci.yml` only runs `npm run predeploy:check` and publishes nothing.
 - The deployment procedure, including the pre-deployment check whose `dist/` is published, is documented in [settings.md](settings.md#deployment).

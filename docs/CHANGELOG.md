@@ -145,4 +145,5 @@ For each implementation task, determine `Changelog: yes` or `Changelog: no`. Add
 - Added automated CSP checks for source and production builds.
 - Added CSS regression checks for typography, colors, focus states, surfaces, and responsive image contracts.
 - Added production asset verification for generated CSS, JavaScript, and referenced resources.
+- Added the optional `smoke:dist` headless Chromium check for browser errors, CSP violations, first-visit Service Worker behavior, and nested 404 rendering in the built package.
 - Added proportionate suite timeouts to the process- and parsing-intensive tests so that machine load no longer fails `predeploy:check`.

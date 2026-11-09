@@ -36,7 +36,7 @@
 
 ### Local development
 1. `npm install`
-2. Run `npm run images:bootstrap` once to populate `assets/img-src/`
+2. `assets/img-src/` is tracked in Git, so `npm run images:bootstrap` is not needed after cloning
 3. `npm run preview:source` and open `http://127.0.0.1:8181/` (ES modules and `fetch()` do not work over `file://`; see [Local preview](#local-preview)). Work on the source files: the pages load `css/style.css` and `js/script.js` directly, so changes are visible on reload without any build or watch command.
 4. The source pages do not register the Service Worker. They unregister a production worker left on the same origin, for example by a `dist/` preview served at the same address; with the default ports the two previews never share an origin.
 5. Run `npm run build:images` only after changing raster images in `assets/img-src/`

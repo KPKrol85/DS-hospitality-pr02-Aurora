@@ -72,11 +72,15 @@ Projekt nie posiada zależności runtime; wszystkie pakiety są zadeklarowane ja
 
 ```text
 .
+├─ .github/
+│  └─ workflows/
+│     └─ ci.yml              # GitHub Actions: npm run predeploy:check
 ├─ assets/
 │  ├─ data/                  # tours.json, gallery-data.json
 │  ├─ fonts/                 # Inter-VariableFont.woff2, Manrope-VariableFont.woff2
 │  ├─ img/                   # wygenerowane obrazy (jpg/webp/avif) oraz icons, logo, og-img, screenshots, shortcuts
-│  └─ img-src/               # źródła rastrowe dla pipeline'u obrazów (niepublikowane)
+│  ├─ img-src/               # źródła rastrowe dla pipeline'u obrazów (niepublikowane)
+│  └─ licenses/              # licencje ikon Heroicons i Tabler
 ├─ css/
 │  ├─ modules/               # tokens, base, layout, components, sections, fonts, subpages, legal, utilities
 │  └─ style.css              # punkt wejścia CSS
@@ -88,10 +92,13 @@ Projekt nie posiada zależności runtime; wszystkie pakiety są zadeklarowane ja
 ├─ docs/
 │  ├─ archive/               # zakończone plany, audyty i raporty usprawnień
 │  │  ├─ audits/
-│  │  │  └─ AUDIT-2026-10-31.md
+│  │  │  ├─ AUDIT-2026-10-31.md
+│  │  │  └─ daily-AUDIT-2026-09-22.md
 │  │  ├─ improvements/
 │  │  └─ plans/
+│  │     ├─ PLAN-2026-09-28.md
 │  │     └─ PLAN-2026-10-31.md
+│  ├─ AURORA-PRE-RELEASE-CHECK.md
 │  ├─ CHANGELOG.md
 │  ├─ pipeline-notes.md
 │  └─ settings.md
@@ -120,11 +127,12 @@ Projekt nie posiada zależności runtime; wszystkie pakiety są zadeklarowane ja
 ├─ CLAUDE.md
 ├─ LICENSE.md
 ├─ README.md
+├─ THIRD-PARTY-NOTICES.md
 ├─ package.json
 └─ package-lock.json
 ```
 
-Drzewo obejmuje pliki wersjonowane w Git. Katalogi `dist/` — paczka produkcyjna generowana przez `npm run build` — oraz `node_modules/` powstają lokalnie i są wykluczone z Git przez `.gitignore`
+Drzewo obejmuje pliki wersjonowane w Git. Katalogi `dist/` — paczka produkcyjna generowana przez `npm run build` — oraz `node_modules/` powstają lokalnie i są wykluczone z Git przez `.gitignore`.
 
 ### Instalacja
 
@@ -132,7 +140,7 @@ Drzewo obejmuje pliki wersjonowane w Git. Katalogi `dist/` — paczka produkcyjn
 npm install
 ```
 
-Repozytorium zawiera `package-lock.json` w formacie `lockfileVersion: 3`. Wymagane są Node.js i npm; repozytorium nie deklaruje wymaganej wersji Node.js (brak pola `engines` oraz plików `.nvmrc` i `.node-version`). Pakiety testowe deklarują własne wymagania: Vitest 5 — Node.js `^22.12.0 || ^24.0.0 || >=26.0.0`, jsdom 30 — `^22.22.2 || ^24.15.0 || >=26.0.0`; build produkcyjny z nich nie korzysta. Projekt nie korzysta ze zmiennych środowiskowych.
+Repozytorium zawiera `package-lock.json` w formacie `lockfileVersion: 3`. Wymagane są Node.js i npm; repozytorium nie deklaruje wymaganej wersji Node.js (brak pola `engines` oraz plików `.nvmrc` i `.node-version`). Pakiety testowe deklarują własne wymagania: Vitest 5 — Node.js `^22.12.0 || ^24.0.0 || >=26.0.0`, jsdom 30 — `^22.22.2 || ^24.15.0 || >=26.0.0`; build produkcyjny z nich nie korzysta. Build i testy nie korzystają ze zmiennych środowiskowych; opcjonalna zmienna `CHROMIUM_PATH` wskazuje przeglądarkę dla `npm run smoke:dist`.
 
 ### Development lokalny
 
@@ -154,7 +162,7 @@ Komendy potrzebne w codziennej pracy:
 - `npm run preview:source` i `npm run preview:dist` — lokalny podgląd źródeł (`http://127.0.0.1:8181/`) oraz zbudowanej paczki `dist/` z jej nagłówkami i stroną 404 (`http://127.0.0.1:8182/`).
 - `npm run build:images` — generuje `assets/img/` z `assets/img-src/` po zmianie obrazów źródłowych; celowo pozostaje poza łańcuchem `build`.
 
-Pozostałe skrypty to etapy i kontrole uruchamiane przez `npm run build` (`clean`, `build:stage`, `build:css`, `build:js`, `verify:*`, `check:*`), tryby obserwowania `watch:css` i `watch:js` do podglądu istniejącego `dist/`, `record:sw-bundles` do zapisu zatwierdzonej wersji cache'u Service Workera oraz `images:bootstrap`. Polecenie, działanie i moment użycia każdego skryptu, a także rekomendowany przebieg pracy, opisuje [docs/settings.md](docs/settings.md#packagejson-scripts).
+Pozostałe skrypty to etapy i kontrole uruchamiane przez `npm run build` (`clean`, `build:stage`, `build:css`, `build:js`, `verify:*`, `check:*`), tryby obserwowania `watch:css` i `watch:js` do podglądu istniejącego `dist/`, `record:sw-bundles` do zapisu zatwierdzonej wersji cache'u Service Workera, opcjonalna kontrola przeglądarkowa zbudowanej paczki `smoke:dist` oraz `images:bootstrap`. Polecenie, działanie i moment użycia każdego skryptu, a także rekomendowany przebieg pracy, opisuje [docs/settings.md](docs/settings.md#packagejson-scripts).
 
 ### Build produkcyjny
 
@@ -185,13 +193,13 @@ npm run predeploy:check
 
 Wykonuje ona pełny `npm test`, a dopiero po powodzeniu wszystkich testów `npm run build`; niepowodzenie testu kończy ją niezerowym kodem wyjścia, zanim `dist/` zostanie wyczyszczony i zbudowany ponownie. Osobne uruchamianie `npm test` przed nią nie jest potrzebne. `npm run build` i `npm run dist` nie uruchamiają testów i pozostają dostępne niezależnie.
 
-Testy (Vitest, środowisko jsdom, katalog `tests/`) importują rzeczywiste moduły z `js/features/`, znaczniki wczytują z utrzymywanych stron HTML, a dane — z `assets/data/*.json`. `fetch` jest mockowany, a bieżąca data ustalona, więc pakiet nie wykonuje żądań sieciowych i nie zależy od dnia ani strefy czasowej. Obejmuje m.in. widoki oparte na danych i formularz kontaktowy, obsługę klawiatury i fokusu, inicjalizację stron, produkcyjny `service-worker.js`, kontrakty CSS, bootstrap motywu i wskazówki preload fontów, a także skrypty kontrolne i etap `build:stage` uruchamiane na plikach tymczasowych. Pełny zakres pakietu opisuje [docs/settings.md](docs/settings.md#packagejson-scripts). Testy nie trafiają do `dist/`, a w projekcie nie ma testów przeglądarkowych.
+Testy (Vitest, środowisko jsdom, katalog `tests/`) importują rzeczywiste moduły z `js/features/`, znaczniki wczytują z utrzymywanych stron HTML, a dane — z `assets/data/*.json`. `fetch` jest mockowany, a bieżąca data ustalona, więc pakiet nie wykonuje żądań sieciowych i nie zależy od dnia ani strefy czasowej. Obejmuje m.in. widoki oparte na danych i formularz kontaktowy, obsługę klawiatury i fokusu, inicjalizację stron, produkcyjny `service-worker.js`, kontrakty CSS, bootstrap motywu i wskazówki preload fontów, a także skrypty kontrolne i etap `build:stage` uruchamiane na plikach tymczasowych. Pełny zakres pakietu opisuje [docs/settings.md](docs/settings.md#packagejson-scripts). Testy nie trafiają do `dist/` i nie uruchamiają przeglądarki. Zbudowaną paczkę w headless Chromium sprawdza opcjonalna komenda `npm run smoke:dist`, uruchamiana niezależnie od `npm run predeploy:check` i opisana w [docs/settings.md](docs/settings.md#browser-smoke-check).
 
-Kontrole źródeł i paczki produkcyjnej (`verify:*`, `check:*`) są częścią `npm run build`. Zakres każdej z nich opisuje [docs/settings.md](docs/settings.md#packagejson-scripts), a kontrakty, które egzekwują — [docs/pipeline-notes.md](docs/pipeline-notes.md). Nie przeprowadzono audytów dostępności, SEO ani wydajności.
+Kontrole źródeł i paczki produkcyjnej (`verify:*`, `check:*`) są częścią `npm run build`. Zakres każdej z nich opisuje [docs/settings.md](docs/settings.md#packagejson-scripts), a kontrakty, które egzekwują — [docs/pipeline-notes.md](docs/pipeline-notes.md). Przed publikacją wykonano laboratoryjne pomiary Lighthouse (desktop i mobile) w kategoriach wydajności, dostępności, najlepszych praktyk i SEO; nie są one częścią `npm run build` ani `npm run predeploy:check` i nie zastępują formalnego audytu zgodności z WCAG.
 
 ### Wdrożenie
 
-Repozytorium zawiera konfigurację hostingu statycznego, ale nie zawiera konfiguracji CI/CD ani pliku `netlify.toml`, więc publikacja nie jest zautomatyzowana z poziomu repozytorium.
+Repozytorium zawiera konfigurację hostingu statycznego oraz workflow GitHub Actions `.github/workflows/ci.yml`, który uruchamia `npm run predeploy:check` dla zmian w gałęzi `main`, kierowanych do niej pull requestów oraz na żądanie. Nie zawiera konfiguracji wdrożenia ani pliku `netlify.toml`, więc publikacja nie jest zautomatyzowana z poziomu repozytorium.
 
 - `404.html` — utrzymywana strona błędu. Netlify serwuje plik `404.html` z katalogu głównego publikacji ze statusem HTTP 404 dla każdej ścieżki, której nie odpowiada żaden plik. Repozytorium nie zawiera pliku `_redirects` ani reguł przepisywania ścieżek, więc istniejące strony są serwowane bezpośrednio z odpowiadających im plików HTML, a `npm run build` kopiuje `404.html` do katalogu głównego `dist/`.
 - `_headers` — Content-Security-Policy (m.in. `default-src 'self'`, `script-src 'self'` ze skrótami SHA-256 trzech wariantów bootstrapu motywu zamiast `'unsafe-inline'`, `object-src 'none'`, `frame-src https://www.google.com` dla osadzonej mapy), Strict-Transport-Security, `X-Content-Type-Options`, `X-Frame-Options: DENY`, Referrer-Policy, Permissions-Policy i Cross-Origin-Opener-Policy.
@@ -233,7 +241,7 @@ Nie przeprowadzono formalnego audytu zgodności, dlatego dokumentacja nie deklar
 - Podczas aktywacji usuwane są cache'e spoza bieżącej wersji.
 - Nowa wersja Service Workera wyzwala w aplikacji baner z akcją odświeżenia; baner wysyła komunikat `SKIP_WAITING`, a zmiana kontrolera powoduje przeładowanie strony.
 
-Instalowalność aplikacji nie była weryfikowana w przeglądarce.
+Instalację aplikacji i uruchomienie zainstalowanej aplikacji potwierdzono na urządzeniu mobilnym podczas kontroli przedpublikacyjnej.
 
 ### Wydajność
 
@@ -246,7 +254,7 @@ Instalowalność aplikacji nie była weryfikowana w przeglądarce.
 - Brak zależności runtime po stronie przeglądarki.
 - Cache-first dla zasobów statycznych w Service Workerze.
 
-Poza porównaniem ładowania fontów w Chrome, na którym oparto wybór wskazówek preload, nie przeprowadzono pomiarów wydajności; dokumentacja nie podaje wyników liczbowych ani wartości docelowych.
+Wybór wskazówek preload oparto na porównaniu ładowania fontów w Chrome. Przed publikacją wykonano laboratoryjne pomiary Lighthouse (desktop i mobile) oraz ukierunkowaną analizę wydajności mobilnej przez Chrome DevTools Protocol. Wydajności u rzeczywistych użytkowników nie mierzono; dokumentacja nie podaje wyników liczbowych ani wartości docelowych.
 
 ### Dane i trwałość stanu
 
@@ -349,11 +357,15 @@ The project has no runtime dependencies; every package is declared under `devDep
 
 ```text
 .
+├─ .github/
+│  └─ workflows/
+│     └─ ci.yml              # GitHub Actions: npm run predeploy:check
 ├─ assets/
 │  ├─ data/                  # tours.json, gallery-data.json
 │  ├─ fonts/                 # Inter-VariableFont.woff2, Manrope-VariableFont.woff2
 │  ├─ img/                   # generated images (jpg/webp/avif) plus icons, logo, og-img, screenshots, shortcuts
-│  └─ img-src/               # raster sources for the image pipeline (not published)
+│  ├─ img-src/               # raster sources for the image pipeline (not published)
+│  └─ licenses/              # Heroicons and Tabler icon licenses
 ├─ css/
 │  ├─ modules/               # tokens, base, layout, components, sections, fonts, subpages, legal, utilities
 │  └─ style.css              # CSS entry point
@@ -365,10 +377,13 @@ The project has no runtime dependencies; every package is declared under `devDep
 ├─ docs/
 │  ├─ archive/               # completed plans, audits, and improvement reports
 │  │  ├─ audits/
-│  │  │  └─ AUDIT-2026-10-31.md
+│  │  │  ├─ AUDIT-2026-10-31.md
+│  │  │  └─ daily-AUDIT-2026-09-22.md
 │  │  ├─ improvements/
 │  │  └─ plans/
+│  │     ├─ PLAN-2026-09-28.md
 │  │     └─ PLAN-2026-10-31.md
+│  ├─ AURORA-PRE-RELEASE-CHECK.md
 │  ├─ CHANGELOG.md
 │  ├─ pipeline-notes.md
 │  └─ settings.md
@@ -397,6 +412,7 @@ The project has no runtime dependencies; every package is declared under `devDep
 ├─ CLAUDE.md
 ├─ LICENSE.md
 ├─ README.md
+├─ THIRD-PARTY-NOTICES.md
 ├─ package.json
 └─ package-lock.json
 ```
@@ -409,7 +425,7 @@ The tree shows the files tracked in Git. The `dist/` directory — the productio
 npm install
 ```
 
-The repository ships a `package-lock.json` with `lockfileVersion: 3`. Node.js and npm are required; the repository does not declare a required Node.js version (no `engines` field, no `.nvmrc`, no `.node-version`). The test packages declare their own requirements: Vitest 5 needs Node.js `^22.12.0 || ^24.0.0 || >=26.0.0` and jsdom 30 needs `^22.22.2 || ^24.15.0 || >=26.0.0`; the production build does not use them. The project uses no environment variables.
+The repository ships a `package-lock.json` with `lockfileVersion: 3`. Node.js and npm are required; the repository does not declare a required Node.js version (no `engines` field, no `.nvmrc`, no `.node-version`). The test packages declare their own requirements: Vitest 5 needs Node.js `^22.12.0 || ^24.0.0 || >=26.0.0` and jsdom 30 needs `^22.22.2 || ^24.15.0 || >=26.0.0`; the production build does not use them. The build and the tests use no environment variables; the optional `CHROMIUM_PATH` variable selects the browser for `npm run smoke:dist`.
 
 ### Local Development
 
@@ -431,7 +447,7 @@ Commands needed in day-to-day work:
 - `npm run preview:source` and `npm run preview:dist` — local preview of the sources (`http://127.0.0.1:8181/`) and of the built `dist/` package with its headers and 404 page (`http://127.0.0.1:8182/`).
 - `npm run build:images` — generates `assets/img/` from `assets/img-src/` after source images change; deliberately kept outside the `build` chain.
 
-The remaining scripts are the stages and checks that `npm run build` runs (`clean`, `build:stage`, `build:css`, `build:js`, `verify:*`, `check:*`), the `watch:css` and `watch:js` watch modes for previewing an existing `dist/`, `record:sw-bundles` for recording an approved Service Worker cache version, and `images:bootstrap`. [docs/settings.md](docs/settings.md#packagejson-scripts) documents the command, behavior, and intended use of every script, as well as the recommended workflow.
+The remaining scripts are the stages and checks that `npm run build` runs (`clean`, `build:stage`, `build:css`, `build:js`, `verify:*`, `check:*`), the `watch:css` and `watch:js` watch modes for previewing an existing `dist/`, `record:sw-bundles` for recording an approved Service Worker cache version, the optional `smoke:dist` browser check of the built package, and `images:bootstrap`. [docs/settings.md](docs/settings.md#packagejson-scripts) documents the command, behavior, and intended use of every script, as well as the recommended workflow.
 
 ### Production Build
 
@@ -462,13 +478,13 @@ npm run predeploy:check
 
 It runs the complete `npm test` and only after every test passes `npm run build`; a failing test ends it with a non-zero exit code before `dist/` is cleaned and rebuilt. There is no need to run `npm test` separately before it. `npm run build` and `npm run dist` do not run the tests and remain usable on their own.
 
-The tests (Vitest, jsdom environment, `tests/` directory) import the actual modules from `js/features/`, load their markup from the maintained HTML pages and their data from `assets/data/*.json`. `fetch` is mocked and the current date is fixed, so the suite makes no network requests and does not depend on the day or time zone. It covers, among other things, the data-driven views and the contact form, keyboard and focus handling, page initialization, the production `service-worker.js`, the CSS contracts, the theme bootstrap and the font preload hints, as well as the checker scripts and the `build:stage` step run against temporary files. [docs/settings.md](docs/settings.md#packagejson-scripts) describes the full scope of the suite. The tests do not reach `dist/`, and the project has no browser tests.
+The tests (Vitest, jsdom environment, `tests/` directory) import the actual modules from `js/features/`, load their markup from the maintained HTML pages and their data from `assets/data/*.json`. `fetch` is mocked and the current date is fixed, so the suite makes no network requests and does not depend on the day or time zone. It covers, among other things, the data-driven views and the contact form, keyboard and focus handling, page initialization, the production `service-worker.js`, the CSS contracts, the theme bootstrap and the font preload hints, as well as the checker scripts and the `build:stage` step run against temporary files. [docs/settings.md](docs/settings.md#packagejson-scripts) describes the full scope of the suite. The tests do not reach `dist/` and run no browser. The optional `npm run smoke:dist` checks the built package in headless Chromium, runs independently of `npm run predeploy:check`, and is described in [docs/settings.md](docs/settings.md#browser-smoke-check).
 
-The source and production package checks (`verify:*`, `check:*`) are part of `npm run build`. [docs/settings.md](docs/settings.md#packagejson-scripts) describes the scope of each, and [docs/pipeline-notes.md](docs/pipeline-notes.md) the contracts they enforce. No accessibility, SEO, or performance audits were carried out.
+The source and production package checks (`verify:*`, `check:*`) are part of `npm run build`. [docs/settings.md](docs/settings.md#packagejson-scripts) describes the scope of each, and [docs/pipeline-notes.md](docs/pipeline-notes.md) the contracts they enforce. Lighthouse lab measurements (desktop and mobile) of performance, accessibility, best practices, and SEO were taken before release; they are not part of `npm run build` or `npm run predeploy:check` and do not replace a formal WCAG conformance audit.
 
 ### Deployment
 
-The repository contains static-hosting configuration but no CI/CD configuration and no `netlify.toml`, so publishing is not automated from within the repository.
+The repository contains static-hosting configuration and the GitHub Actions workflow `.github/workflows/ci.yml`, which runs `npm run predeploy:check` for pushes to `main`, pull requests targeting it, and manual runs. It contains no deployment configuration and no `netlify.toml`, so publishing is not automated from within the repository.
 
 - `404.html` — the maintained error page. Netlify serves `404.html` from the root of the publish directory, with HTTP status 404, for any path that matches no file. The repository contains no `_redirects` file and no rewrite rules, so existing pages are served directly from their HTML files, and `npm run build` copies `404.html` to the root of `dist/`.
 - `_headers` — Content-Security-Policy (including `default-src 'self'`, `script-src 'self'` with the SHA-256 hashes of the three theme bootstrap variants instead of `'unsafe-inline'`, `object-src 'none'`, and `frame-src https://www.google.com` for the embedded map), Strict-Transport-Security, `X-Content-Type-Options`, `X-Frame-Options: DENY`, Referrer-Policy, Permissions-Policy, and Cross-Origin-Opener-Policy.
@@ -510,7 +526,7 @@ No formal conformance audit was carried out, so this documentation makes no WCAG
 - On activation, caches outside the current version are deleted.
 - A new Service Worker version triggers an in-page banner with a refresh action; the banner posts a `SKIP_WAITING` message, and the controller change reloads the page.
 
-Installability was not verified in a browser.
+Installation of the application and launch of the installed application were confirmed on a mobile device during the pre-release check.
 
 ### Performance
 
@@ -523,7 +539,7 @@ Installability was not verified in a browser.
 - No runtime dependencies on the browser side.
 - Cache-first delivery of static assets in the Service Worker.
 
-Apart from the Chrome comparison of font loading that the preload selection is based on, no performance measurements were taken; this documentation gives no figures or target values.
+The preload selection is based on a Chrome comparison of font loading. Before release, Lighthouse lab measurements (desktop and mobile) and a focused mobile performance investigation over the Chrome DevTools Protocol were carried out. Performance for real users was not measured; this documentation gives no figures or target values.
 
 ### Data and State Persistence
 
