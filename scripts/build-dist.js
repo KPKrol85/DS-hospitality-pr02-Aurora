@@ -6,13 +6,15 @@ const projectRoot = process.cwd();
 const distRoot = path.join(projectRoot, "dist");
 
 // Stages the production package. The CSS and JS bundles are not copied: build:css and
-// build:js generate them into dist/css/ and dist/js/ after this step.
+// build:js generate them into dist/css/ and dist/js/ after this step. _redirects keeps the
+// former URLs of renamed pages working with permanent redirects.
 const requiredFiles = [
   "service-worker.js",
   "site.webmanifest",
   "robots.txt",
   "sitemap.xml",
   "_headers",
+  "_redirects",
 ];
 
 // Build inputs inside a copied directory that are never published. assets/img-src/

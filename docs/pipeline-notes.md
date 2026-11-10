@@ -13,6 +13,7 @@
 | JS source | `js/script.js` and `js/features/` | yes | Loaded directly as ES modules by the maintained pages |
 | Service worker | `service-worker.js` | yes | Copied unchanged to `dist/`; registered only by the production bundle |
 | Security headers | `_headers` | yes | Approved Netlify headers, including the Content-Security-Policy with the SHA-256 hashes of the inline scripts; copied unchanged to `dist/`; never written by the build |
+| Redirects | `_redirects` | yes | Netlify permanent redirects from the former URLs of the renamed pages (see [Files included in dist](#files-included-in-dist)); copied unchanged to `dist/`; never written by the build |
 | Bundle approval record | `service-worker-bundles.json` | yes | SHA-256 of both bundles approved for the worker's `VERSION`; read by `npm run build`, written only by `npm run record:sw-bundles`; not published |
 | Production pages | `dist/*.html` | no | Copies of the maintained pages with the two asset references rewritten |
 | Production CSS | `dist/css/style.min.css` | no | PostCSS with `postcss-import`, `autoprefixer`, `cssnano` |
@@ -68,7 +69,7 @@ Their copies in `dist/` (production):
 `npm run build` runs:
 
 1. `clean` — `scripts/clean-dist.js` removes `dist/`.
-2. `build:stage` — `scripts/build-dist.js` requires an empty `dist/` and root `*.html` files that match `maintainedPages` exactly, writes the rewritten copies of the declared pages, and copies `assets/` without `assets/img-src/`, `service-worker.js`, `site.webmanifest`, `robots.txt`, `sitemap.xml`, and `_headers`. A missing file fails the build.
+2. `build:stage` — `scripts/build-dist.js` requires an empty `dist/` and root `*.html` files that match `maintainedPages` exactly, writes the rewritten copies of the declared pages, and copies `assets/` without `assets/img-src/`, `service-worker.js`, `site.webmanifest`, `robots.txt`, `sitemap.xml`, `_headers`, and `_redirects`. A missing file fails the build.
 3. `build:css` — generates `dist/css/style.min.css`, then runs `verify:css`.
 4. `build:js` — generates `dist/js/script.min.js`, then runs `verify:js`.
 5. `check:css-assets`, `check:assets`, `check:assets:dist`, `check:csp`, `check:csp:dist`, `check:tour-catalogue` — verify the sources and the finished package (see [Content Security Policy for inline scripts](#content-security-policy-for-inline-scripts)).
@@ -83,8 +84,8 @@ Their copies in `dist/` (production):
 
 ```text
 dist/
-├─ 404.html, about.html, contact.html, cookies.html, dziekuje.html, gallery.html,
-│  index.html, offline.html, polityka-prywatnosci.html, regulamin.html, tour.html, tours.html
+├─ 404.html, about.html, contact.html, cookies.html, gallery.html, index.html,
+│  offline.html, privacy-policy.html, terms.html, thank-you.html, tour.html, tours.html
 ├─ css/
 │  └─ style.min.css
 ├─ js/
@@ -94,11 +95,12 @@ dist/
 ├─ site.webmanifest
 ├─ robots.txt
 ├─ sitemap.xml
-└─ _headers
+├─ _headers
+└─ _redirects
 ```
 
 - `dist/css/` and `dist/js/` contain only the bundles; `css/style.css`, `css/modules/`, `js/script.js`, and `js/features/` are not published.
-- No `_redirects` file is published; unmatched paths fall through to `404.html`.
+- `_redirects` declares only the permanent (301) redirects from the URLs published in version 1.0.0 to the renamed pages: `/dziekuje.html` to `/thank-you.html`, `/polityka-prywatnosci.html` to `/privacy-policy.html`, and `/regulamin.html` to `/terms.html`. Each former path is also redirected without `.html` (`/dziekuje`, `/polityka-prywatnosci`, `/regulamin`), the form in which the host's Pretty URLs processing published the links. The host applies these rules only because no published file matches the former paths. There is no catch-all rule, so every other unmatched path still falls through to `404.html`. `tests/redirects.test.js` checks the rules and that no maintained page or sitemap entry uses a former URL.
 - `assets/img-src/` is intentionally excluded from deployment. It stays in the repository as the development input that `build:images` reads to generate `assets/img/`; no page, stylesheet, script, data file, or manifest references it. `scripts/build-dist.js` skips exactly this directory during the `assets/` copy (`excludedPaths`), so every other file under `assets/` is still published.
 
 ## Service Worker

@@ -216,13 +216,13 @@ describe("check-csp.js", { timeout: 20000 }, () => {
     edit("about.html", "</body>", "<script>window.analytics = [];</script>\n</body>");
     edit("tours.html", "</body>", '<script type="module">import "./js/extra.js";</script>\n</body>');
     edit("gallery.html", "</body>", '<script type="application/json">{"filters":[]}</script>\n</body>');
-    write("dziekuje.html", `${read("dziekuje.html")}<script>`);
+    write("thank-you.html", `${read("thank-you.html")}<script>`);
 
     const { status, issues } = runChecker();
 
     expect(status).toBe(1);
     expect(issues).toEqual([
-      `dziekuje.html:${read("dziekuje.html").split(/\r\n?|\n/).length} -> <script> has no </script> end tag, so the rest of the page is its text`,
+      `thank-you.html:${read("thank-you.html").split(/\r\n?|\n/).length} -> <script> has no </script> end tag, so the rest of the page is its text`,
       notApproved(`about.html:${lineOf("about.html", "<script>window.analytics")}`, hashSource("window.analytics = [];")),
       notApproved(
         `gallery.html:${lineOf("gallery.html", '<script type="application/json">')}`,
@@ -239,14 +239,14 @@ describe("check-csp.js", { timeout: 20000 }, () => {
 
   it("rejects inline event handlers and javascript: URLs, which no hash can approve", () => {
     edit("index.html", "</body>", '<img src="assets/img/icons/favicon.svg" alt="" onerror="this.remove()" />\n</body>');
-    edit("regulamin.html", "</body>", '<a href=" javascript:history.back()">Wróć</a>\n</body>');
+    edit("terms.html", "</body>", '<a href=" javascript:history.back()">Wróć</a>\n</body>');
 
     const { status, issues } = runChecker();
 
     expect(status).toBe(1);
     expect(issues).toEqual([
       `index.html:${lineOf("index.html", "<img src=\"assets/img/icons/favicon.svg\"")} -> <img onerror> is an inline event handler, which the policy blocks; attach the listener from a script file`,
-      `regulamin.html:${lineOf("regulamin.html", "<a href=\" javascript:")} -> <a href=" javascript:history.back()"> is a javascript: URL, which the policy blocks`,
+      `terms.html:${lineOf("terms.html", "<a href=\" javascript:")} -> <a href=" javascript:history.back()"> is a javascript: URL, which the policy blocks`,
     ]);
   });
 

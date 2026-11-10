@@ -200,7 +200,7 @@ describe("keyboard focus contract", () => {
       });
     }
     expect(controls.length).toBeGreaterThan(0);
-    const privacyLink = pageDocument("contact.html").querySelector('[data-form] a[href="polityka-prywatnosci.html"]');
+    const privacyLink = pageDocument("contact.html").querySelector('[data-form] a[href="privacy-policy.html"]');
     expect(privacyLink).not.toBeNull();
     expect(privacyLink.tabIndex).toBe(0);
     expect(focusDeclarationsFor(privacyLink), "the privacy link only changes decoration and keeps the global outline").toEqual(["text-decoration"]);

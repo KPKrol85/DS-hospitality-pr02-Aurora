@@ -53,7 +53,7 @@ Jest to adres produkcyjny potwierdzony przez właściciela projektu i adres kano
 
 **Hosting statyczny**
 
-- `_headers`, `site.webmanifest`, `robots.txt`, `sitemap.xml`
+- `_headers`, `_redirects`, `site.webmanifest`, `robots.txt`, `sitemap.xml`
 - Atrybuty formularza Netlify (`data-netlify`, `netlify-honeypot`) w `contact.html`
 
 Projekt nie posiada zależności runtime; wszystkie pakiety są zadeklarowane jako `devDependencies`.
@@ -108,18 +108,19 @@ Projekt nie posiada zależności runtime; wszystkie pakiety są zadeklarowane ja
 ├─ gallery.html
 ├─ about.html
 ├─ contact.html
-├─ dziekuje.html
+├─ thank-you.html
 ├─ 404.html
 ├─ offline.html
 ├─ cookies.html
-├─ regulamin.html
-├─ polityka-prywatnosci.html
+├─ terms.html
+├─ privacy-policy.html
 ├─ service-worker.js
 ├─ service-worker-bundles.json
 ├─ site.webmanifest
 ├─ robots.txt
 ├─ sitemap.xml
 ├─ _headers
+├─ _redirects
 ├─ postcss.config.js
 ├─ vitest.config.mjs
 ├─ .gitignore
@@ -150,7 +151,7 @@ Podgląd źródeł uruchamia `npm run preview:source` pod adresem `http://127.0.
 
 Service Worker nie jest rejestrowany podczas developmentu, ponieważ jego lista precache wskazuje pliki produkcyjne istniejące wyłącznie w `dist/`. Podgląd produkcyjny działa domyślnie na innym porcie, czyli pod innym originem, dlatego jego Service Worker nie kontroluje podglądu źródeł. Jeżeli na tym samym originie działał wcześniej produkcyjny Service Worker (np. po podglądzie `dist/` pod tym samym adresem), źródła developerskie go wyrejestrowują; od następnego przeładowania strona nie jest już przez niego kontrolowana.
 
-Po `npm run build` podgląd wersji produkcyjnej uruchamia `npm run preview:dist`: serwuje `dist/` jako katalog główny pod adresem `http://127.0.0.1:8182/`, dodaje do odpowiedzi nagłówki reguły `/*` z `dist/_headers`, w tym Content-Security-Policy, a na nieistniejące ścieżki odpowiada stroną `404.html` ze statusem 404. Nie zastępuje `npm run predeploy:check` i nie odtwarza wszystkich funkcji Netlify, m.in. obsługi formularzy. Zmianę portu, zatrzymanie serwera i pozostałe ograniczenia opisuje [docs/settings.md](docs/settings.md#local-preview). Komendy `npm run watch:css` i `npm run watch:js` odświeżają `dist/css/style.min.css` i `dist/js/script.min.js` w istniejącym katalogu `dist/` — nie są potrzebne do pracy nad źródłami.
+Po `npm run build` podgląd wersji produkcyjnej uruchamia `npm run preview:dist`: serwuje `dist/` jako katalog główny pod adresem `http://127.0.0.1:8182/`, dodaje do odpowiedzi nagłówki reguły `/*` z `dist/_headers`, w tym Content-Security-Policy, a na nieistniejące ścieżki odpowiada stroną `404.html` ze statusem 404. Nie zastępuje `npm run predeploy:check` i nie odtwarza wszystkich funkcji Netlify, m.in. obsługi formularzy i przekierowań z `_redirects`. Zmianę portu, zatrzymanie serwera i pozostałe ograniczenia opisuje [docs/settings.md](docs/settings.md#local-preview). Komendy `npm run watch:css` i `npm run watch:js` odświeżają `dist/css/style.min.css` i `dist/js/script.min.js` w istniejącym katalogu `dist/` — nie są potrzebne do pracy nad źródłami.
 
 ### Dostępne skrypty
 
@@ -201,9 +202,10 @@ Kontrole źródeł i paczki produkcyjnej (`verify:*`, `check:*`) są częścią 
 
 Repozytorium zawiera konfigurację hostingu statycznego oraz workflow GitHub Actions `.github/workflows/ci.yml`, który uruchamia `npm run predeploy:check` dla zmian w gałęzi `main`, kierowanych do niej pull requestów oraz na żądanie. Nie zawiera konfiguracji wdrożenia ani pliku `netlify.toml`, więc publikacja nie jest zautomatyzowana z poziomu repozytorium.
 
-- `404.html` — utrzymywana strona błędu. Netlify serwuje plik `404.html` z katalogu głównego publikacji ze statusem HTTP 404 dla każdej ścieżki, której nie odpowiada żaden plik. Repozytorium nie zawiera pliku `_redirects` ani reguł przepisywania ścieżek, więc istniejące strony są serwowane bezpośrednio z odpowiadających im plików HTML, a `npm run build` kopiuje `404.html` do katalogu głównego `dist/`.
+- `404.html` — utrzymywana strona błędu. Netlify serwuje plik `404.html` z katalogu głównego publikacji ze statusem HTTP 404 dla każdej ścieżki, której nie odpowiada żaden plik ani reguła `_redirects`. Istniejące strony są serwowane bezpośrednio z odpowiadających im plików HTML, a `npm run build` kopiuje `404.html` do katalogu głównego `dist/`.
+- `_redirects` — stałe przekierowania HTTP 301 z adresów opublikowanych w wersji 1.0.0, z rozszerzeniem `.html` i bez niego (w tej drugiej postaci linki publikowała funkcja Pretty URLs Netlify): `/dziekuje.html` i `/dziekuje` → `/thank-you.html`, `/polityka-prywatnosci.html` i `/polityka-prywatnosci` → `/privacy-policy.html`, `/regulamin.html` i `/regulamin` → `/terms.html`. Plik nie zawiera reguł catch-all ani przepisywania ścieżek; `npm run build` kopiuje go do katalogu głównego `dist/`.
 - `_headers` — Content-Security-Policy (m.in. `default-src 'self'`, `script-src 'self'` ze skrótami SHA-256 trzech wariantów bootstrapu motywu zamiast `'unsafe-inline'`, `object-src 'none'`, `frame-src https://www.google.com` dla osadzonej mapy), Strict-Transport-Security, `X-Content-Type-Options`, `X-Frame-Options: DENY`, Referrer-Policy, Permissions-Policy i Cross-Origin-Opener-Policy.
-- Formularz w `contact.html` używa `method="POST"`, `action="dziekuje.html"`, `data-netlify="true"`, `netlify-honeypot="bot-field"` oraz ukrytego pola `form-name` — jest to sposób obsługi formularzy właściwy dla Netlify.
+- Formularz w `contact.html` używa `method="POST"`, `action="thank-you.html"`, `data-netlify="true"`, `netlify-honeypot="bot-field"` oraz ukrytego pola `form-name` — jest to sposób obsługi formularzy właściwy dla Netlify.
 - Wdrożenie jest ręczne: katalog `dist/` wygenerowany przez zakończone powodzeniem `npm run predeploy:check` publikuje się w Netlify jako katalog główny publikacji. Katalogu głównego repozytorium nie należy publikować — jego strony ładują niezminifikowane źródła i nie rejestrują Service Workera.
 
 ### Dostępność
@@ -226,7 +228,7 @@ Nie przeprowadzono formalnego audytu zgodności, dlatego dokumentacja nie deklar
 
 - Unikalne tytuły i opisy meta na wszystkich stronach oraz atrybut `lang="pl"` w każdym dokumencie.
 - Znaczniki `canonical` na stronach indeksowanych.
-- `robots` z wartością `index,follow` na ośmiu stronach oraz `noindex,follow` na `tour.html`, `dziekuje.html`, `404.html` i `offline.html`.
+- `robots` z wartością `index,follow` na ośmiu stronach oraz `noindex,follow` na `tour.html`, `thank-you.html`, `404.html` i `offline.html`.
 - Open Graph oraz Twitter Cards (`summary_large_image`) z bezwzględnymi adresami obrazu podglądu.
 - Dane strukturalne JSON-LD: `WebSite`, `WebPage`, `Brand`, `Organization`, `PostalAddress`, `CollectionPage`, `AboutPage`, `ContactPage`, `BreadcrumbList` i `ListItem`.
 - `robots.txt` ze wskazaniem mapy witryny oraz `sitemap.xml` z ośmioma adresami.
@@ -338,7 +340,7 @@ This is the production address confirmed by the project owner and the canonical 
 
 **Static hosting**
 
-- `_headers`, `site.webmanifest`, `robots.txt`, `sitemap.xml`
+- `_headers`, `_redirects`, `site.webmanifest`, `robots.txt`, `sitemap.xml`
 - Netlify form attributes (`data-netlify`, `netlify-honeypot`) in `contact.html`
 
 The project has no runtime dependencies; every package is declared under `devDependencies`.
@@ -393,18 +395,19 @@ The project has no runtime dependencies; every package is declared under `devDep
 ├─ gallery.html
 ├─ about.html
 ├─ contact.html
-├─ dziekuje.html
+├─ thank-you.html
 ├─ 404.html
 ├─ offline.html
 ├─ cookies.html
-├─ regulamin.html
-├─ polityka-prywatnosci.html
+├─ terms.html
+├─ privacy-policy.html
 ├─ service-worker.js
 ├─ service-worker-bundles.json
 ├─ site.webmanifest
 ├─ robots.txt
 ├─ sitemap.xml
 ├─ _headers
+├─ _redirects
 ├─ postcss.config.js
 ├─ vitest.config.mjs
 ├─ .gitignore
@@ -435,7 +438,7 @@ The root pages load the canonical sources directly: `css/style.css`, whose `@imp
 
 The Service Worker is not registered during development, because its precache list points to production files that exist only in `dist/`. The production preview uses a different port by default, and therefore a different origin, so its Service Worker does not control the source preview. If a production Service Worker was previously active on the same origin (for example after previewing `dist/` at the same address), the development sources unregister it; from the next reload the page is no longer controlled by it.
 
-After `npm run build`, `npm run preview:dist` previews the production build: it serves `dist/` as the origin root at `http://127.0.0.1:8182/`, adds the headers of the `/*` rule in `dist/_headers`, including the Content-Security-Policy, to its responses, and answers unknown paths with `404.html` and status 404. It does not replace `npm run predeploy:check` and does not reproduce every Netlify feature, for example form handling. [docs/settings.md](docs/settings.md#local-preview) describes port overrides, stopping the server, and the remaining limitations. `npm run watch:css` and `npm run watch:js` refresh `dist/css/style.min.css` and `dist/js/script.min.js` inside an existing `dist/` — they are not needed when working on the sources.
+After `npm run build`, `npm run preview:dist` previews the production build: it serves `dist/` as the origin root at `http://127.0.0.1:8182/`, adds the headers of the `/*` rule in `dist/_headers`, including the Content-Security-Policy, to its responses, and answers unknown paths with `404.html` and status 404. It does not replace `npm run predeploy:check` and does not reproduce every Netlify feature, for example form handling and the `_redirects` rules. [docs/settings.md](docs/settings.md#local-preview) describes port overrides, stopping the server, and the remaining limitations. `npm run watch:css` and `npm run watch:js` refresh `dist/css/style.min.css` and `dist/js/script.min.js` inside an existing `dist/` — they are not needed when working on the sources.
 
 ### Available Scripts
 
@@ -486,9 +489,10 @@ The source and production package checks (`verify:*`, `check:*`) are part of `np
 
 The repository contains static-hosting configuration and the GitHub Actions workflow `.github/workflows/ci.yml`, which runs `npm run predeploy:check` for pushes to `main`, pull requests targeting it, and manual runs. It contains no deployment configuration and no `netlify.toml`, so publishing is not automated from within the repository.
 
-- `404.html` — the maintained error page. Netlify serves `404.html` from the root of the publish directory, with HTTP status 404, for any path that matches no file. The repository contains no `_redirects` file and no rewrite rules, so existing pages are served directly from their HTML files, and `npm run build` copies `404.html` to the root of `dist/`.
+- `404.html` — the maintained error page. Netlify serves `404.html` from the root of the publish directory, with HTTP status 404, for any path that matches no file and no `_redirects` rule. Existing pages are served directly from their HTML files, and `npm run build` copies `404.html` to the root of `dist/`.
+- `_redirects` — permanent HTTP 301 redirects from the URLs published in version 1.0.0, with and without the `.html` extension (the form in which Netlify's Pretty URLs feature published the links): `/dziekuje.html` and `/dziekuje` → `/thank-you.html`, `/polityka-prywatnosci.html` and `/polityka-prywatnosci` → `/privacy-policy.html`, `/regulamin.html` and `/regulamin` → `/terms.html`. The file contains no catch-all or rewrite rules; `npm run build` copies it to the root of `dist/`.
 - `_headers` — Content-Security-Policy (including `default-src 'self'`, `script-src 'self'` with the SHA-256 hashes of the three theme bootstrap variants instead of `'unsafe-inline'`, `object-src 'none'`, and `frame-src https://www.google.com` for the embedded map), Strict-Transport-Security, `X-Content-Type-Options`, `X-Frame-Options: DENY`, Referrer-Policy, Permissions-Policy, and Cross-Origin-Opener-Policy.
-- The form in `contact.html` uses `method="POST"`, `action="dziekuje.html"`, `data-netlify="true"`, `netlify-honeypot="bot-field"`, and a hidden `form-name` field — the form-handling convention used by Netlify.
+- The form in `contact.html` uses `method="POST"`, `action="thank-you.html"`, `data-netlify="true"`, `netlify-honeypot="bot-field"`, and a hidden `form-name` field — the form-handling convention used by Netlify.
 - Deployment is manual: publish the `dist/` directory produced by a passing `npm run predeploy:check` to Netlify as the publish root. Do not publish the repository root — its pages load the unminified sources and do not register the Service Worker.
 
 ### Accessibility
@@ -511,7 +515,7 @@ No formal conformance audit was carried out, so this documentation makes no WCAG
 
 - Unique titles and meta descriptions on every page, and a `lang="pl"` attribute on every document.
 - `canonical` tags on the indexable pages.
-- `robots` set to `index,follow` on eight pages and to `noindex,follow` on `tour.html`, `dziekuje.html`, `404.html`, and `offline.html`.
+- `robots` set to `index,follow` on eight pages and to `noindex,follow` on `tour.html`, `thank-you.html`, `404.html`, and `offline.html`.
 - Open Graph and Twitter Cards (`summary_large_image`) with absolute preview-image URLs.
 - JSON-LD structured data: `WebSite`, `WebPage`, `Brand`, `Organization`, `PostalAddress`, `CollectionPage`, `AboutPage`, `ContactPage`, `BreadcrumbList`, and `ListItem`.
 - `robots.txt` pointing to the sitemap, and `sitemap.xml` listing eight URLs.

@@ -76,6 +76,7 @@ For each implementation task, determine `Changelog: yes` or `Changelog: no`. Add
 - Replaced the oversized decorative map image with a lightweight original SVG motif across subpages and utility pages.
 - Updated gallery captions and descriptions to reflect illustrative photography without attributing images to fictional clients.
 - Updated the Service Worker cache to `aurora-1.45` for the demonstration-content and contact changes.
+- Renamed the thank-you, privacy policy, and terms pages to `thank-you.html`, `privacy-policy.html`, and `terms.html`, with permanent redirects from their former URLs, refreshing precached HTML under Service Worker cache `aurora-1.60`.
 
 ### Fixed
 

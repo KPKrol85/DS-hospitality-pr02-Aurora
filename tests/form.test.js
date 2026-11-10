@@ -79,13 +79,13 @@ describe("inquiry form contract", () => {
     expect(form().getAttribute("name")).toBe("zapytanie");
     expect(form().elements.namedItem("form-name").value).toBe("zapytanie");
     expect(form().getAttribute("method")).toBe("POST");
-    expect(form().getAttribute("action")).toBe("dziekuje.html");
+    expect(form().getAttribute("action")).toBe("thank-you.html");
     expect(form().getAttribute("data-netlify")).toBe("true");
     expect(form().getAttribute("netlify-honeypot")).toBe("bot-field");
   });
 
   it("provides a static privacy notice next to submission without a consent control", () => {
-    const link = form().querySelector('a[href="polityka-prywatnosci.html"]');
+    const link = form().querySelector('a[href="privacy-policy.html"]');
     const notice = link?.closest("p");
 
     expect(notice).not.toBeNull();
@@ -248,7 +248,7 @@ describe("submission", () => {
     expect(invalidFields()).toEqual([]);
     Object.keys(VALID_VALUES).forEach((id) => expect(errorFor(id)).toBe(""));
     expect(form().getAttribute("method")).toBe("POST");
-    expect(form().getAttribute("action")).toBe("dziekuje.html");
+    expect(form().getAttribute("action")).toBe("thank-you.html");
   });
 
   it("submits without the optional phone number", () => {

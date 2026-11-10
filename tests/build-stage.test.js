@@ -102,3 +102,22 @@ describe("build-dist.js page inventory", () => {
     expect(existsSync(join(siteRoot, "dist"))).toBe(false);
   });
 });
+
+describe("build-dist.js redirects", () => {
+  it("publishes _redirects unchanged in the root of dist/", () => {
+    const { status, stderr } = runStage();
+
+    expect(status, stderr).toBe(0);
+    expect(read("dist/_redirects")).toBe(read("_redirects"));
+  });
+
+  it("rejects a missing _redirects before writing dist/", () => {
+    rmSync(join(siteRoot, "_redirects"));
+
+    const { status, stderr } = runStage();
+
+    expect(status).toBe(1);
+    expect(stderr).toContain("Missing required deployment file: _redirects");
+    expect(existsSync(join(siteRoot, "dist"))).toBe(false);
+  });
+});
