@@ -103,8 +103,8 @@
 - [x] Hosting configuration, redirects, and security headers have been verified in production.
 - [x] No unresolved release-blocking issues remain.
 - [x] The project owner has approved the release.
-- [ ] The Git tag has been created for the approved version and correct commit.
-- [ ] The tag has been pushed and verified in the remote repository.
+- [x] The Git tag has been created for the approved version and correct commit.
+- [x] The tag has been pushed and verified in the remote repository.
 
 ---
 
