@@ -99,8 +99,8 @@
 - [x] The approved production build has been deployed from the correct source revision.
 - [x] The production website is accessible over HTTPS and loads essential resources correctly.
 - [x] A production smoke test confirms the functionality of critical pages and interactions.
-- [ ] Production-dependent functionality, including form delivery and spam protection, has been verified where applicable.
-- [ ] Hosting configuration, redirects, and security headers have been verified in production.
+- [x] Production-dependent functionality, including form delivery and spam protection, has been verified where applicable.
+- [x] Hosting configuration, redirects, and security headers have been verified in production.
 - [ ] No unresolved release-blocking issues remain.
 - [ ] The project owner has approved the release.
 - [ ] The Git tag has been created for the approved version and correct commit.
